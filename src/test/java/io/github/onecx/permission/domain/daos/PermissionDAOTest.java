@@ -30,6 +30,8 @@ class PermissionDAOTest extends AbstractTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.loadByAppId(null),
+                PermissionDAO.ErrorKeys.ERROR_LOAD_BY_APP_ID);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 PermissionDAO.ErrorKeys.ERROR_FIND_PERMISSION_BY_CRITERIA);
     }

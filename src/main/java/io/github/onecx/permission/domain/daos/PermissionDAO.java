@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
@@ -19,6 +20,7 @@ import io.github.onecx.permission.domain.models.Permission_;
 @ApplicationScoped
 public class PermissionDAO extends AbstractDAO<Permission> {
 
+    @Transactional(Transactional.TxType.NOT_SUPPORTED)
     public PageResult<Permission> findByCriteria(PermissionSearchCriteria criteria) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
@@ -50,8 +52,21 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
+    public List<Permission> loadByAppId(String appId) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+            cq.where(cb.equal(root.get(Permission_.APP_ID), appId));
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_LOAD_BY_APP_ID, ex);
+        }
+    }
+
     public enum ErrorKeys {
 
+        ERROR_LOAD_BY_APP_ID,
         ERROR_FIND_PERMISSION_BY_CRITERIA;
     }
 }

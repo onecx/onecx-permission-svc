@@ -28,10 +28,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PermissionRequest'
       responses:
-        201:
-          description: Create permission
-        204:
-          description: Update existing permission
+        200:
+          description: Permission updated
         400:
           description: Bad request
           content:
@@ -50,6 +48,9 @@ components:
             $ref: '#/components/schemas/Permission'
     Permission:
       type: object
+      required:
+        - object
+        - action
       properties:
         name:
           type: string
