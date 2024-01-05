@@ -19,7 +19,7 @@ public interface OperatorPermissionMapper {
 
     default List<Permission> map(List<PermissionDTOV1> list, String appId) {
         if (list == null) {
-            return null;
+            return List.of();
         }
         List<Permission> data = new ArrayList<>();
         for (PermissionDTOV1 dto : list) {

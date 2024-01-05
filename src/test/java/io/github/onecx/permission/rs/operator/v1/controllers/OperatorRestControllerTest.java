@@ -22,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(OperatorRestController.class)
 @WithDBData(value = "data/test-operator-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class OperatorRestControllerTest extends AbstractTest {
+class OperatorRestControllerTest extends AbstractTest {
 
     @Test
     void requestNoBodyTest() {
@@ -46,21 +46,14 @@ public class OperatorRestControllerTest extends AbstractTest {
         var request = new PermissionRequestDTOV1();
         request.setPermissions(List.of());
 
-        var exception = given()
+        given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("appId", "app1")
                 .put()
                 .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .contentType(APPLICATION_JSON)
-                .extract()
-                .as(ProblemDetailResponseDTOV1.class);
+                .statusCode(OK.getStatusCode());
 
-        assertThat(exception).isNotNull();
-        assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo(
-                "createOrUpdatePermission.permissionRequestDTOV1.permissions: size must be between 1 and 2147483647");
     }
 
     @Test

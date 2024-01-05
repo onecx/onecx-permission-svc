@@ -38,6 +38,9 @@ public class OperatorRestController implements PermissionOperatorApi {
     public Response createOrUpdatePermission(String appId, PermissionRequestDTOV1 permissionRequestDTOV1) {
 
         var data = mapper.map(permissionRequestDTOV1, appId);
+        if (data.isEmpty()) {
+            return Response.ok().build();
+        }
         var permissions = dao.loadByAppId(appId);
         var map = permissions.stream().collect(Collectors.toMap(x -> x.getObject() + x.getAction(), x -> x));
 
