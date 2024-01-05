@@ -42,7 +42,7 @@ class PermissionRestControllerTest extends AbstractTest {
 
         criteria.setAppId(" ");
         criteria.setName(" ");
-        criteria.setObject(" ");
+        criteria.setResource(" ");
         criteria.setAction(" ");
 
         data = given()
@@ -65,7 +65,7 @@ class PermissionRestControllerTest extends AbstractTest {
         var criteria = new PermissionSearchCriteriaDTO();
         criteria.setAppId("app1");
         criteria.setName("n1");
-        criteria.setObject("o1");
+        criteria.setResource("o1");
         criteria.setAction("a1");
 
         var data = given()

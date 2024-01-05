@@ -48,12 +48,12 @@ components:
     Permission:
       type: object
       required:
-        - object
+        - resource
         - action
       properties:
         name:
           type: string
-        object:
+        resource:
           type: string
         action:
           type: string

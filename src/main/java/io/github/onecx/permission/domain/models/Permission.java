@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "PERMISSION", uniqueConstraints = {
-        @UniqueConstraint(name = "PERMISSION_KEY", columnNames = { "APP_ID", "OBJECT", "ACTION" })
+        @UniqueConstraint(name = "PERMISSION_KEY", columnNames = { "APP_ID", "RESOURCE", "ACTION" })
 })
 @SuppressWarnings("squid:S2160")
 public class Permission extends TraceableEntity {
@@ -31,8 +31,8 @@ public class Permission extends TraceableEntity {
     /**
      * The permission object.
      */
-    @Column(name = "OBJECT")
-    private String object;
+    @Column(name = "RESOURCE")
+    private String resource;
 
     /**
      * The permission name.

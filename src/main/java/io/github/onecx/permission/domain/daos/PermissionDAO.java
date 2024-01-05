@@ -38,8 +38,8 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             if (criteria.getAppId() != null && !criteria.getAppId().isBlank()) {
                 predicates.add(cb.like(root.get(Permission_.appId), QueryCriteriaUtil.wildcard(criteria.getAppId())));
             }
-            if (criteria.getObject() != null && !criteria.getObject().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.object), QueryCriteriaUtil.wildcard(criteria.getObject())));
+            if (criteria.getResource() != null && !criteria.getResource().isBlank()) {
+                predicates.add(cb.like(root.get(Permission_.resource), QueryCriteriaUtil.wildcard(criteria.getResource())));
             }
 
             if (!predicates.isEmpty()) {

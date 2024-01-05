@@ -19,6 +19,5 @@ public interface PermissionMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     PermissionPageResultDTO map(PageResult<Permission> page);
 
-    @Mapping(target = "_object", source = "object")
     PermissionDTO map(Permission data);
 }

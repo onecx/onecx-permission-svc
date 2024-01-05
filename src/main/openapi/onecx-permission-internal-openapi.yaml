@@ -44,7 +44,7 @@ components:
           type: string
         name:
           type: string
-        object:
+        resource:
           type: string
         action:
           type: string
@@ -98,7 +98,7 @@ components:
           type: string
         name:
           type: string
-        object:
+        resource:
           type: string
         action:
           type: string

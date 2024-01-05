@@ -20,11 +20,11 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="permission_pkey"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
-            <column name="object" type="VARCHAR(255)"/>
+            <column name="resource" type="VARCHAR(255)"/>
             <column name="creationuser" type="VARCHAR(255)"/>
             <column name="modificationuser" type="VARCHAR(255)"/>
         </createTable>
 
-        <addUniqueConstraint columnNames="app_id, object, action" constraintName="permission_key" tableName="permission"/>
+        <addUniqueConstraint columnNames="app_id, resource, action" constraintName="permission_key" tableName="permission"/>
     </changeSet>
 </databaseChangeLog>
