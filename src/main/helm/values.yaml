@@ -1,0 +1,6 @@
+app:
+  name: svc
+  image:
+    repository: "onecx/onecx-permission-svc"
+  db:
+    enabled: true

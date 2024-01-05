@@ -1,0 +1,90 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-permission operator service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-permission-svc:8080"
+tags:
+  - name: permissionOperator
+paths:
+  /operator/v1/update/{appId}:
+    put:
+      tags:
+        - permissionOperator
+      description: Creates or updates permission for application.
+      operationId: createOrUpdatePermission
+      parameters:
+        - name: appId
+          in: path
+          description: Application ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionRequest'
+      responses:
+        200:
+          description: Permission updated
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    PermissionRequest:
+      type: object
+      properties:
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+    Permission:
+      type: object
+      required:
+        - object
+        - action
+      properties:
+        name:
+          type: string
+        object:
+          type: string
+        action:
+          type: string
+        description:
+          type: string
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
