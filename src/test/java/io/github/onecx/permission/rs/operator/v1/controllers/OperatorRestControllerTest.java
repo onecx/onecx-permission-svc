@@ -84,8 +84,8 @@ class OperatorRestControllerTest extends AbstractTest {
 
     @Test
     void requestPermissionTest() {
-        var per1 = new PermissionDTOV1().action("a1")._object("o1").name("name").description("description");
-        var per2 = new PermissionDTOV1().action("new1")._object("o1").name("name1").description("description1");
+        var per1 = new PermissionDTOV1().action("a1").resource("o1").name("name").description("description");
+        var per2 = new PermissionDTOV1().action("new1").resource("o1").name("name1").description("description1");
 
         var request = new PermissionRequestDTOV1();
         request.setPermissions(List.of(per1, per2));
@@ -98,5 +98,30 @@ class OperatorRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(OK.getStatusCode());
 
+    }
+
+    @Test
+    void requestDuplicatePermissionTest() {
+        var per1 = new PermissionDTOV1().action("a1").resource("o1").name("name").description("description");
+        var per2 = new PermissionDTOV1().action("a1").resource("o1").name("name1").description("description1");
+
+        var request = new PermissionRequestDTOV1();
+        request.setPermissions(List.of(per1, per2));
+
+        var exception = given()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("appId", "app3")
+                .put()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(ProblemDetailResponseDTOV1.class);
+
+        assertThat(exception).isNotNull();
+        assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
+        assertThat(exception.getDetail()).isEqualTo(
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'permission_key'  Detail: Key (app_id, resource, action)=(app3, o1, a1) already exists.]");
     }
 }

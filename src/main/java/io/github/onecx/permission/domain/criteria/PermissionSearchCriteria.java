@@ -9,7 +9,7 @@ public class PermissionSearchCriteria {
 
     private String appId;
     private String name;
-    private String object;
+    private String resource;
     private String action;
     private Integer pageNumber;
     private Integer pageSize;

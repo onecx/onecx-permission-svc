@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.io.github.onecx.permission.rs.operator.v1.PermissionOperatorApi;
@@ -42,10 +43,10 @@ public class OperatorRestController implements PermissionOperatorApi {
             return Response.ok().build();
         }
         var permissions = dao.loadByAppId(appId);
-        var map = permissions.stream().collect(Collectors.toMap(x -> x.getObject() + x.getAction(), x -> x));
+        var map = permissions.stream().collect(Collectors.toMap(x -> x.getResource() + x.getAction(), x -> x));
 
         for (Permission item : data) {
-            var permission = map.get(item.getObject() + item.getAction());
+            var permission = map.get(item.getResource() + item.getAction());
             if (permission == null) {
                 // create new permission
                 dao.create(item);
@@ -57,6 +58,11 @@ public class OperatorRestController implements PermissionOperatorApi {
             }
         }
         return Response.ok().build();
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTOV1> exception(ConstraintException ex) {
+        return exceptionMapper.exception(ex);
     }
 
     @ServerExceptionMapper
