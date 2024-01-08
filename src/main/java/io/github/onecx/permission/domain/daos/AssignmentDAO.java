@@ -1,9 +1,11 @@
 package io.github.onecx.permission.domain.daos;
 
-import io.github.onecx.permission.domain.models.PermissionAssignment;
 import jakarta.enterprise.context.ApplicationScoped;
+
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 
+import io.github.onecx.permission.domain.models.Assignment;
+
 @ApplicationScoped
-public class PermissionAssignmentDAO extends AbstractDAO<PermissionAssignment> {
+public class AssignmentDAO extends AbstractDAO<Assignment> {
 }

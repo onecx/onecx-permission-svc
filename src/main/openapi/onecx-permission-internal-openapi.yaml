@@ -7,7 +7,134 @@ servers:
   - url: "http://onecx-permission-svc:8080"
 tags:
   - name: permissionInternal
+  - name: roleInternal
+  - name: assignmentsInternal
 paths:
+  /internal/roles:
+    post:
+      tags:
+        - roleInternal
+      description: Create new role
+      operationId: createRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleRequest'
+      responses:
+        201:
+          description: New role created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/roles/{id}:
+    get:
+      tags:
+        - roleInternal
+      description: Return role by ID
+      operationId: getRoleById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        404:
+          description: Role not found
+    put:
+      tags:
+        - roleInternal
+      description: Update role by ID
+      operationId: updateRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        204:
+          description: Theme updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        404:
+          description: Role not found
+    delete:
+      tags:
+        - roleInternal
+      description: Delete role by ID
+      operationId: deleteRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Role deleted
+  /internal/roles/search:
+    post:
+      tags:
+        - roleInternal
+      description: Search for roles
+      operationId: searchRoles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RolePageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/permissions/search:
     post:
       tags:
@@ -21,7 +148,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PermissionSearchCriteria'
       responses:
-        "200":
+        200:
           description: OK
           content:
             application/json:
@@ -29,7 +156,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PermissionPageResult'
-        "400":
+        400:
           description: Bad request
           content:
             application/json:
@@ -37,6 +164,86 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
+    UpdateRoleRequest:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        name:
+          type: string
+        shortDescription:
+          type: string
+        description:
+          type: string
+    CreateRoleRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        shortDescription:
+          type: string
+        description:
+          type: string
+    Role:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        description:
+          type: string
+    RolePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+    RoleSearchCriteria:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          type: integer
     PermissionSearchCriteria:
       type: object
       properties:

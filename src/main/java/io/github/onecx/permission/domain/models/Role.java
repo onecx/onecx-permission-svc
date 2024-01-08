@@ -4,19 +4,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "ROLE",
-        uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"TENANT_ID", "NAME"})
-        }
-)
+@Table(name = "ROLE", uniqueConstraints = {
+        @UniqueConstraint(name = "TENANT_NAME", columnNames = { "TENANT_ID", "NAME" })
+})
 @SuppressWarnings("java:S2160")
 public class Role extends TraceableEntity {
 

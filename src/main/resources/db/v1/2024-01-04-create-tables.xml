@@ -26,5 +26,56 @@
         </createTable>
 
         <addUniqueConstraint columnNames="app_id, resource, action" constraintName="permission_key" tableName="permission"/>
+
+
+        <createTable tableName="role">
+            <column name="optlock" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="guid" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="role_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="short_description" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationuser" type="VARCHAR(255)"/>
+            <column name="modificationuser" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="tenant_id, name" constraintName="tenant_name" tableName="role"/>
+
+        <createTable tableName="assignment">
+            <column name="optlock" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="permission_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="assignment_pkey"/>
+            </column>
+            <column name="role_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="assignment_pkey"/>
+            </column>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationuser" type="VARCHAR(255)"/>
+            <column name="modificationuser" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="assignment"
+                                 constraintName="assignment_permission_id" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid"
+                                 referencedTableName="permission" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="assignment"
+                                 constraintName="assignment_role_id" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid"
+                                 referencedTableName="role" validate="true"/>
+
     </changeSet>
 </databaseChangeLog>
