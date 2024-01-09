@@ -15,10 +15,10 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class RoleDAOTest extends AbstractTest {
+class AssignmentDAOTest extends AbstractTest {
 
     @Inject
-    RoleDAO dao;
+    AssignmentDAO dao;
 
     @InjectMock
     EntityManager em;
@@ -31,9 +31,9 @@ class RoleDAOTest extends AbstractTest {
     @Test
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.findById(null),
-                RoleDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
+                AssignmentDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByCriteria(null),
-                RoleDAO.ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA);
+                AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

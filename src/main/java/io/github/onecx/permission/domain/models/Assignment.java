@@ -3,38 +3,40 @@ package io.github.onecx.permission.domain.models;
 import jakarta.persistence.*;
 
 import org.hibernate.annotations.TenantId;
-import org.tkit.quarkus.jpa.models.AbstractTraceableEntity;
+import org.tkit.quarkus.jpa.models.TraceableEntity;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(of = { "id" }, callSuper = false)
-@Table(name = "ASSIGNMENT")
-public class Assignment extends AbstractTraceableEntity<AssignmentId> {
-
-    @EmbeddedId
-    private AssignmentId id = new AssignmentId();
+@Table(name = "ASSIGNMENT", uniqueConstraints = {
+        @UniqueConstraint(name = "ASSIGNMENT_KEY", columnNames = { "TENANT_ID", "ROLE_ID", "PERMISSION_ID" })
+})
+public class Assignment extends TraceableEntity {
 
     @TenantId
     @Column(name = "TENANT_ID")
     private String tenantId;
 
+    @Column(name = "ROLE_ID", insertable = false, updatable = false)
+    private String roleId;
+
+    @Column(name = "PERMISSION_ID", insertable = false, updatable = false)
+    private String permissionId;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ROLE_ID")
-    @MapsId("roleId")
     private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PERMISSION_ID")
-    @MapsId("permissionId")
     private Permission permission;
 
-    @Override
-    public String toString() {
-        return "Assignment:" + id.toString();
+    @PostPersist
+    void postPersist() {
+        roleId = role.getId();
+        permissionId = permission.getId();
     }
 }

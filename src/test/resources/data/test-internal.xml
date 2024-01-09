@@ -21,4 +21,7 @@
     <ROLE guid="r22" optlock="0" name="n2" description="d1" short_description="sd1" tenant_id="100"/>
     <ROLE guid="r23" optlock="0" name="n3" description="d1" short_description="sd1" tenant_id="100"/>
     <ROLE guid="r24" optlock="0" name="n4" description="d1" short_description="sd1" tenant_id="100"/>
+
+    <ASSIGNMENT guid="a11" optlock="0" permission_id="p13" role_id="r13" tenant_id="default"/>
+    <ASSIGNMENT guid="a12" optlock="0" permission_id="p13" role_id="r14" tenant_id="default"/>
 </dataset>

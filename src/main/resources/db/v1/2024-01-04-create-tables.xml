@@ -47,7 +47,7 @@
             <column name="modificationuser" type="VARCHAR(255)"/>
         </createTable>
 
-        <addUniqueConstraint columnNames="tenant_id, name" constraintName="tenant_name" tableName="role"/>
+        <addUniqueConstraint columnNames="tenant_id, name" constraintName="role_name" tableName="role"/>
 
         <createTable tableName="assignment">
             <column name="optlock" type="INTEGER">
@@ -55,12 +55,11 @@
             </column>
             <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="permission_id" type="VARCHAR(255)">
+            <column name="guid" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="assignment_pkey"/>
             </column>
-            <column name="role_id" type="VARCHAR(255)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="assignment_pkey"/>
-            </column>
+            <column name="permission_id" type="VARCHAR(255)"/>
+            <column name="role_id" type="VARCHAR(255)"/>
             <column name="tenant_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -68,14 +67,10 @@
             <column name="modificationuser" type="VARCHAR(255)"/>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="assignment"
-                                 constraintName="assignment_permission_id" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid"
-                                 referencedTableName="permission" validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="assignment"
-                                 constraintName="assignment_role_id" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid"
-                                 referencedTableName="role" validate="true"/>
+        <addUniqueConstraint columnNames="tenant_id, role_id, permission_id" constraintName="assignment_key" tableName="assignment"/>
+
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="assignment" constraintName="fke77g1bxkop46jx1blgcd6q5ww" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="permission" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="assignment" constraintName="fkibbkfxe1mngrihxnc7p9wdhup" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="role" validate="true"/>
 
     </changeSet>
 </databaseChangeLog>

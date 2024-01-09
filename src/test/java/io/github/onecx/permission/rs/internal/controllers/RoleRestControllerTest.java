@@ -26,14 +26,14 @@ class RoleRestControllerTest extends AbstractTest {
     void createNewRoleTest() {
 
         // create Role
-        var RoleDto = new CreateRoleRequestDTO();
-        RoleDto.setName("test01");
-        RoleDto.setDescription("description");
+        var requestDTO = new CreateRoleRequestDTO();
+        requestDTO.setName("test01");
+        requestDTO.setDescription("description");
 
         var uri = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(RoleDto)
+                .body(requestDTO)
                 .post()
                 .then().statusCode(CREATED.getStatusCode())
                 .extract().header(HttpHeaders.LOCATION);
@@ -47,8 +47,8 @@ class RoleRestControllerTest extends AbstractTest {
                 .body().as(RoleDTO.class);
 
         assertThat(dto).isNotNull()
-                .returns(RoleDto.getName(), from(RoleDTO::getName))
-                .returns(RoleDto.getDescription(), from(RoleDTO::getDescription));
+                .returns(requestDTO.getName(), from(RoleDTO::getName))
+                .returns(requestDTO.getDescription(), from(RoleDTO::getDescription));
 
         // create Role without body
         var exception = given()
@@ -63,12 +63,12 @@ class RoleRestControllerTest extends AbstractTest {
         assertThat(exception.getDetail()).isEqualTo("createRole.createRoleRequestDTO: must not be null");
 
         // create Role with existing name
-        RoleDto = new CreateRoleRequestDTO();
-        RoleDto.setName("n1");
+        requestDTO = new CreateRoleRequestDTO();
+        requestDTO.setName("n1");
 
         exception = given().when()
                 .contentType(APPLICATION_JSON)
-                .body(RoleDto)
+                .body(requestDTO)
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -76,7 +76,7 @@ class RoleRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'tenant_name'  Detail: Key (tenant_id, name)=(default, n1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'role_name'  Detail: Key (tenant_id, name)=(default, n1) already exists.]");
     }
 
     @Test
@@ -156,6 +156,7 @@ class RoleRestControllerTest extends AbstractTest {
         assertThat(data.getStream()).isNotNull().hasSize(4);
 
         criteria.setName(" ");
+        criteria.setDescription(" ");
         data = given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -171,6 +172,8 @@ class RoleRestControllerTest extends AbstractTest {
         assertThat(data.getStream()).isNotNull().hasSize(4);
 
         criteria.setName("n3");
+        criteria.setDescription("d1");
+
         data = given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -191,13 +194,13 @@ class RoleRestControllerTest extends AbstractTest {
     void updateRoleTest() {
 
         // update none existing Role
-        var RoleDto = new UpdateRoleRequestDTO();
-        RoleDto.setName("test01");
-        RoleDto.setDescription("description-update");
+        var requestDto = new UpdateRoleRequestDTO();
+        requestDto.setName("test01");
+        requestDto.setDescription("description-update");
 
         given()
                 .contentType(APPLICATION_JSON)
-                .body(RoleDto)
+                .body(requestDto)
                 .when()
                 .put("does-not-exists")
                 .then().statusCode(NOT_FOUND.getStatusCode());
@@ -205,15 +208,15 @@ class RoleRestControllerTest extends AbstractTest {
         // update Role
         given()
                 .contentType(APPLICATION_JSON)
-                .body(RoleDto)
+                .body(requestDto)
                 .when()
                 .put("r11")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode());
 
         // download Role
         var dto = given().contentType(APPLICATION_JSON)
-                .body(RoleDto)
+                .body(requestDto)
                 .when()
                 .get("r11")
                 .then().statusCode(OK.getStatusCode())
@@ -222,7 +225,7 @@ class RoleRestControllerTest extends AbstractTest {
                 .body().as(RoleDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getDescription()).isEqualTo(RoleDto.getDescription());
+        assertThat(dto.getDescription()).isEqualTo(requestDto.getDescription());
 
     }
 
@@ -245,7 +248,7 @@ class RoleRestControllerTest extends AbstractTest {
         Assertions.assertNotNull(exception);
         Assertions.assertEquals("MERGE_ENTITY_FAILED", exception.getErrorCode());
         Assertions.assertEquals(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'tenant_name'  Detail: Key (tenant_id, name)=(default, n3) already exists.]",
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'role_name'  Detail: Key (tenant_id, name)=(default, n3) already exists.]",
                 exception.getDetail());
         Assertions.assertNull(exception.getInvalidParams());
 

@@ -8,8 +8,103 @@ servers:
 tags:
   - name: permissionInternal
   - name: roleInternal
-  - name: assignmentsInternal
+  - name: assignmentInternal
 paths:
+  /internal/assignments/search:
+    post:
+      tags:
+        - assignmentInternal
+      description: Search for assignments
+      operationId: searchAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssignmentPageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments:
+    post:
+      tags:
+        - assignmentInternal
+      description: Create new assignment
+      operationId: createAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssignmentRequest'
+      responses:
+        201:
+          description: New assignment created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        404:
+          description: Data not found
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments/{id}:
+    get:
+      tags:
+        - assignmentInternal
+      description: Get assignment
+      operationId: getAssignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get assignment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        404:
+          description: Assignment not found
+    delete:
+      tags:
+        - assignmentInternal
+      description: Delete assignment
+      operationId: deleteAssignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Role deleted
   /internal/roles:
     post:
       tags:
@@ -164,6 +259,67 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
+    AssignmentSearchCriteria:
+      type: object
+      properties:
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    AssignmentPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+    CreateAssignmentRequest:
+      type: object
+      required:
+        - roleId
+        - permissionId
+      properties:
+        roleId:
+          type: string
+        permissionId:
+          type: string
+    Assignment:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        roleId:
+          type: string
+        permissionId:
+          type: string
     UpdateRoleRequest:
       type: object
       properties:
@@ -242,7 +398,7 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
           type: integer
     PermissionSearchCriteria:
       type: object
@@ -263,7 +419,7 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
           type: integer
     PermissionPageResult:
       type: object
