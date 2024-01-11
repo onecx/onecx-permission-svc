@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.config;
 import static io.restassured.config.ObjectMapperConfig.objectMapperConfig;
 
 import java.security.PrivateKey;
+import java.util.List;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
@@ -37,12 +38,28 @@ public class AbstractTest {
     }
 
     protected static String createToken(String organizationId) {
+        return createToken(organizationId, null);
+    }
+
+    protected static String createToken(List<String> roles) {
+        return createToken(null, roles);
+    }
+
+    protected static String createToken(String organizationId, List<String> roles) {
         try {
+
             String userName = "test-user";
             JsonObjectBuilder claims = Json.createObjectBuilder();
             claims.add(Claims.preferred_username.name(), userName);
             claims.add(Claims.sub.name(), userName);
-            claims.add(CLAIMS_ORG_ID, organizationId);
+            if (organizationId != null) {
+                claims.add(CLAIMS_ORG_ID, organizationId);
+            }
+            if (roles != null && !roles.isEmpty()) {
+                JsonObjectBuilder r = Json.createObjectBuilder();
+                r.add("roles", Json.createArrayBuilder(roles));
+                claims.add("realm_access", r);
+            }
             PrivateKey privateKey = KeyUtils.generateKeyPair(2048).getPrivate();
             return Jwt.claims(claims.build()).sign(privateKey);
         } catch (Exception ex) {

@@ -115,5 +115,14 @@
         <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="workspace_assignment" constraintName="fklf3cck88v4e34369mfs3ehiy5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace_permission" validate="true"/>
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="workspace_assignment" constraintName="fkshtaxb2mjneer4fl3xg44xyr2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="role" validate="true"/>
 
+
+        <createIndex indexName="assignment_tenant_id" tableName="assignment">
+            <column name="tenant_id"/>
+        </createIndex>
+
+        <createIndex indexName="permission_app_id" tableName="permission">
+            <column name="app_id"/>
+        </createIndex>
+
     </changeSet>
 </databaseChangeLog>

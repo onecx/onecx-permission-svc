@@ -1,9 +1,6 @@
 package io.github.onecx.permission.domain.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
@@ -16,6 +13,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "ROLE", uniqueConstraints = {
         @UniqueConstraint(name = "ROLE_NAME", columnNames = { "TENANT_ID", "NAME" })
+}, indexes = {
+        @Index(name = "ROLE_NAME", columnList = "NAME")
 })
 @SuppressWarnings("java:S2160")
 public class Role extends TraceableEntity {

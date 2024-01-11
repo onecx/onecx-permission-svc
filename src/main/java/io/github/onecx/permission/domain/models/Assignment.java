@@ -13,6 +13,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "ASSIGNMENT", uniqueConstraints = {
         @UniqueConstraint(name = "ASSIGNMENT_KEY", columnNames = { "TENANT_ID", "ROLE_ID", "PERMISSION_ID" })
+}, indexes = {
+        @Index(name = "ASSIGNMENT_TENANT_ID", columnList = "TENANT_ID")
 })
 public class Assignment extends TraceableEntity {
 

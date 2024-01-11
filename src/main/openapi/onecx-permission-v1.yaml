@@ -35,7 +35,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ApplicationPermissionList'
+                  $ref: '#/components/schemas/WorkspacePermissions'
         400:
           description: Bad request
           content:
@@ -69,7 +69,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ApplicationPermissionList'
+                  $ref: '#/components/schemas/WorkspacePermissionApplications'
         400:
           description: Bad request
           content:
@@ -80,8 +80,8 @@ paths:
     post:
       tags:
         - permission
-      description: Get permission of the application for the user
-      operationId: getApplicationPermission
+      description: Get permissions of the application for the user
+      operationId: getApplicationPermissions
       parameters:
         - name: appId
           in: path
@@ -103,7 +103,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ApplicationPermission'
+                  $ref: '#/components/schemas/ApplicationPermissions'
         400:
           description: Bad request
           content:
@@ -112,31 +112,43 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
-    ApplicationPermissionList:
+    WorkspacePermissionApplications:
       type: object
       properties:
+        workspace:
+          $ref: '#/components/schemas/WorkspacePermissions'
         applications:
           type: array
           items:
-            $ref: '#/components/schemas/ApplicationPermission'
-    ApplicationPermission:
+            $ref: '#/components/schemas/ApplicationPermissions'
+    WorkspacePermissions:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        permissions:
+          type: object
+          nullable: false
+          description: resources
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
+    ApplicationPermissions:
       type: object
       properties:
         appId:
           type: string
         permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourcePermissions'
-    ResourcePermissions:
-      type: object
-      properties:
-        resource:
-          type: string
-        actions:
-          type: array
-          items:
-            type: string
+          type: object
+          nullable: false
+          description: resources
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
     ProblemDetailResponse:
       type: object
       properties:
