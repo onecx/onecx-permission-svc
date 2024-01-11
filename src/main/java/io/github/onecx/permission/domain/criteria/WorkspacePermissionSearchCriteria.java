@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PermissionSearchCriteria {
+public class WorkspacePermissionSearchCriteria {
 
-    private String appId;
+    private String workspaceId;
     private String resource;
     private String action;
     private Integer pageNumber;

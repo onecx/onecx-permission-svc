@@ -41,7 +41,6 @@ class PermissionRestControllerTest extends AbstractTest {
         assertThat(data.getStream()).isNotNull().hasSize(7);
 
         criteria.setAppId(" ");
-        criteria.setName(" ");
         criteria.setResource(" ");
         criteria.setAction(" ");
 
@@ -64,7 +63,6 @@ class PermissionRestControllerTest extends AbstractTest {
     void searchCriteriaTest() {
         var criteria = new PermissionSearchCriteriaDTO();
         criteria.setAppId("app1");
-        criteria.setName("n1");
         criteria.setResource("o1");
         criteria.setAction("a1");
 

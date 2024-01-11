@@ -1,0 +1,168 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-permission service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-permission-svc:8080"
+tags:
+  - name: permission
+paths:
+  /v1/permissions/user/workspace/{workspace}:
+    post:
+      tags:
+        - permission
+      description: Get permission of the workspace for the user
+      operationId: getWorkspacePermission
+      parameters:
+        - name: workspace
+          in: path
+          description: Workspace ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/*:
+            schema:
+              type: string
+      responses:
+        200:
+          description: Workspace permission
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationPermissionList'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/permissions/user/workspace/{workspace}/applications:
+    post:
+      tags:
+        - permission
+      description: Get permission of the workspace and application for the user
+      operationId: getWorkspacePermissionApplications
+      parameters:
+        - name: workspace
+          in: path
+          description: Workspace ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/*:
+            schema:
+              type: string
+      responses:
+        200:
+          description: Workspace permission
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationPermissionList'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/permissions/user/application/{appId}:
+    post:
+      tags:
+        - permission
+      description: Get permission of the application for the user
+      operationId: getApplicationPermission
+      parameters:
+        - name: appId
+          in: path
+          description: Application ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/*:
+            schema:
+              type: string
+      responses:
+        200:
+          description: Permission updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationPermission'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    ApplicationPermissionList:
+      type: object
+      properties:
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationPermission'
+    ApplicationPermission:
+      type: object
+      properties:
+        appId:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourcePermissions'
+    ResourcePermissions:
+      type: object
+      properties:
+        resource:
+          type: string
+        actions:
+          type: array
+          items:
+            type: string
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string

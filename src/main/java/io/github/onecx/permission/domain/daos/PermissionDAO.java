@@ -29,9 +29,6 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (criteria.getName() != null && !criteria.getName().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.name), QueryCriteriaUtil.wildcard(criteria.getName())));
-            }
             if (criteria.getAction() != null && !criteria.getAction().isBlank()) {
                 predicates.add(cb.like(root.get(Permission_.action), QueryCriteriaUtil.wildcard(criteria.getAction())));
             }

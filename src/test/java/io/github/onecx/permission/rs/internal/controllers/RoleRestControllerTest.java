@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.io.github.onecx.permission.rs.internal.model.*;
+import io.github.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import io.github.onecx.permission.test.AbstractTest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -59,7 +60,7 @@ class RoleRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
-        assertThat(exception.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
+        assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
         assertThat(exception.getDetail()).isEqualTo("createRole.createRoleRequestDTO: must not be null");
 
         // create Role with existing name
@@ -267,7 +268,7 @@ class RoleRestControllerTest extends AbstractTest {
                 .extract().as(ProblemDetailResponseDTO.class);
 
         Assertions.assertNotNull(exception);
-        Assertions.assertEquals("CONSTRAINT_VIOLATIONS", exception.getErrorCode());
+        Assertions.assertEquals(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name(), exception.getErrorCode());
         Assertions.assertEquals("updateRole.updateRoleRequestDTO: must not be null",
                 exception.getDetail());
         Assertions.assertNotNull(exception.getInvalidParams());

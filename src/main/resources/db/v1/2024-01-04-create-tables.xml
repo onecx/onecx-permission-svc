@@ -19,7 +19,6 @@
             <column name="guid" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="permission_pkey"/>
             </column>
-            <column name="name" type="VARCHAR(255)"/>
             <column name="resource" type="VARCHAR(255)"/>
             <column name="creationuser" type="VARCHAR(255)"/>
             <column name="modificationuser" type="VARCHAR(255)"/>
@@ -39,7 +38,6 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="role_pkey"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
-            <column name="short_description" type="VARCHAR(255)"/>
             <column name="tenant_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -71,6 +69,51 @@
 
         <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="assignment" constraintName="fke77g1bxkop46jx1blgcd6q5ww" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="permission" validate="true"/>
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="assignment" constraintName="fkibbkfxe1mngrihxnc7p9wdhup" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="role" validate="true"/>
+
+        <createTable tableName="workspace_assignment">
+            <column name="optlock" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="guid" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="workspace_assignment_pkey"/>
+            </column>
+            <column name="permission_id" type="VARCHAR(255)"/>
+            <column name="role_id" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationuser" type="VARCHAR(255)"/>
+            <column name="modificationuser" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="tenant_id, role_id, permission_id" constraintName="workspace_assignment_key" tableName="workspace_assignment"/>
+
+        <createTable tableName="workspace_permission">
+            <column name="optlock" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="action" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="guid" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="workspace_permission_pkey"/>
+            </column>
+            <column name="resource" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspace_id" type="VARCHAR(255)"/>
+            <column name="creationuser" type="VARCHAR(255)"/>
+            <column name="modificationuser" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="tenant_id, workspace_id, resource, action" constraintName="workspace_permission_key" tableName="workspace_permission"/>
+
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="workspace_assignment" constraintName="fklf3cck88v4e34369mfs3ehiy5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace_permission" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="workspace_assignment" constraintName="fkshtaxb2mjneer4fl3xg44xyr2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="role" validate="true"/>
 
     </changeSet>
 </databaseChangeLog>

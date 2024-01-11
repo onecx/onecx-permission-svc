@@ -51,8 +51,6 @@ components:
         - resource
         - action
       properties:
-        name:
-          type: string
         resource:
           type: string
         action:

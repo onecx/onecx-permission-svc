@@ -53,7 +53,6 @@ public class OperatorRestController implements PermissionOperatorApi {
             } else {
                 // update existing permission
                 permission.setDescription(item.getDescription());
-                permission.setName(item.getName());
                 dao.update(permission);
             }
         }

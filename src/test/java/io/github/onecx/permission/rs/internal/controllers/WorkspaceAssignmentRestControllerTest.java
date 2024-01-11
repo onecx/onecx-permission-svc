@@ -5,7 +5,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
-import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
 
 import jakarta.ws.rs.core.HttpHeaders;
 
@@ -19,15 +18,15 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@TestHTTPEndpoint(AssignmentRestController.class)
+@TestHTTPEndpoint(WorkspaceAssignmentRestController.class)
 @WithDBData(value = "data/test-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class AssignmentRestControllerTest extends AbstractTest {
+class WorkspaceAssignmentRestControllerTest extends AbstractTest {
 
     @Test
-    void createAssignment() {
+    void createWorkspaceAssignment() {
         // create Assignment
-        var requestDTO = new CreateAssignmentRequestDTO();
-        requestDTO.setPermissionId("p11");
+        var requestDTO = new CreateWorkspaceAssignmentRequestDTO();
+        requestDTO.setPermissionId("wp11");
         requestDTO.setRoleId("r11");
 
         var uri = given()
@@ -45,11 +44,11 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
-                .body().as(AssignmentDTO.class);
+                .body().as(WorkspaceAssignmentDTO.class);
 
         assertThat(dto).isNotNull()
-                .returns(requestDTO.getRoleId(), from(AssignmentDTO::getRoleId))
-                .returns(requestDTO.getPermissionId(), from(AssignmentDTO::getPermissionId));
+                .returns(requestDTO.getRoleId(), from(WorkspaceAssignmentDTO::getRoleId))
+                .returns(requestDTO.getPermissionId(), from(WorkspaceAssignmentDTO::getPermissionId));
 
         // create Role without body
         var exception = given()
@@ -61,11 +60,12 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .extract().as(ProblemDetailResponseDTO.class);
 
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo("createAssignment.createAssignmentRequestDTO: must not be null");
+        assertThat(exception.getDetail())
+                .isEqualTo("createWorkspaceAssignment.createWorkspaceAssignmentRequestDTO: must not be null");
 
         // create Role with existing name
-        requestDTO = new CreateAssignmentRequestDTO();
-        requestDTO.setPermissionId("p13");
+        requestDTO = new CreateWorkspaceAssignmentRequestDTO();
+        requestDTO.setPermissionId("wp13");
         requestDTO.setRoleId("r13");
 
         exception = given().when()
@@ -78,14 +78,14 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'assignment_key'  Detail: Key (tenant_id, role_id, permission_id)=(default, r13, p13) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_assignment_key'  Detail: Key (tenant_id, role_id, permission_id)=(default, r13, wp13) already exists.]");
 
     }
 
     @Test
-    void createAssignmentWrong() {
+    void createWorkspaceAssignmentWrong() {
         // create Assignment
-        var requestDTO = new CreateAssignmentRequestDTO();
+        var requestDTO = new CreateWorkspaceAssignmentRequestDTO();
         requestDTO.setPermissionId("does-not-exists");
         requestDTO.setRoleId("r11");
 
@@ -97,7 +97,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
-        requestDTO.setPermissionId("p11");
+        requestDTO.setPermissionId("wp11");
         requestDTO.setRoleId("does-not-exists");
 
         given()
@@ -110,7 +110,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void getNotFoundAssignment() {
+    void getNotFoundWorkspaceAssignment() {
         given()
                 .contentType(APPLICATION_JSON)
                 .get("does-not-exists")
@@ -119,8 +119,8 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void searchAssignmentTest() {
-        var criteria = new AssignmentSearchCriteriaDTO();
+    void searchWorkspaceAssignmentTest() {
+        var criteria = new WorkspaceAssignmentSearchCriteriaDTO();
 
         var data = given()
                 .contentType(APPLICATION_JSON)
@@ -130,7 +130,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .as(AssignmentPageResultDTO.class);
+                .as(WorkspaceAssignmentPageResultDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getTotalElements()).isEqualTo(2);
@@ -138,7 +138,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void deleteAssignmentTest() {
+    void deleteWorkspaceAssignmentTest() {
 
         // delete Assignment
         given()
@@ -150,21 +150,21 @@ class AssignmentRestControllerTest extends AbstractTest {
         // check Assignment
         given()
                 .contentType(APPLICATION_JSON)
-                .get("a11")
+                .get("wa11")
                 .then()
                 .statusCode(OK.getStatusCode());
 
         // check if Assignment does not exist
         given()
                 .contentType(APPLICATION_JSON)
-                .delete("a11")
+                .delete("wa11")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
         // check Assignment
         given()
                 .contentType(APPLICATION_JSON)
-                .get("a11")
+                .get("wa11")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 

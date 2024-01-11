@@ -1,0 +1,88 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-permission permission import from file during the start of the application
+  version: 1.0.0
+servers:
+  - url: "http://localhost"
+paths:
+  /import/permission:
+    post:
+      operationId: importPermission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataImport'
+      responses:
+        200:
+          description: ok
+components:
+  schemas:
+    DataImport:
+      type: object
+      properties:
+        tenants:
+          $ref: '#/components/schemas/DataImportTenant'
+        permissions:
+          $ref: '#/components/schemas/DataImportPermissionWrapper'
+    DataImportPermissionWrapper:
+      type: object
+      nullable: false
+      description: application or workspace id
+      additionalProperties:
+         $ref: '#/components/schemas/DataImportPermission'
+    DataImportPermission:
+      type: object
+      nullable: false
+      description: resource id
+      additionalProperties:
+        $ref: '#/components/schemas/DataImportPermissionAction'
+    DataImportPermissionAction:
+      type: object
+      nullable: false
+      description: action id
+      additionalProperties:
+        type: string
+    DataImportTenant:
+      type: object
+      nullable: false
+      description: tenant id
+      additionalProperties:
+        $ref: '#/components/schemas/DataImportTenantWrapper'
+    DataImportTenantWrapper:
+      type: object
+      properties:
+        workspaces-permissions:
+          $ref: '#/components/schemas/DataImportPermissionWrapper'
+        roles:
+          $ref: '#/components/schemas/DataImportRoleWrapper'
+    DataImportRoleWrapper:
+      type: object
+      nullable: false
+      description: role name
+      additionalProperties:
+        $ref: '#/components/schemas/DataImportRole'
+    DataImportRole:
+      type: object
+      properties:
+        description:
+          type: string
+        assignments:
+          $ref: '#/components/schemas/DataImportAssignmentWrapper'
+        workspaces-assignments:
+          $ref: '#/components/schemas/DataImportAssignmentWrapper'
+    DataImportAssignmentWrapper:
+      type: object
+      nullable: false
+      description: application or workspaces id
+      additionalProperties:
+        $ref: '#/components/schemas/DataImportAssignment'
+    DataImportAssignment:
+      type: object
+      nullable: false
+      description: action
+      additionalProperties:
+        type: array
+        items:
+          type: string

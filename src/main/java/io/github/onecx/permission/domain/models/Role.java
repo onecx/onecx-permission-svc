@@ -36,10 +36,4 @@ public class Role extends TraceableEntity {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    /**
-     * The role short description.
-     */
-    @Column(name = "SHORT_DESCRIPTION")
-    private String shortDescription;
-
 }
