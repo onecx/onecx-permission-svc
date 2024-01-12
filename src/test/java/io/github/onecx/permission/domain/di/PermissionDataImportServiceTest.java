@@ -24,7 +24,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithDBData(value = "data/test-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class PermissionDataImportServiceTest extends AbstractTest {
+class PermissionDataImportServiceTest extends AbstractTest {
 
     @Inject
     PermissionDataImportV1 service;

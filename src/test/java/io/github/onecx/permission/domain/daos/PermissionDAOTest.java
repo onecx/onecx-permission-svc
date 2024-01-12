@@ -14,6 +14,8 @@ class PermissionDAOTest extends AbstractDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.findAllPermissionForUser(null),
+                PermissionDAO.ErrorKeys.ERROR_FIND_ALL_PERMISSION_FOR_USER);
         methodExceptionTests(() -> dao.findPermissionForUser(null, null),
                 PermissionDAO.ErrorKeys.ERROR_FIND_PERMISSION_FOR_USER);
         methodExceptionTests(() -> dao.loadByAppId(null),

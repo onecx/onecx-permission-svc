@@ -11,7 +11,7 @@ import org.tkit.quarkus.jpa.exceptions.DAOException;
 import io.github.onecx.permission.test.AbstractTest;
 import io.quarkus.test.InjectMock;
 
-public abstract class AbstractDAOTest extends AbstractTest {
+abstract class AbstractDAOTest extends AbstractTest {
 
     @InjectMock
     EntityManager em;

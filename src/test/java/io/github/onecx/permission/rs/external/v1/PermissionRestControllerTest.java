@@ -3,8 +3,7 @@ package io.github.onecx.permission.rs.external.v1;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
-import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
+import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(PermissionRestController.class)
 @WithDBData(value = "data/test-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class PermissionRestControllerTest extends AbstractTest {
+class PermissionRestControllerTest extends AbstractTest {
 
     @Test
     void getApplicationPermissionsTest() {
@@ -58,6 +57,17 @@ public class PermissionRestControllerTest extends AbstractTest {
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
         assertThat(exception.getDetail()).isEqualTo("getApplicationPermissions.permissionRequestDTOV1: must not be null");
 
+    }
+
+    @Test
+    void getApplicationPermissionsWrongTongTest() {
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .body(new PermissionRequestDTOV1().token("this-is-not-token"))
+                .post("/application/app1")
+                .then()
+                .statusCode(INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
     @Test

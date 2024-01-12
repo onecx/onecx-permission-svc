@@ -28,7 +28,7 @@ import io.smallrye.config.SmallRyeConfig;
 @QuarkusTest
 @TestHTTPEndpoint(PermissionRestController.class)
 @WithDBData(value = "data/test-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class PermissionRestControllerConfigIssuerTest extends AbstractTest {
+class PermissionRestControllerConfigPublicKeyTest extends AbstractTest {
 
     @InjectMock
     TokenConfig tokenConfig;
@@ -47,7 +47,7 @@ class PermissionRestControllerConfigIssuerTest extends AbstractTest {
         Mockito.when(tokenConfig.tokenClaimPath()).thenReturn(tmp.tokenClaimPath());
         Mockito.when(tokenConfig.tokenVerified()).thenReturn(true);
         Mockito.when(tokenConfig.tokenPublicKeyLocationSuffix()).thenReturn(tmp.tokenPublicKeyLocationSuffix());
-        Mockito.when(tokenConfig.tokenPublicKeyEnabled()).thenReturn(true);
+        Mockito.when(tokenConfig.tokenPublicKeyEnabled()).thenReturn(false);
     }
 
     @Test
