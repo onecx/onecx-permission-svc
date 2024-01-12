@@ -14,6 +14,8 @@ class WorkspacePermissionDAOTest extends AbstractDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.findWorkspacePermissionForUser(null, null),
+                WorkspacePermissionDAO.ErrorKeys.ERROR_FIND_WORKSPACE_PERMISSION_FOR_USER);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 WorkspacePermissionDAO.ErrorKeys.ERROR_FIND_PERMISSION_BY_CRITERIA);
         methodExceptionTests(() -> dao.findById(null),

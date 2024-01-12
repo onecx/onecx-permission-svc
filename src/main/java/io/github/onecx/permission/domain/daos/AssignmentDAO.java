@@ -1,7 +1,11 @@
 package io.github.onecx.permission.domain.daos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
@@ -12,6 +16,8 @@ import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
 import io.github.onecx.permission.domain.criteria.AssignmentSearchCriteria;
 import io.github.onecx.permission.domain.models.Assignment;
+import io.github.onecx.permission.domain.models.Assignment_;
+import io.github.onecx.permission.domain.models.Permission_;
 
 @ApplicationScoped
 public class AssignmentDAO extends AbstractDAO<Assignment> {
@@ -38,6 +44,16 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Assignment.class);
             var root = cq.from(Assignment.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (criteria.getAppId() != null && !criteria.getAppId().isBlank()) {
+                predicates.add(cb.equal(root.get(Assignment_.permission).get(Permission_.APP_ID), criteria.getAppId()));
+            }
+
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[] {}));
+            }
 
             cq.orderBy(cb.asc(root.get(TraceableEntity_.CREATION_DATE)));
 

@@ -511,10 +511,6 @@ components:
       properties:
         workspaceId:
           type: string
-        resource:
-          type: string
-        action:
-          type: string
         pageNumber:
           format: int32
           description: The number of page.
@@ -606,6 +602,8 @@ components:
     WorkspaceAssignmentSearchCriteria:
       type: object
       properties:
+        workspaceId:
+          type: string
         pageNumber:
           format: int32
           description: The number of page.
@@ -639,6 +637,8 @@ components:
     AssignmentSearchCriteria:
       type: object
       properties:
+        appId:
+          type: string
         pageNumber:
           format: int32
           description: The number of page.
@@ -779,10 +779,6 @@ components:
       type: object
       properties:
         appId:
-          type: string
-        resource:
-          type: string
-        action:
           type: string
         pageNumber:
           format: int32

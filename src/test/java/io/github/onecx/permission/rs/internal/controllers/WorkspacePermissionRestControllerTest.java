@@ -42,8 +42,6 @@ class WorkspacePermissionRestControllerTest extends AbstractTest {
         assertThat(data.getStream()).isNotNull().hasSize(7);
 
         criteria.setWorkspaceId(" ");
-        criteria.setResource(" ");
-        criteria.setAction(" ");
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -64,8 +62,6 @@ class WorkspacePermissionRestControllerTest extends AbstractTest {
     void searchCriteriaTest() {
         var criteria = new WorkspacePermissionSearchCriteriaDTO();
         criteria.setWorkspaceId("wapp1");
-        criteria.setResource("o1");
-        criteria.setAction("a1");
 
         var data = given()
                 .contentType(APPLICATION_JSON)
@@ -78,8 +74,8 @@ class WorkspacePermissionRestControllerTest extends AbstractTest {
                 .as(WorkspacePermissionPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(1);
-        assertThat(data.getStream()).isNotNull().hasSize(1);
+        assertThat(data.getTotalElements()).isEqualTo(5);
+        assertThat(data.getStream()).isNotNull().hasSize(5);
     }
 
     @Test
@@ -117,7 +113,7 @@ class WorkspacePermissionRestControllerTest extends AbstractTest {
         // delete Role in portal
         given()
                 .contentType(APPLICATION_JSON)
-                .delete("wp22")
+                .delete("wp21")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 

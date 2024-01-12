@@ -133,6 +133,37 @@ class WorkspaceAssignmentRestControllerTest extends AbstractTest {
                 .as(WorkspaceAssignmentPageResultDTO.class);
 
         assertThat(data).isNotNull();
+        assertThat(data.getTotalElements()).isEqualTo(3);
+        assertThat(data.getStream()).isNotNull().hasSize(3);
+
+        criteria.setWorkspaceId(" ");
+        data = given()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(WorkspaceAssignmentPageResultDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getTotalElements()).isEqualTo(3);
+        assertThat(data.getStream()).isNotNull().hasSize(3);
+
+        criteria.setWorkspaceId("wapp1");
+
+        data = given()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(WorkspaceAssignmentPageResultDTO.class);
+
+        assertThat(data).isNotNull();
         assertThat(data.getTotalElements()).isEqualTo(2);
         assertThat(data.getStream()).isNotNull().hasSize(2);
     }

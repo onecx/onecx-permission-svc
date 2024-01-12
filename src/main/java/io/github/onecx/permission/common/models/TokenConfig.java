@@ -1,7 +1,5 @@
 package io.github.onecx.permission.common.models;
 
-import java.util.Optional;
-
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
@@ -19,9 +17,10 @@ public interface TokenConfig {
     boolean tokenPublicKeyEnabled();
 
     @WithName("token.claim.separator")
-    Optional<String> tokenClaimSeparator();
+    @WithDefault(" ")
+    String tokenClaimSeparator();
 
     @WithName("token.claim.path")
-    @WithDefault("realm_access.roles")
+    @WithDefault("realm_access/roles")
     String tokenClaimPath();
 }

@@ -133,6 +133,38 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .as(AssignmentPageResultDTO.class);
 
         assertThat(data).isNotNull();
+        assertThat(data.getTotalElements()).isEqualTo(3);
+        assertThat(data.getStream()).isNotNull().hasSize(3);
+
+        criteria.setAppId("  ");
+
+        data = given()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(AssignmentPageResultDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getTotalElements()).isEqualTo(3);
+        assertThat(data.getStream()).isNotNull().hasSize(3);
+
+        criteria.setAppId("app1");
+
+        data = given()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then().log().all()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(AssignmentPageResultDTO.class);
+
+        assertThat(data).isNotNull();
         assertThat(data.getTotalElements()).isEqualTo(2);
         assertThat(data.getStream()).isNotNull().hasSize(2);
     }

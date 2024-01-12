@@ -8,9 +8,12 @@ import java.util.regex.Pattern;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -19,6 +22,7 @@ import org.jose4j.jwx.JsonWebStructure;
 import org.jose4j.lang.JoseException;
 
 import io.github.onecx.permission.common.models.TokenConfig;
+import io.smallrye.jwt.JsonUtils;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.auth.principal.ParseException;
@@ -29,6 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 public class TokenService {
 
     private static final Pattern CLAIM_PATH_PATTERN = Pattern.compile("\\/(?=(?:(?:[^\"]*\"){2})*[^\"]*$)");
+
+    private static final String[] CLAIM_PATH = splitClaimPath(
+            ConfigProvider.getConfig().getValue("onecx.permission.token.claim.path", String.class));
 
     @Inject
     JWTAuthContextInfo authContextInfo;
@@ -60,40 +67,41 @@ public class TokenService {
                 var publicKeyLocation = jwtClaims.getIssuer() + config.tokenPublicKeyLocationSuffix();
                 info = new JWTAuthContextInfo(authContextInfo);
                 info.setPublicKeyLocation(publicKeyLocation);
-
             }
 
-            info.setVerifyCertificateThumbprint(false);
             var token = parser.parse(tokenData, info);
-
-            //            return findClaimWithRoles(config, token);
-            return List.of();
+            var first = (JsonValue) token.getClaim(CLAIM_PATH[0]);
+            return findClaimWithRoles(config, first, CLAIM_PATH);
 
         } else {
 
             var jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(tokenData);
+
             var jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
-            List<?> list = (List<?>) jwtClaims.flattenClaims().get(config.tokenClaimPath());
-            return (List<String>) list;
-            //            jwtClaims.flattenClaims()
-            //            return findClaimWithRoles(config, jwtClaims);
-            //            return List.of();
+            var tmp = jwtClaims.getClaimValue(CLAIM_PATH[0]);
+            var first = replaceClaimValueWithJsonValue(tmp);
+            return findClaimWithRoles(config, first, CLAIM_PATH);
         }
     }
 
-    private static List<String> findClaimWithRoles(TokenConfig tokenConfig, JsonObject json) {
+    private JsonValue replaceClaimValueWithJsonValue(Object value) {
+        if (value instanceof String) {
+            return Json.createValue((String) value);
+        }
+        return JsonUtils.wrapValue(value);
+    }
 
-        var path = tokenConfig.tokenClaimPath();
-        Object claimValue = findClaimValue(path, json, splitClaimPath(path), 0);
+    private static List<String> findClaimWithRoles(TokenConfig config, JsonValue first, String[] path) {
+
+        JsonValue claimValue = findClaimValue(first, path, 1);
 
         if (claimValue instanceof JsonArray) {
             return convertJsonArrayToList((JsonArray) claimValue);
         } else if (claimValue != null) {
-            String sep = tokenConfig.tokenClaimSeparator().isPresent() ? tokenConfig.tokenClaimSeparator().get() : " ";
             if (claimValue.toString().isBlank()) {
                 return Collections.emptyList();
             }
-            return Arrays.asList(claimValue.toString().split(sep));
+            return Arrays.asList(claimValue.toString().split(config.tokenClaimSeparator()));
         } else {
             return Collections.emptyList();
         }
@@ -115,27 +123,24 @@ public class TokenService {
         return claimPath.indexOf('/') > 0 ? CLAIM_PATH_PATTERN.split(claimPath) : new String[] { claimPath };
     }
 
-    private static Object findClaimValue(String claimPath, JsonObject json, String[] pathArray, int step) {
-        Object claimValue = json.getValue(pathArray[step].replace("\"", ""));
-        if (claimValue == null) {
-            log.debug("No claim exists at the path '{}' at the path segment '{}'", claimPath, pathArray[step]);
-        } else if (step + 1 < pathArray.length) {
-            if (claimValue instanceof JsonObject) {
-                int nextStep = step + 1;
-                return findClaimValue(claimPath, (JsonObject) claimValue, pathArray, nextStep);
-            } else {
-                log.debug("Claim value at the path '{}' is not a json object", claimPath);
-            }
+    private static JsonValue findClaimValue(JsonValue json, String[] pathArray, int step) {
+        if (json == null) {
+            log.debug("No claim exists at the path '{}' at the path segment '{}'", pathArray, pathArray[step]);
+            return null;
         }
 
-        return claimValue;
+        if (step < pathArray.length) {
+            if (json instanceof JsonObject) {
+                JsonValue claimValue = json.asJsonObject().get(pathArray[step].replace("\"", ""));
+                return findClaimValue(claimValue, pathArray, step + 1);
+            } else {
+                log.debug("Claim value at the path '{}' is not a json object. Step: {}", pathArray, step);
+            }
+        }
+        return json;
     }
 
     public static class TokenException extends RuntimeException {
-
-        public TokenException(String message) {
-            super(message);
-        }
 
         public TokenException(String message, Throwable t) {
             super(message, t);

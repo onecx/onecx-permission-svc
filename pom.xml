@@ -218,8 +218,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/onecx-permission-v1.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.permission.rs.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.permission.rs.v1.model</modelPackage>
+                            <apiPackage>gen.io.github.onecx.permission.rs.external.v1</apiPackage>
+                            <modelPackage>gen.io.github.onecx.permission.rs.external.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <apiNameSuffix>ApiV1</apiNameSuffix>
                         </configuration>

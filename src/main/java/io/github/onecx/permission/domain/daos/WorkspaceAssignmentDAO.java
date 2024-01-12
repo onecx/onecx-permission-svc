@@ -1,7 +1,11 @@
 package io.github.onecx.permission.domain.daos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
@@ -11,7 +15,7 @@ import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
 import io.github.onecx.permission.domain.criteria.WorkspaceAssignmentSearchCriteria;
-import io.github.onecx.permission.domain.models.WorkspaceAssignment;
+import io.github.onecx.permission.domain.models.*;
 
 @ApplicationScoped
 public class WorkspaceAssignmentDAO extends AbstractDAO<WorkspaceAssignment> {
@@ -38,6 +42,17 @@ public class WorkspaceAssignmentDAO extends AbstractDAO<WorkspaceAssignment> {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(WorkspaceAssignment.class);
             var root = cq.from(WorkspaceAssignment.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (criteria.getWorkspaceId() != null && !criteria.getWorkspaceId().isBlank()) {
+                predicates.add(cb.equal(root.get(WorkspaceAssignment_.permission).get(WorkspacePermission_.WORKSPACE_ID),
+                        criteria.getWorkspaceId()));
+            }
+
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[] {}));
+            }
 
             cq.orderBy(cb.asc(root.get(TraceableEntity_.CREATION_DATE)));
 

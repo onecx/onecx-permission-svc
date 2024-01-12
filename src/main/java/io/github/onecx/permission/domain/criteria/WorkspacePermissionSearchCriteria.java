@@ -8,8 +8,6 @@ import lombok.Setter;
 public class WorkspacePermissionSearchCriteria {
 
     private String workspaceId;
-    private String resource;
-    private String action;
     private Integer pageNumber;
     private Integer pageSize;
 }

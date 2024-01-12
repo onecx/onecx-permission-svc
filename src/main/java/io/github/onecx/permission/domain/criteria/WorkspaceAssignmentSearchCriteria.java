@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class WorkspaceAssignmentSearchCriteria {
 
+    private String workspaceId;
     private Integer pageNumber;
     private Integer pageSize;
 }

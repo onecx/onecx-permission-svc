@@ -29,14 +29,8 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (criteria.getAction() != null && !criteria.getAction().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.action), QueryCriteriaUtil.wildcard(criteria.getAction())));
-            }
             if (criteria.getAppId() != null && !criteria.getAppId().isBlank()) {
                 predicates.add(cb.like(root.get(Permission_.appId), QueryCriteriaUtil.wildcard(criteria.getAppId())));
-            }
-            if (criteria.getResource() != null && !criteria.getResource().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.resource), QueryCriteriaUtil.wildcard(criteria.getResource())));
             }
 
             if (!predicates.isEmpty()) {
@@ -63,7 +57,6 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
     public List<Permission> findPermissionForUser(String appId, List<String> roles) {
         try {
-            System.out.println("# " + appId + " R " + roles);
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
             var root = cq.from(Permission.class);
@@ -83,8 +76,29 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
+    public List<Permission> findAllPermissionForUser(List<String> roles) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+
+            Subquery<String> sq = cq.subquery(String.class);
+            var subRoot = sq.from(Assignment.class);
+            sq.select(subRoot.get(Assignment_.PERMISSION_ID));
+            sq.where(
+                    subRoot.get(Assignment_.role).get(Role_.name).in(roles));
+
+            cq.where(root.get(Permission_.id).in(sq));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_ALL_PERMISSION_FOR_USER, ex);
+        }
+    }
+
     public enum ErrorKeys {
 
+        ERROR_FIND_ALL_PERMISSION_FOR_USER,
         ERROR_FIND_PERMISSION_FOR_USER,
         ERROR_LOAD_BY_APP_ID,
         ERROR_FIND_PERMISSION_BY_CRITERIA;

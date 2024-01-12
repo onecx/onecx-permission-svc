@@ -25,6 +25,8 @@
     <ASSIGNMENT guid="a11" optlock="0" permission_id="p13" role_id="r13" tenant_id="default"/>
     <ASSIGNMENT guid="a12" optlock="0" permission_id="p13" role_id="r14" tenant_id="default"/>
 
+    <ASSIGNMENT guid="a13" optlock="0" permission_id="p21" role_id="r14" tenant_id="default"/>
+
     <WORKSPACE_PERMISSION guid="wp11" optlock="0" workspace_id="wapp1" resource="o1" action="a1" tenant_id="default"/>
     <WORKSPACE_PERMISSION guid="wp12" optlock="0" workspace_id="wapp1" resource="o1" action="a2" tenant_id="default"/>
     <WORKSPACE_PERMISSION guid="wp13" optlock="0" workspace_id="wapp1" resource="o1" action="a3" tenant_id="default"/>
@@ -37,4 +39,6 @@
 
     <WORKSPACE_ASSIGNMENT guid="wa11" optlock="0" permission_id="wp13" role_id="r13" tenant_id="default"/>
     <WORKSPACE_ASSIGNMENT guid="wa12" optlock="0" permission_id="wp13" role_id="r14" tenant_id="default"/>
+
+    <WORKSPACE_ASSIGNMENT guid="wa13" optlock="0" permission_id="wp22" role_id="r14" tenant_id="default"/>
 </dataset>
