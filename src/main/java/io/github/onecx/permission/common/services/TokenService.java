@@ -13,7 +13,6 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -34,8 +33,7 @@ public class TokenService {
 
     private static final Pattern CLAIM_PATH_PATTERN = Pattern.compile("\\/(?=(?:(?:[^\"]*\"){2})*[^\"]*$)");
 
-    private static final String[] CLAIM_PATH = splitClaimPath(
-            ConfigProvider.getConfig().getValue("onecx.permission.token.claim.path", String.class));
+    private static String[] CLAIM_PATH = null;
 
     @Inject
     JWTAuthContextInfo authContextInfo;
@@ -57,6 +55,10 @@ public class TokenService {
     private List<String> getRoles(String tokenData)
             throws JoseException, InvalidJwtException, MalformedClaimException, ParseException {
 
+        if (CLAIM_PATH == null) {
+            CLAIM_PATH = splitClaimPath(config.tokenClaimPath());
+        }
+
         if (config.tokenVerified()) {
             var info = authContextInfo;
 
@@ -70,7 +72,13 @@ public class TokenService {
             }
 
             var token = parser.parse(tokenData, info);
-            var first = (JsonValue) token.getClaim(CLAIM_PATH[0]);
+            var tmp = token.getClaim(CLAIM_PATH[0]);
+            JsonValue first;
+            if (tmp instanceof JsonValue) {
+                first = (JsonValue) tmp;
+            } else {
+                first = replaceClaimValueWithJsonValue(tmp);
+            }
             return findClaimWithRoles(config, first, CLAIM_PATH);
 
         } else {
@@ -125,7 +133,7 @@ public class TokenService {
 
     private static JsonValue findClaimValue(JsonValue json, String[] pathArray, int step) {
         if (json == null) {
-            log.debug("No claim exists at the path '{}' at the path segment '{}'", pathArray, pathArray[step]);
+            log.debug("No claim exists at the path '{}' at the path segment '{}'", pathArray, pathArray[step - 1]);
             return null;
         }
 
@@ -134,7 +142,7 @@ public class TokenService {
                 JsonValue claimValue = json.asJsonObject().get(pathArray[step].replace("\"", ""));
                 return findClaimValue(claimValue, pathArray, step + 1);
             } else {
-                log.debug("Claim value at the path '{}' is not a json object. Step: {}", pathArray, step);
+                log.debug("Claim value at the path '{}' is not a json object. Step: {}", pathArray, step - 1);
             }
         }
         return json;

@@ -7,16 +7,23 @@ import static io.restassured.config.ObjectMapperConfig.objectMapperConfig;
 import java.security.PrivateKey;
 import java.util.List;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
 
+import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.jwt.Claims;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.github.onecx.permission.common.models.TokenConfig;
+import io.quarkus.test.Mock;
 import io.restassured.config.RestAssuredConfig;
+import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.util.KeyUtils;
 
@@ -64,6 +71,19 @@ public class AbstractTest {
             return Jwt.claims(claims.build()).sign(privateKey);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    public static class ConfigProducer {
+
+        @Inject
+        Config config;
+
+        @Produces
+        @ApplicationScoped
+        @Mock
+        TokenConfig config() {
+            return config.unwrap(SmallRyeConfig.class).getConfigMapping(TokenConfig.class);
         }
     }
 }
