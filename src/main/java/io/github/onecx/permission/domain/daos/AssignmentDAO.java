@@ -12,6 +12,7 @@ import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
+import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
 import io.github.onecx.permission.domain.criteria.AssignmentSearchCriteria;
@@ -55,7 +56,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
 
-            cq.orderBy(cb.asc(root.get(TraceableEntity_.creationDate)));
+            cq.orderBy(cb.asc(root.get(AbstractTraceableEntity_.creationDate)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {

@@ -29,11 +29,8 @@ public interface DataImportV1Mapper {
         dtoRoles.forEach((role, item) -> {
             Set<String> perms = new HashSet<>();
 
-            item.getAssignments().forEach((appId, an) -> {
-                an.forEach((resource, actions) -> {
-                    actions.forEach(action -> perms.add(appId + resource + action));
-                });
-            });
+            item.getAssignments().forEach((appId, an) -> an
+                    .forEach((resource, actions) -> actions.forEach(action -> perms.add(appId + resource + action))));
 
             mapping.put(role, perms);
         });
@@ -48,11 +45,8 @@ public interface DataImportV1Mapper {
         dtoRoles.forEach((role, item) -> {
             Set<String> perms = new HashSet<>();
 
-            item.getWorkspacesAssignments().forEach((workspaceId, an) -> {
-                an.forEach((resource, actions) -> {
-                    actions.forEach(action -> perms.add(workspaceId + resource + action));
-                });
-            });
+            item.getWorkspacesAssignments().forEach((workspaceId, an) -> an
+                    .forEach((resource, actions) -> actions.forEach(action -> perms.add(workspaceId + resource + action))));
 
             mapping.put(role, perms);
         });

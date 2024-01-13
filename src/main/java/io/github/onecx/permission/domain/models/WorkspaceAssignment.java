@@ -21,12 +21,6 @@ public class WorkspaceAssignment extends TraceableEntity {
     @Column(name = "TENANT_ID")
     private String tenantId;
 
-    @Column(name = "ROLE_ID", insertable = false, updatable = false)
-    private String roleId;
-
-    @Column(name = "PERMISSION_ID", insertable = false, updatable = false)
-    private String permissionId;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ROLE_ID")
     private Role role;
@@ -34,6 +28,12 @@ public class WorkspaceAssignment extends TraceableEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PERMISSION_ID")
     private WorkspacePermission permission;
+
+    @Column(name = "ROLE_ID", insertable = false, updatable = false)
+    private String roleId;
+
+    @Column(name = "PERMISSION_ID", insertable = false, updatable = false)
+    private String permissionId;
 
     @PostPersist
     void postPersist() {

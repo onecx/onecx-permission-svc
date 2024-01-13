@@ -20,30 +20,16 @@ import gen.io.github.onecx.permission.rs.external.v1.model.ProblemDetailResponse
 @Mapper
 public abstract class ExceptionMapper {
 
-    public RestResponse<ProblemDetailResponseDTOV1> constraint(ConstraintViolationException ex) {
-        var dto = exception(ErrorKeys.CONSTRAINT_VIOLATIONS.name(), ex.getMessage());
-        dto.setInvalidParams(createErrorValidationResponse(ex.getConstraintViolations()));
-        return RestResponse.status(Response.Status.BAD_REQUEST, dto);
-    }
-
     @Mapping(target = "removeParamsItem", ignore = true)
     @Mapping(target = "params", ignore = true)
     @Mapping(target = "invalidParams", ignore = true)
     @Mapping(target = "removeInvalidParamsItem", ignore = true)
     public abstract ProblemDetailResponseDTOV1 exception(String errorCode, String detail);
 
-    public List<ProblemDetailParamDTOV1> map(Map<String, Object> params) {
-        if (params == null) {
-            return List.of();
-        }
-        return params.entrySet().stream().map(e -> {
-            var item = new ProblemDetailParamDTOV1();
-            item.setKey(e.getKey());
-            if (e.getValue() != null) {
-                item.setValue(e.getValue().toString());
-            }
-            return item;
-        }).toList();
+    public RestResponse<ProblemDetailResponseDTOV1> constraint(ConstraintViolationException ex) {
+        var dto = exception(ErrorKeys.CONSTRAINT_VIOLATIONS.name(), ex.getMessage());
+        dto.setInvalidParams(createErrorValidationResponse(ex.getConstraintViolations()));
+        return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
 
     public abstract List<ProblemDetailInvalidParamDTOV1> createErrorValidationResponse(
@@ -59,5 +45,19 @@ public abstract class ExceptionMapper {
 
     public enum ErrorKeys {
         CONSTRAINT_VIOLATIONS;
+    }
+
+    public List<ProblemDetailParamDTOV1> map(Map<String, Object> params) {
+        if (params == null) {
+            return List.of();
+        }
+        return params.entrySet().stream().map(e -> {
+            var item = new ProblemDetailParamDTOV1();
+            item.setKey(e.getKey());
+            if (e.getValue() != null) {
+                item.setValue(e.getValue().toString());
+            }
+            return item;
+        }).toList();
     }
 }
