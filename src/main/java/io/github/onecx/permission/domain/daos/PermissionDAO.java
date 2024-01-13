@@ -12,6 +12,7 @@ import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
+import org.tkit.quarkus.jpa.models.TraceableEntity_;
 import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.permission.domain.criteria.PermissionSearchCriteria;
@@ -68,7 +69,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
                     subRoot.get(Assignment_.role).get(Role_.name).in(roles),
                     cb.equal(subRoot.get(Assignment_.permission).get(Permission_.appId), appId));
 
-            cq.where(root.get(Permission_.id).in(sq));
+            cq.where(root.get(TraceableEntity_.id).in(sq));
 
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
@@ -88,7 +89,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             sq.where(
                     subRoot.get(Assignment_.role).get(Role_.name).in(roles));
 
-            cq.where(root.get(Permission_.id).in(sq));
+            cq.where(root.get(TraceableEntity_.id).in(sq));
 
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {

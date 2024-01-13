@@ -13,6 +13,7 @@ class PermissionDAOTest extends AbstractDAOTest {
     PermissionDAO dao;
 
     @Test
+    @SuppressWarnings("java:S2699")
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.findAllPermissionForUser(null),
                 PermissionDAO.ErrorKeys.ERROR_FIND_ALL_PERMISSION_FOR_USER);

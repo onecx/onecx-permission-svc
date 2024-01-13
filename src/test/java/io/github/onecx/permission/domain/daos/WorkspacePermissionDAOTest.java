@@ -13,6 +13,7 @@ class WorkspacePermissionDAOTest extends AbstractDAOTest {
     WorkspacePermissionDAO dao;
 
     @Test
+    @SuppressWarnings("java:S2699")
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.findWorkspacePermissionForUser(null, null),
                 WorkspacePermissionDAO.ErrorKeys.ERROR_FIND_WORKSPACE_PERMISSION_FOR_USER);

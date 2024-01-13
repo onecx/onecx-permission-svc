@@ -12,7 +12,7 @@ import org.tkit.quarkus.context.Context;
 
 import gen.io.github.onecx.permission.domain.di.v1.model.DataImportTenantWrapperDTOV1;
 import io.github.onecx.permission.domain.daos.*;
-import io.github.onecx.permission.domain.di.mappers.DataImportMapperV1;
+import io.github.onecx.permission.domain.di.mappers.DataImportV1Mapper;
 import io.github.onecx.permission.domain.models.Permission;
 import io.github.onecx.permission.domain.models.Role;
 
@@ -35,7 +35,7 @@ public class PermissionImportService {
     WorkspaceAssignmentDAO workspaceAssignmentDAO;
 
     @Inject
-    DataImportMapperV1 mapper;
+    DataImportV1Mapper mapper;
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void deleteAllData(String tenantId) {

@@ -16,6 +16,7 @@ import lombok.Setter;
 }, indexes = {
         @Index(name = "ASSIGNMENT_TENANT_ID", columnList = "TENANT_ID")
 })
+@SuppressWarnings("java:S2160")
 public class Assignment extends TraceableEntity {
 
     @TenantId

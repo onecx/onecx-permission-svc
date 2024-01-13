@@ -21,8 +21,8 @@ public final class TokenUtil {
         JsonValue first = JsonUtils.wrapValue(value);
         JsonValue claimValue = findClaimValue(first, path, 1);
 
-        if (claimValue instanceof JsonArray) {
-            return convertJsonArrayToList((JsonArray) claimValue);
+        if (claimValue instanceof JsonArray jsonArray) {
+            return convertJsonArrayToList(jsonArray);
         } else if (claimValue != null) {
             if (claimValue.toString().isBlank()) {
                 return Collections.emptyList();
@@ -49,11 +49,9 @@ public final class TokenUtil {
         if (json == null) {
             return null;
         }
-        if (step < pathArray.length) {
-            if (json instanceof JsonObject) {
-                JsonValue claimValue = json.asJsonObject().get(pathArray[step].replace("\"", ""));
-                return findClaimValue(claimValue, pathArray, step + 1);
-            }
+        if (step < pathArray.length && (json instanceof JsonObject)) {
+            JsonValue claimValue = json.asJsonObject().get(pathArray[step].replace("\"", ""));
+            return findClaimValue(claimValue, pathArray, step + 1);
         }
         return json;
     }

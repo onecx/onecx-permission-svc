@@ -13,6 +13,7 @@ class AssignmentDAOTest extends AbstractDAOTest {
     AssignmentDAO dao;
 
     @Test
+    @SuppressWarnings("java:S2699")
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.findById(null),
                 AssignmentDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);

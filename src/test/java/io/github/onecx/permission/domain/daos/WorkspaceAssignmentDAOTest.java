@@ -13,6 +13,7 @@ class WorkspaceAssignmentDAOTest extends AbstractDAOTest {
     WorkspaceAssignmentDAO dao;
 
     @Test
+    @SuppressWarnings("java:S2699")
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.findByCriteria(null),
                 WorkspaceAssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);

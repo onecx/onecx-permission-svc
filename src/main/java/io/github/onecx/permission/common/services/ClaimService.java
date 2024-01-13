@@ -11,6 +11,7 @@ import io.github.onecx.permission.common.models.TokenConfig;
 @ApplicationScoped
 public class ClaimService {
 
+    @SuppressWarnings("java:S5998")
     private static final Pattern CLAIM_PATH_PATTERN = Pattern.compile("\\/(?=(?:(?:[^\"]*\"){2})*[^\"]*$)");
 
     private static String[] claimPath;
@@ -19,6 +20,7 @@ public class ClaimService {
     TokenConfig config;
 
     @PostConstruct
+    @SuppressWarnings("java:S2696")
     public void init() {
         claimPath = splitClaimPath(config.tokenClaimPath());
     }
@@ -27,6 +29,7 @@ public class ClaimService {
         return claimPath;
     }
 
+    @SuppressWarnings("java:S2692")
     static String[] splitClaimPath(String claimPath) {
         return claimPath.indexOf('/') > 0 ? CLAIM_PATH_PATTERN.split(claimPath) : new String[] { claimPath };
     }

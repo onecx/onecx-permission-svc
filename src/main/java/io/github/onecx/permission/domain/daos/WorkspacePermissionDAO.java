@@ -75,7 +75,7 @@ public class WorkspacePermissionDAO extends AbstractDAO<WorkspacePermission> {
                     subRoot.get(WorkspaceAssignment_.role).get(Role_.name).in(roles),
                     cb.equal(subRoot.get(WorkspaceAssignment_.permission).get(WorkspacePermission_.workspaceId), workspaceId));
 
-            cq.where(root.get(Permission_.id).in(sq));
+            cq.where(root.get(TraceableEntity_.id).in(sq));
 
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {

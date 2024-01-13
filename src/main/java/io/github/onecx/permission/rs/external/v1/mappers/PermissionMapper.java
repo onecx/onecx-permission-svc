@@ -22,7 +22,7 @@ public interface PermissionMapper {
 
     default List<ApplicationPermissionsDTOV1> splitToApps(List<Permission> permissions) {
         if (permissions == null) {
-            return null;
+            return List.of();
         }
         Map<String, List<Permission>> items = new HashMap<>();
         permissions.forEach(permission -> items.computeIfAbsent(permission.getAppId(), k -> new ArrayList<>())
@@ -32,7 +32,7 @@ public interface PermissionMapper {
 
     default Map<String, Set<String>> permissions(List<Permission> permissions) {
         if (permissions == null) {
-            return null;
+            return Map.of();
         }
         Map<String, Set<String>> result = new HashMap<>();
         permissions.forEach(permission -> result.computeIfAbsent(permission.getResource(), k -> new HashSet<>())
@@ -50,7 +50,7 @@ public interface PermissionMapper {
 
     default Map<String, Set<String>> permissionsWorkspace(List<WorkspacePermission> permissions) {
         if (permissions == null) {
-            return null;
+            return Map.of();
         }
         Map<String, Set<String>> result = new HashMap<>();
         permissions.forEach(permission -> result.computeIfAbsent(permission.getResource(), k -> new HashSet<>())

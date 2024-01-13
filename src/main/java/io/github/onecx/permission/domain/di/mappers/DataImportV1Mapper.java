@@ -8,12 +8,12 @@ import gen.io.github.onecx.permission.domain.di.v1.model.DataImportRoleDTOV1;
 import io.github.onecx.permission.domain.models.*;
 
 @Mapper
-public interface DataImportMapperV1 {
+public interface DataImportV1Mapper {
 
     default List<Assignment> createAssignments(Map<String, Set<String>> mapping, Map<String, Role> roles,
             Map<String, Permission> permissions) {
         if (permissions == null || roles == null || mapping == null) {
-            return null;
+            return List.of();
         }
         List<Assignment> result = new ArrayList<>();
         mapping.forEach(
@@ -23,7 +23,7 @@ public interface DataImportMapperV1 {
 
     default Map<String, Set<String>> createMapping(Map<String, DataImportRoleDTOV1> dtoRoles) {
         if (dtoRoles == null || dtoRoles.isEmpty()) {
-            return null;
+            return Map.of();
         }
         Map<String, Set<String>> mapping = new HashMap<>();
         dtoRoles.forEach((role, item) -> {
@@ -42,7 +42,7 @@ public interface DataImportMapperV1 {
 
     default Map<String, Set<String>> createWorkspaceMapping(Map<String, DataImportRoleDTOV1> dtoRoles) {
         if (dtoRoles == null || dtoRoles.isEmpty()) {
-            return null;
+            return Map.of();
         }
         Map<String, Set<String>> mapping = new HashMap<>();
         dtoRoles.forEach((role, item) -> {
@@ -62,7 +62,7 @@ public interface DataImportMapperV1 {
     default List<WorkspaceAssignment> createWorkspaceAssignments(Map<String, Set<String>> mapping, Map<String, Role> roles,
             Map<String, WorkspacePermission> permissions) {
         if (permissions == null || roles == null || mapping == null) {
-            return null;
+            return List.of();
         }
 
         List<WorkspaceAssignment> result = new ArrayList<>();
@@ -98,7 +98,7 @@ public interface DataImportMapperV1 {
 
     default List<Role> createRoles(Map<String, DataImportRoleDTOV1> dto) {
         if (dto == null) {
-            return null;
+            return List.of();
         }
         return dto.entrySet().stream().map(entry -> create(entry.getKey(), entry.getValue().getDescription())).toList();
     }

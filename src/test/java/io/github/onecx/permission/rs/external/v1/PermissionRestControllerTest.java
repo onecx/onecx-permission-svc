@@ -6,8 +6,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.io.github.onecx.permission.rs.external.v1.model.*;
@@ -42,12 +46,21 @@ class PermissionRestControllerTest extends AbstractTest {
 
     }
 
-    @Test
-    void getApplicationPermissionsNoBodyTest() {
+    private static Stream<Arguments> badRequestData() {
+        return Stream.of(
+                Arguments.of("/application/app1", "getApplicationPermissions.permissionRequestDTOV1: must not be null"),
+                Arguments.of("/workspace/wapp1", "getWorkspacePermission.permissionRequestDTOV1: must not be null"),
+                Arguments.of("/workspace/wapp1/applications",
+                        "getWorkspacePermissionApplications.permissionRequestDTOV1: must not be null"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("badRequestData")
+    void getApplicationPermissionsNoBodyTest(String post, String check) {
 
         var exception = given()
                 .contentType(APPLICATION_JSON)
-                .post("/application/app1")
+                .post(post)
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract()
@@ -55,7 +68,7 @@ class PermissionRestControllerTest extends AbstractTest {
 
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo("getApplicationPermissions.permissionRequestDTOV1: must not be null");
+        assertThat(exception.getDetail()).isEqualTo(check);
 
     }
 
@@ -87,41 +100,6 @@ class PermissionRestControllerTest extends AbstractTest {
         assertThat(dto).isNotNull();
         assertThat(dto.getPermissions()).isNotNull().hasSize(1);
         assertThat(dto.getPermissions().get("o1")).isNotNull().hasSize(1).containsExactly("a3");
-
-    }
-
-    @Test
-    void getWorkspacePermissionsNoBodyTest() {
-
-        var exception = given()
-                .contentType(APPLICATION_JSON)
-                .post("/workspace/wapp1")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract()
-                .body().as(ProblemDetailResponseDTOV1.class);
-
-        assertThat(exception).isNotNull();
-        assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo("getWorkspacePermission.permissionRequestDTOV1: must not be null");
-
-    }
-
-    @Test
-    void getWorkspacePermissionAppsNoBodyTest() {
-
-        var exception = given()
-                .contentType(APPLICATION_JSON)
-                .post("/workspace/wapp1/applications")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract()
-                .body().as(ProblemDetailResponseDTOV1.class);
-
-        assertThat(exception).isNotNull();
-        assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail())
-                .isEqualTo("getWorkspacePermissionApplications.permissionRequestDTOV1: must not be null");
 
     }
 

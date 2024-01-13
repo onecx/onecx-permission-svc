@@ -14,6 +14,7 @@ import lombok.Setter;
 @Table(name = "WORKSPACE_ASSIGNMENT", uniqueConstraints = {
         @UniqueConstraint(name = "WORKSPACE_ASSIGNMENT_KEY", columnNames = { "TENANT_ID", "ROLE_ID", "PERMISSION_ID" })
 })
+@SuppressWarnings("java:S2160")
 public class WorkspaceAssignment extends TraceableEntity {
 
     @TenantId

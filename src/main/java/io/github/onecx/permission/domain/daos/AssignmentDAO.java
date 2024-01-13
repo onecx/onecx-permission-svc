@@ -55,7 +55,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
 
-            cq.orderBy(cb.asc(root.get(TraceableEntity_.CREATION_DATE)));
+            cq.orderBy(cb.asc(root.get(TraceableEntity_.creationDate)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
