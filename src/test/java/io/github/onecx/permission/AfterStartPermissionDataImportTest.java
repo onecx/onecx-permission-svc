@@ -15,7 +15,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @DisplayName("Permission data import test from example file")
-public class AfterStartPermissionDataImportTest extends AbstractTest {
+class AfterStartPermissionDataImportTest extends AbstractTest {
 
     @Inject
     PermissionDAO permissionDAO;
