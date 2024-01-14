@@ -52,12 +52,17 @@ public abstract class ExceptionMapper {
             return List.of();
         }
         return params.entrySet().stream().map(e -> {
-            var item = new ProblemDetailParamDTOV1();
-            item.setKey(e.getKey());
+            var item = create(e.getKey());
             if (e.getValue() != null) {
                 item.setValue(e.getValue().toString());
             }
             return item;
         }).toList();
+    }
+
+    private ProblemDetailParamDTOV1 create(String key) {
+        var item = new ProblemDetailParamDTOV1();
+        item.setKey(key);
+        return item;
     }
 }
