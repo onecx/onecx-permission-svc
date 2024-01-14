@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.io.github.onecx.permission.rs.internal.model.ProblemDetailInvalidParamDTO;
@@ -24,6 +25,12 @@ public abstract class ExceptionMapper {
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         var dto = exception(ErrorKeys.CONSTRAINT_VIOLATIONS.name(), ex.getMessage());
         dto.setInvalidParams(createErrorValidationResponse(ex.getConstraintViolations()));
+        return RestResponse.status(Response.Status.BAD_REQUEST, dto);
+    }
+
+    public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ex) {
+        var dto = exception(ex.getMessageKey().name(), ex.getConstraints());
+        dto.setParams(map(ex.namedParameters));
         return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
 

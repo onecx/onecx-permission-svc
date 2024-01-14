@@ -7,7 +7,451 @@ servers:
   - url: "http://onecx-permission-svc:8080"
 tags:
   - name: permissionInternal
+  - name: roleInternal
+  - name: assignmentInternal
+  - name: workspaceAssignmentInternal
+  - name: workspacePermissionInternal    
 paths:
+  /internal/workspace/permissions/search:
+    post:
+      tags:
+        - workspacePermissionInternal
+      description: Search for workspace permissions
+      operationId: searchWorkspacePermissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspacePermissionSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspacePermissionPageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspace/permissions:
+    post:
+      tags:
+        - workspacePermissionInternal
+      description: Create workspace permission
+      operationId: createWorkspacePermission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspacePermissionRequest'
+      responses:
+        201:
+          description: New role created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspacePermission'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspace/permissions/{id}:
+    get:
+      tags:
+        - workspacePermissionInternal
+      description: Return Workspace permission by ID
+      operationId: getWorkspacePermissionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspacePermission'
+        404:
+          description: Workspace permission not found
+    put:
+      tags:
+        - workspacePermissionInternal
+      description: Update workspace permission by ID
+      operationId: updateWorkspacePermission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspacePermissionRequest'
+      responses:
+        204:
+          description: Theme updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspacePermission'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        404:
+          description: Workspace permission not found
+    delete:
+      tags:
+        - workspacePermissionInternal
+      description: Delete workspace permission by ID
+      operationId: deleteWorkspacePermission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Workspace permission deleted
+  /internal/workspace/assignments/search:
+    post:
+      tags:
+        - workspaceAssignmentInternal
+      description: Search for workspace assignments
+      operationId: searchWorkspaceAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceAssignmentSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspaceAssignmentPageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspace/assignments:
+    post:
+      tags:
+        - workspaceAssignmentInternal
+      description: Create new workspace assignment
+      operationId: createWorkspaceAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspaceAssignmentRequest'
+      responses:
+        201:
+          description: New workspace assignment created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceAssignment'
+        404:
+          description: Data not found
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspace/assignments/{id}:
+    get:
+      tags:
+        - workspaceAssignmentInternal
+      description: Get workspace assignment
+      operationId: getWorkspaceAssignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get workspace assignment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceAssignment'
+        404:
+          description: Workspace assignment not found
+    delete:
+      tags:
+        - workspaceAssignmentInternal
+      description: Delete workspace assignment
+      operationId: deleteWorkspaceAssignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Workspace assignment deleted
+  /internal/assignments/search:
+    post:
+      tags:
+        - assignmentInternal
+      description: Search for assignments
+      operationId: searchAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssignmentPageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments:
+    post:
+      tags:
+        - assignmentInternal
+      description: Create new assignment
+      operationId: createAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssignmentRequest'
+      responses:
+        201:
+          description: New assignment created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        404:
+          description: Data not found
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments/{id}:
+    get:
+      tags:
+        - assignmentInternal
+      description: Get assignment
+      operationId: getAssignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get assignment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        404:
+          description: Assignment not found
+    delete:
+      tags:
+        - assignmentInternal
+      description: Delete assignment
+      operationId: deleteAssignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Assignment deleted
+  /internal/roles:
+    post:
+      tags:
+        - roleInternal
+      description: Create new role
+      operationId: createRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleRequest'
+      responses:
+        201:
+          description: New role created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/roles/{id}:
+    get:
+      tags:
+        - roleInternal
+      description: Return role by ID
+      operationId: getRoleById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        404:
+          description: Role not found
+    put:
+      tags:
+        - roleInternal
+      description: Update role by ID
+      operationId: updateRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        204:
+          description: Theme updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        404:
+          description: Role not found
+    delete:
+      tags:
+        - roleInternal
+      description: Delete role by ID
+      operationId: deleteRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Role deleted
+  /internal/roles/search:
+    post:
+      tags:
+        - roleInternal
+      description: Search for roles
+      operationId: searchRoles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RolePageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/permissions/search:
     post:
       tags:
@@ -21,7 +465,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PermissionSearchCriteria'
       responses:
-        "200":
+        200:
           description: OK
           content:
             application/json:
@@ -29,7 +473,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PermissionPageResult'
-        "400":
+        400:
           description: Bad request
           content:
             application/json:
@@ -37,16 +481,35 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
-    PermissionSearchCriteria:
+    UpdateWorkspacePermissionRequest:
       type: object
+      required:
+        - description
       properties:
-        appId:
+        modificationCount:
+          format: int32
+          type: integer
+        description:
           type: string
-        name:
+    CreateWorkspacePermissionRequest:
+      type: object
+      required:
+        - resource
+        - action
+        - workspaceId
+      properties:
+        workspaceId:
           type: string
         resource:
           type: string
         action:
+          type: string
+        description:
+          type: string
+    WorkspacePermissionSearchCriteria:
+      type: object
+      properties:
+        workspaceId:
           type: string
         pageNumber:
           format: int32
@@ -56,7 +519,276 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
+          type: integer
+    WorkspacePermissionPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspacePermission'
+    WorkspacePermission:
+      type: object
+      required:
+        - resource
+        - action
+        - workspaceId
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        workspaceId:
+          type: string
+        resource:
+          type: string
+        action:
+          type: string
+        description:
+          type: string
+    CreateWorkspaceAssignmentRequest:
+      type: object
+      required:
+        - roleId
+        - permissionId
+      properties:
+        roleId:
+          type: string
+        permissionId:
+          type: string
+    WorkspaceAssignment:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        roleId:
+          type: string
+        permissionId:
+          type: string
+    WorkspaceAssignmentSearchCriteria:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    WorkspaceAssignmentPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceAssignment'
+    AssignmentSearchCriteria:
+      type: object
+      properties:
+        appId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    AssignmentPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+    CreateAssignmentRequest:
+      type: object
+      required:
+        - roleId
+        - permissionId
+      properties:
+        roleId:
+          type: string
+        permissionId:
+          type: string
+    Assignment:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        roleId:
+          type: string
+        permissionId:
+          type: string
+    UpdateRoleRequest:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        name:
+          type: string
+        shortDescription:
+          type: string
+        description:
+          type: string
+    CreateRoleRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        shortDescription:
+          type: string
+        description:
+          type: string
+    Role:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    RolePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+    RoleSearchCriteria:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    PermissionSearchCriteria:
+      type: object
+      properties:
+        appId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
           type: integer
     PermissionPageResult:
       type: object
@@ -95,8 +827,6 @@ components:
         id:
           type: string
         appId:
-          type: string
-        name:
           type: string
         resource:
           type: string

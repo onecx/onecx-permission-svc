@@ -8,9 +8,6 @@ import lombok.Setter;
 public class PermissionSearchCriteria {
 
     private String appId;
-    private String name;
-    private String resource;
-    private String action;
     private Integer pageNumber;
     private Integer pageSize;
 }

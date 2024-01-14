@@ -59,7 +59,6 @@ class OperatorRestControllerTest extends AbstractTest {
     @Test
     void requestWrongPermissionTest() {
         var per = new PermissionDTOV1();
-        per.setName("name");
         per.setDescription("description");
 
         var request = new PermissionRequestDTOV1();
@@ -84,8 +83,8 @@ class OperatorRestControllerTest extends AbstractTest {
 
     @Test
     void requestPermissionTest() {
-        var per1 = new PermissionDTOV1().action("a1").resource("o1").name("name").description("description");
-        var per2 = new PermissionDTOV1().action("new1").resource("o1").name("name1").description("description1");
+        var per1 = new PermissionDTOV1().action("a1").resource("o1").description("description");
+        var per2 = new PermissionDTOV1().action("new1").resource("o1").description("description1");
 
         var request = new PermissionRequestDTOV1();
         request.setPermissions(List.of(per1, per2));
@@ -102,8 +101,8 @@ class OperatorRestControllerTest extends AbstractTest {
 
     @Test
     void requestDuplicatePermissionTest() {
-        var per1 = new PermissionDTOV1().action("a1").resource("o1").name("name").description("description");
-        var per2 = new PermissionDTOV1().action("a1").resource("o1").name("name1").description("description1");
+        var per1 = new PermissionDTOV1().action("a1").resource("o1").description("description");
+        var per2 = new PermissionDTOV1().action("a1").resource("o1").description("description1");
 
         var request = new PermissionRequestDTOV1();
         request.setPermissions(List.of(per1, per2));

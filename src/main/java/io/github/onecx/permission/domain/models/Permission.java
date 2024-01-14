@@ -1,9 +1,6 @@
 package io.github.onecx.permission.domain.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
@@ -14,7 +11,9 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "PERMISSION", uniqueConstraints = {
-        @UniqueConstraint(name = "PERMISSION_KEY", columnNames = { "APP_ID", "RESOURCE", "ACTION" })
+        @UniqueConstraint(name = "PERMISSION_KEY", columnNames = { "APP_ID", "RESOURCE", "ACTION" }),
+}, indexes = {
+        @Index(name = "PERMISSION_APP_ID", columnList = "APP_ID")
 })
 @SuppressWarnings("squid:S2160")
 public class Permission extends TraceableEntity {
@@ -33,12 +32,6 @@ public class Permission extends TraceableEntity {
      */
     @Column(name = "RESOURCE")
     private String resource;
-
-    /**
-     * The permission name.
-     */
-    @Column(name = "NAME")
-    private String name;
 
     /**
      * The permission description.

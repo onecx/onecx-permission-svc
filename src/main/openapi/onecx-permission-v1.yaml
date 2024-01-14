@@ -1,0 +1,187 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-permission service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-permission-svc:8080"
+tags:
+  - name: permission
+paths:
+  /v1/permissions/user/workspace/{workspace}:
+    post:
+      tags:
+        - permission
+      description: Get permission of the workspace for the user
+      operationId: getWorkspacePermission
+      parameters:
+        - name: workspace
+          in: path
+          description: Workspace ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionRequest'
+      responses:
+        200:
+          description: Workspace permission
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspacePermissions'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/permissions/user/workspace/{workspace}/applications:
+    post:
+      tags:
+        - permission
+      description: Get permission of the workspace and application for the user
+      operationId: getWorkspacePermissionApplications
+      parameters:
+        - name: workspace
+          in: path
+          description: Workspace ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionRequest'
+      responses:
+        200:
+          description: Workspace permission
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspacePermissionApplications'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/permissions/user/application/{appId}:
+    post:
+      tags:
+        - permission
+      description: Get permissions of the application for the user
+      operationId: getApplicationPermissions
+      parameters:
+        - name: appId
+          in: path
+          description: Application ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionRequest'
+      responses:
+        200:
+          description: Permission updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationPermissions'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    PermissionRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+    WorkspacePermissionApplications:
+      type: object
+      properties:
+        workspace:
+          $ref: '#/components/schemas/WorkspacePermissions'
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationPermissions'
+    WorkspacePermissions:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        permissions:
+          type: object
+          nullable: false
+          description: resources
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
+    ApplicationPermissions:
+      type: object
+      properties:
+        appId:
+          type: string
+        permissions:
+          type: object
+          nullable: false
+          description: resources
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string

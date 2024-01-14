@@ -5,17 +5,18 @@ import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Subquery;
 import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
+import org.tkit.quarkus.jpa.models.TraceableEntity_;
 import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.permission.domain.criteria.PermissionSearchCriteria;
-import io.github.onecx.permission.domain.models.Permission;
-import io.github.onecx.permission.domain.models.Permission_;
+import io.github.onecx.permission.domain.models.*;
 
 @ApplicationScoped
 public class PermissionDAO extends AbstractDAO<Permission> {
@@ -29,17 +30,8 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (criteria.getName() != null && !criteria.getName().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.name), QueryCriteriaUtil.wildcard(criteria.getName())));
-            }
-            if (criteria.getAction() != null && !criteria.getAction().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.action), QueryCriteriaUtil.wildcard(criteria.getAction())));
-            }
             if (criteria.getAppId() != null && !criteria.getAppId().isBlank()) {
                 predicates.add(cb.like(root.get(Permission_.appId), QueryCriteriaUtil.wildcard(criteria.getAppId())));
-            }
-            if (criteria.getResource() != null && !criteria.getResource().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.resource), QueryCriteriaUtil.wildcard(criteria.getResource())));
             }
 
             if (!predicates.isEmpty()) {
@@ -64,8 +56,51 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
+    public List<Permission> findPermissionForUser(String appId, List<String> roles) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+
+            Subquery<String> sq = cq.subquery(String.class);
+            var subRoot = sq.from(Assignment.class);
+            sq.select(subRoot.get(Assignment_.PERMISSION_ID));
+            sq.where(
+                    subRoot.get(Assignment_.role).get(Role_.name).in(roles),
+                    cb.equal(subRoot.get(Assignment_.permission).get(Permission_.appId), appId));
+
+            cq.where(root.get(TraceableEntity_.id).in(sq));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_PERMISSION_FOR_USER, ex);
+        }
+    }
+
+    public List<Permission> findAllPermissionForUser(List<String> roles) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+
+            Subquery<String> sq = cq.subquery(String.class);
+            var subRoot = sq.from(Assignment.class);
+            sq.select(subRoot.get(Assignment_.PERMISSION_ID));
+            sq.where(
+                    subRoot.get(Assignment_.role).get(Role_.name).in(roles));
+
+            cq.where(root.get(TraceableEntity_.id).in(sq));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_ALL_PERMISSION_FOR_USER, ex);
+        }
+    }
+
     public enum ErrorKeys {
 
+        ERROR_FIND_ALL_PERMISSION_FOR_USER,
+        ERROR_FIND_PERMISSION_FOR_USER,
         ERROR_LOAD_BY_APP_ID,
         ERROR_FIND_PERMISSION_BY_CRITERIA;
     }

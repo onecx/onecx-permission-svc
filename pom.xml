@@ -25,6 +25,10 @@
         <!-- 1000kit -->
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
+            <artifactId>tkit-quarkus-data-import</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tkit.quarkus.lib</groupId>
             <artifactId>tkit-quarkus-rest-context</artifactId>
         </dependency>
         <dependency>
@@ -105,6 +109,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
 
         <!-- OTHER -->
         <dependency>
@@ -135,6 +143,11 @@
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
             <artifactId>tkit-quarkus-test-db-import</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-keycloak-server</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -171,6 +184,19 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>di-v1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-permission-di-v1.yaml</inputSpec>
+                            <apiPackage>gen.io.github.onecx.permission.domain.di.v1</apiPackage>
+                            <modelPackage>gen.io.github.onecx.permission.domain.di.v1.model</modelPackage>
+                            <modelNameSuffix>DTOV1</modelNameSuffix>
+                            <generateApis>false</generateApis>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>internal</id>
                         <goals>
                             <goal>generate</goal>
@@ -192,6 +218,19 @@
                             <apiPackage>gen.io.github.onecx.permission.rs.operator.v1</apiPackage>
                             <modelPackage>gen.io.github.onecx.permission.rs.operator.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-permission-v1.yaml</inputSpec>
+                            <apiPackage>gen.io.github.onecx.permission.rs.external.v1</apiPackage>
+                            <modelPackage>gen.io.github.onecx.permission.rs.external.v1.model</modelPackage>
+                            <modelNameSuffix>DTOV1</modelNameSuffix>
+                            <apiNameSuffix>ApiV1</apiNameSuffix>
                         </configuration>
                     </execution>
                 </executions>
