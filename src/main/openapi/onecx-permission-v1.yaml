@@ -67,9 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/WorkspacePermissionApplications'
+                $ref: '#/components/schemas/WorkspacePermissionApplications'
         400:
           description: Bad request
           content:
@@ -101,9 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ApplicationPermissions'
+                $ref: '#/components/schemas/ApplicationPermissions'
         400:
           description: Bad request
           content:
