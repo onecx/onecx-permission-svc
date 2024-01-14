@@ -17,13 +17,15 @@
     <ROLE guid="r13" optlock="0" name="n3" description="d1" tenant_id="default"/>
     <ROLE guid="r14" optlock="0" name="n4" description="d1" tenant_id="default"/>
 
-    <ROLE guid="r21" optlock="0" name="n1" description="d1" tenant_id="100"/>
-    <ROLE guid="r22" optlock="0" name="n2" description="d1" tenant_id="100"/>
-    <ROLE guid="r23" optlock="0" name="n3" description="d1" tenant_id="100"/>
-    <ROLE guid="r24" optlock="0" name="n4" description="d1" tenant_id="100"/>
+    <ROLE guid="r21" optlock="0" name="n1-100" description="d1" tenant_id="100"/>
+    <ROLE guid="r22" optlock="0" name="n2-100" description="d1" tenant_id="100"/>
+    <ROLE guid="r23" optlock="0" name="n3-100" description="d1" tenant_id="100"/>
+    <ROLE guid="r24" optlock="0" name="n4-100" description="d1" tenant_id="100"/>
 
     <ASSIGNMENT guid="a11" optlock="0" permission_id="p13" role_id="r13" tenant_id="default"/>
     <ASSIGNMENT guid="a12" optlock="0" permission_id="p13" role_id="r14" tenant_id="default"/>
+
+    <ASSIGNMENT guid="aw1" optlock="0" permission_id="p12" role_id="r23" tenant_id="100"/>
 
     <WORKSPACE_PERMISSION guid="wp11" optlock="0" workspace_id="wapp1" resource="o1" action="a1" tenant_id="default"/>
     <WORKSPACE_PERMISSION guid="wp12" optlock="0" workspace_id="wapp1" resource="o1" action="a2" tenant_id="default"/>
@@ -35,6 +37,12 @@
     <WORKSPACE_PERMISSION guid="wp21" optlock="0" workspace_id="wapp2" resource="o1" action="a1" tenant_id="default"/>
     <WORKSPACE_PERMISSION guid="wp22" optlock="0" workspace_id="wapp2" resource="o1" action="a2" tenant_id="default"/>
 
+    <WORKSPACE_PERMISSION guid="wp211" optlock="0" workspace_id="wapp1-100" resource="o1" action="a1" tenant_id="100"/>
+    <WORKSPACE_PERMISSION guid="wp212" optlock="0" workspace_id="wapp1-100" resource="o1" action="a2" tenant_id="100"/>
+
     <WORKSPACE_ASSIGNMENT guid="wa11" optlock="0" permission_id="wp13" role_id="r13" tenant_id="default"/>
     <WORKSPACE_ASSIGNMENT guid="wa12" optlock="0" permission_id="wp13" role_id="r14" tenant_id="default"/>
+
+    <WORKSPACE_ASSIGNMENT guid="wa212" optlock="0" permission_id="wp211" role_id="r23" tenant_id="100"/>
+    <WORKSPACE_ASSIGNMENT guid="wa213" optlock="0" permission_id="wp212" role_id="r24" tenant_id="100"/>
 </dataset>
