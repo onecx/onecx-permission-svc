@@ -8,22 +8,22 @@ import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
 @StaticInitSafe
-@ConfigMapping(prefix = "onecx.permission")
+@ConfigMapping(prefix = "onecx.permission.token")
 public interface TokenConfig {
 
-    @WithName("token.verified")
-    boolean tokenVerified();
+    @WithName("verified")
+    boolean verified();
 
-    @WithName("token.issuer.public-key-location.suffix")
-    String tokenPublicKeyLocationSuffix();
+    @WithName("issuer.public-key-location.suffix")
+    String publicKeyLocationSuffix();
 
-    @WithName("token.issuer.public-key-location.enabled")
-    boolean tokenPublicKeyEnabled();
+    @WithName("issuer.public-key-location.enabled")
+    boolean publicKeyEnabled();
 
-    @WithName("token.claim.separator")
-    Optional<String> tokenClaimSeparator();
+    @WithName("claim.separator")
+    Optional<String> claimSeparator();
 
-    @WithName("token.claim.path")
+    @WithName("claim.path")
     @WithDefault("realm_access/roles")
-    String tokenClaimPath();
+    String claimPath();
 }

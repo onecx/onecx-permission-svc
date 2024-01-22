@@ -194,9 +194,19 @@ class RoleRestControllerTest extends AbstractTest {
     @Test
     void updateRoleTest() {
 
+        // download Role
+        var dto = given().contentType(APPLICATION_JSON)
+                .when()
+                .get("r11")
+                .then().statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .body().as(RoleDTO.class);
+
         // update none existing Role
         var requestDto = new UpdateRoleRequestDTO();
         requestDto.setName("test01");
+        requestDto.setModificationCount(dto.getModificationCount());
         requestDto.setDescription("description-update");
 
         given()
@@ -216,8 +226,7 @@ class RoleRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode());
 
         // download Role
-        var dto = given().contentType(APPLICATION_JSON)
-                .body(requestDto)
+        dto = given().contentType(APPLICATION_JSON)
                 .when()
                 .get("r11")
                 .then().statusCode(OK.getStatusCode())
@@ -233,7 +242,17 @@ class RoleRestControllerTest extends AbstractTest {
     @Test
     void updateRoleWithExistingNameTest() {
 
+        // download Role
+        var d = given().contentType(APPLICATION_JSON)
+                .when()
+                .get("r11")
+                .then().statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .body().as(RoleDTO.class);
+
         var dto = new UpdateRoleRequestDTO();
+        dto.setModificationCount(d.getModificationCount());
         dto.setName("n3");
         dto.setDescription("description");
 

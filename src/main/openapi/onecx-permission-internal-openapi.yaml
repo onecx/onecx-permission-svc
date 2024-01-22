@@ -485,6 +485,7 @@ components:
       type: object
       required:
         - description
+        - modificationCount
       properties:
         modificationCount:
           format: int32
@@ -699,6 +700,8 @@ components:
           type: string
     UpdateRoleRequest:
       type: object
+      required:
+        - modificationCount
       properties:
         modificationCount:
           format: int32
