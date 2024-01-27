@@ -12,6 +12,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
+import org.tkit.quarkus.rs.context.tenant.TenantExclude;
 
 import gen.io.github.onecx.permission.rs.operator.v1.PermissionOperatorApi;
 import gen.io.github.onecx.permission.rs.operator.v1.model.PermissionRequestDTOV1;
@@ -35,6 +36,7 @@ public class OperatorRestController implements PermissionOperatorApi {
     ExceptionMapper exceptionMapper;
 
     @Override
+    @TenantExclude
     @Transactional(Transactional.TxType.REQUIRED)
     public Response createOrUpdatePermission(String appId, PermissionRequestDTOV1 permissionRequestDTOV1) {
 
