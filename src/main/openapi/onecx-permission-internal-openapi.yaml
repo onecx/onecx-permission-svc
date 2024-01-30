@@ -7,6 +7,7 @@ servers:
   - url: "http://onecx-permission-svc:8080"
 tags:
   - name: permissionInternal
+  - name: applicationInternal
   - name: roleInternal
   - name: assignmentInternal
   - name: workspaceAssignmentInternal
@@ -479,6 +480,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/applications/search:
+    post:
+      tags:
+        - applicationInternal
+      description: Search for applications
+      operationId: searchApplications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationPageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
     UpdateWorkspacePermissionRequest:
@@ -793,6 +821,65 @@ components:
           description: The size of page
           default: 100
           type: integer
+    ApplicationSearchCriteria:
+      type: object
+      properties:
+        appId:
+          type: string
+        name:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    ApplicationPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+    Application:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        appId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
     PermissionPageResult:
       type: object
       properties:

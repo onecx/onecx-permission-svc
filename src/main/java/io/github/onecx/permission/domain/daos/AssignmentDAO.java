@@ -1,5 +1,7 @@
 package io.github.onecx.permission.domain.daos;
 
+import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +50,8 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (criteria.getAppId() != null && !criteria.getAppId().isBlank()) {
-                predicates.add(cb.equal(root.get(Assignment_.permission).get(Permission_.APP_ID), criteria.getAppId()));
-            }
+            addSearchStringPredicate(predicates, cb, root.get(Assignment_.permission).get(Permission_.APP_ID),
+                    criteria.getAppId());
 
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));

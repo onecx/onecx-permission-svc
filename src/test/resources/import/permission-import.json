@@ -1,4 +1,14 @@
 {
+  "applications": {
+    "application1": {
+      "name": "test",
+      "description": "description"
+    },
+    "application2": {
+      "name": "test2",
+      "description": "description2"
+    }
+  },
   "permissions": {
     "application1" : {
       "resource1": {

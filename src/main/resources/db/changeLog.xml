@@ -5,4 +5,5 @@
 
     <include relativeToChangelogFile="true" file="v1/2024-01-04-create-tables.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-01-10-data-import-log.xml" />
+    <include relativeToChangelogFile="true" file="v1/2024-01-30-app-tables.xml" />
 </databaseChangeLog>

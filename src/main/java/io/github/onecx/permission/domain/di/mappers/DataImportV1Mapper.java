@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.mapstruct.*;
 
+import gen.io.github.onecx.permission.domain.di.v1.model.DataImportApplicationWrapperValueDTOV1;
 import gen.io.github.onecx.permission.domain.di.v1.model.DataImportRoleDTOV1;
 import io.github.onecx.permission.domain.models.*;
 
@@ -135,6 +136,29 @@ public interface DataImportV1Mapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "description", ignore = true)
     WorkspacePermission mapWorkspace(String workspaceId, String resource, String action);
+
+    default List<Application> createApps(Map<String, DataImportApplicationWrapperValueDTOV1> dtos) {
+        if (dtos == null) {
+            return List.of();
+        }
+        List<Application> result = new ArrayList<>();
+        dtos.forEach((appId, dto) -> {
+            var tmp = createApp(appId, dto.getName(), dto.getDescription());
+            result.add(tmp);
+        });
+        return result;
+    }
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "description", ignore = true)
+    Application createApp(String appId, String name, String description);
 
     default List<Permission> map(Map<String, Map<String, Map<String, String>>> permissions) {
         if (permissions == null) {

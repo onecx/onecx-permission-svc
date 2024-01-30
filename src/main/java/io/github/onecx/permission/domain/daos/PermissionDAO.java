@@ -1,5 +1,7 @@
 package io.github.onecx.permission.domain.daos;
 
+import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,6 @@ import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
-import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.permission.domain.criteria.PermissionSearchCriteria;
 import io.github.onecx.permission.domain.models.*;
@@ -29,10 +30,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             var root = cq.from(Permission.class);
 
             List<Predicate> predicates = new ArrayList<>();
-
-            if (criteria.getAppId() != null && !criteria.getAppId().isBlank()) {
-                predicates.add(cb.like(root.get(Permission_.appId), QueryCriteriaUtil.wildcard(criteria.getAppId())));
-            }
+            addSearchStringPredicate(predicates, cb, root.get(Permission_.appId), criteria.getAppId());
 
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
