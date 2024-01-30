@@ -1,5 +1,7 @@
 package io.github.onecx.permission.domain.daos;
 
+import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,6 @@ import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
-import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.permission.domain.criteria.RoleSearchCriteria;
 import io.github.onecx.permission.domain.models.Role;
@@ -46,13 +47,8 @@ public class RoleDAO extends AbstractDAO<Role> {
             var root = cq.from(Role.class);
 
             List<Predicate> predicates = new ArrayList<>();
-
-            if (criteria.getName() != null && !criteria.getName().isBlank()) {
-                predicates.add(cb.like(root.get(Role_.name), QueryCriteriaUtil.wildcard(criteria.getName())));
-            }
-            if (criteria.getDescription() != null && !criteria.getDescription().isBlank()) {
-                predicates.add(cb.like(root.get(Role_.description), QueryCriteriaUtil.wildcard(criteria.getDescription())));
-            }
+            addSearchStringPredicate(predicates, cb, root.get(Role_.name), criteria.getName());
+            addSearchStringPredicate(predicates, cb, root.get(Role_.description), criteria.getDescription());
 
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));

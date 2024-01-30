@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 
+    <APPLICATION guid="a1" optlock="0" app_id="app1" name="app1" description="app1" />
+    <APPLICATION guid="a2" optlock="0" app_id="app2" name="app2" description="app2" />
+
     <!-- PERMISSION -->
     <PERMISSION guid="p11" optlock="0" app_id="app1" resource="o1" action="a1"/>
     <PERMISSION guid="p12" optlock="0" app_id="app1" resource="o1" action="a2"/>

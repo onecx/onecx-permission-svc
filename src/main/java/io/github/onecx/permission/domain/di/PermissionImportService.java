@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.context.Context;
 
+import gen.io.github.onecx.permission.domain.di.v1.model.DataImportApplicationWrapperValueDTOV1;
 import gen.io.github.onecx.permission.domain.di.v1.model.DataImportTenantWrapperDTOV1;
 import io.github.onecx.permission.domain.daos.*;
 import io.github.onecx.permission.domain.di.mappers.DataImportV1Mapper;
@@ -37,6 +38,9 @@ public class PermissionImportService {
     @Inject
     DataImportV1Mapper mapper;
 
+    @Inject
+    ApplicationDAO applicationDAO;
+
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void deleteAllData(String tenantId) {
         try {
@@ -58,8 +62,15 @@ public class PermissionImportService {
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void deleteAllPermissions() {
+    public void deleteAllCommonData() {
         permissionDAO.deleteQueryAll();
+        applicationDAO.deleteQueryAll();
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void createAllApplications(Map<String, DataImportApplicationWrapperValueDTOV1> applications) {
+        var items = mapper.createApps(applications);
+        applicationDAO.create(items);
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)

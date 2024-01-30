@@ -71,8 +71,11 @@ public class PermissionDataImportV1 implements DataImportService {
         var tenants = data.getTenants().keySet();
         tenants.forEach(tenant -> service.deleteAllData(tenant));
 
-        // delete all permission
-        service.deleteAllPermissions();
+        // delete all permission and applications
+        service.deleteAllCommonData();
+
+        // create applications
+        service.createAllApplications(data.getApplications());
 
         // create permissions
         var permissionMap = service.createAllPermissions(data.getPermissions());

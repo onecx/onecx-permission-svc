@@ -17,6 +17,7 @@ import org.tkit.quarkus.rs.context.tenant.TenantExclude;
 import gen.io.github.onecx.permission.rs.operator.v1.PermissionOperatorApi;
 import gen.io.github.onecx.permission.rs.operator.v1.model.PermissionRequestDTOV1;
 import gen.io.github.onecx.permission.rs.operator.v1.model.ProblemDetailResponseDTOV1;
+import io.github.onecx.permission.domain.daos.ApplicationDAO;
 import io.github.onecx.permission.domain.daos.PermissionDAO;
 import io.github.onecx.permission.domain.models.Permission;
 import io.github.onecx.permission.rs.operator.v1.mappers.ExceptionMapper;
@@ -33,6 +34,9 @@ public class OperatorRestController implements PermissionOperatorApi {
     OperatorPermissionMapper mapper;
 
     @Inject
+    ApplicationDAO applicationDAO;
+
+    @Inject
     ExceptionMapper exceptionMapper;
 
     @Override
@@ -40,6 +44,14 @@ public class OperatorRestController implements PermissionOperatorApi {
     @Transactional(Transactional.TxType.REQUIRED)
     public Response createOrUpdatePermission(String appId, PermissionRequestDTOV1 permissionRequestDTOV1) {
 
+        var app = applicationDAO.loadByAppId(appId);
+        if (app == null) {
+            app = mapper.createApp(permissionRequestDTOV1, appId);
+            applicationDAO.create(app);
+        } else {
+            mapper.updateApp(permissionRequestDTOV1, app);
+            applicationDAO.update(app);
+        }
         var data = mapper.map(permissionRequestDTOV1, appId);
         if (data.isEmpty()) {
             return Response.ok().build();

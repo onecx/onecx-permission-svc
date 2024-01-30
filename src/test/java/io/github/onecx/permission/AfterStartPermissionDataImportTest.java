@@ -32,6 +32,9 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
     @Inject
     AssignmentDAO assignmentDAO;
 
+    @Inject
+    ApplicationDAO applicationDAO;
+
     @Test
     @DisplayName("Import permission from data file")
     void importDataFromFileTest() {
@@ -42,6 +45,9 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
                     .build();
 
             ApplicationContext.start(ctx);
+
+            var applications = applicationDAO.findAll().toList();
+            assertThat(applications).hasSize(2);
 
             var permissions = permissionDAO.findAll().toList();
             assertThat(permissions).hasSize(8);

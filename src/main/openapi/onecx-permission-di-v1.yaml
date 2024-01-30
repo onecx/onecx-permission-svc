@@ -24,8 +24,21 @@ components:
       properties:
         tenants:
           $ref: '#/components/schemas/DataImportTenant'
+        applications:
+          $ref: '#/components/schemas/DataImportApplicationWrapper'
         permissions:
           $ref: '#/components/schemas/DataImportPermissionWrapper'
+    DataImportApplicationWrapper:
+      type: object
+      nullable: false
+      description: application id
+      additionalProperties:
+        type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
     DataImportPermissionWrapper:
       type: object
       nullable: false

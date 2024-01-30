@@ -9,22 +9,20 @@ import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
 import org.junit.jupiter.api.Test;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.io.github.onecx.permission.rs.internal.model.PermissionPageResultDTO;
-import gen.io.github.onecx.permission.rs.internal.model.PermissionSearchCriteriaDTO;
-import gen.io.github.onecx.permission.rs.internal.model.ProblemDetailResponseDTO;
+import gen.io.github.onecx.permission.rs.internal.model.*;
 import io.github.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import io.github.onecx.permission.test.AbstractTest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@TestHTTPEndpoint(PermissionRestController.class)
+@TestHTTPEndpoint(ApplicationRestController.class)
 @WithDBData(value = "data/test-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class PermissionRestControllerTest extends AbstractTest {
+class ApplicationRestControllerTest extends AbstractTest {
 
     @Test
     void searchTest() {
-        var criteria = new PermissionSearchCriteriaDTO();
+        var criteria = new ApplicationSearchCriteriaDTO();
 
         var data = given()
                 .contentType(APPLICATION_JSON)
@@ -34,11 +32,11 @@ class PermissionRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .as(PermissionPageResultDTO.class);
+                .as(ApplicationPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(7);
-        assertThat(data.getStream()).isNotNull().hasSize(7);
+        assertThat(data.getTotalElements()).isEqualTo(2);
+        assertThat(data.getStream()).isNotNull().hasSize(2);
 
         criteria.setAppId(" ");
 
@@ -50,17 +48,18 @@ class PermissionRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .as(PermissionPageResultDTO.class);
+                .as(ApplicationPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(7);
-        assertThat(data.getStream()).isNotNull().hasSize(7);
+        assertThat(data.getTotalElements()).isEqualTo(2);
+        assertThat(data.getStream()).isNotNull().hasSize(2);
     }
 
     @Test
     void searchCriteriaTest() {
-        var criteria = new PermissionSearchCriteriaDTO();
+        var criteria = new ApplicationSearchCriteriaDTO();
         criteria.setAppId("app1");
+        criteria.setName("app1*");
 
         var data = given()
                 .contentType(APPLICATION_JSON)
@@ -70,11 +69,12 @@ class PermissionRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .as(PermissionPageResultDTO.class);
+                .as(ApplicationPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(5);
-        assertThat(data.getStream()).isNotNull().hasSize(5);
+        assertThat(data.getTotalElements()).isEqualTo(1);
+        assertThat(data.getStream()).isNotNull().hasSize(1);
+
     }
 
     @Test
@@ -90,6 +90,6 @@ class PermissionRestControllerTest extends AbstractTest {
 
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo("searchPermissions.permissionSearchCriteriaDTO: must not be null");
+        assertThat(exception.getDetail()).isEqualTo("searchApplications.applicationSearchCriteriaDTO: must not be null");
     }
 }
