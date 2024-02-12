@@ -8,19 +8,12 @@ servers:
 tags:
   - name: permission
 paths:
-  /v1/permissions/user/workspace/{workspace}:
+  /v1/permissions/user/applications:
     post:
       tags:
         - permission
-      description: Get permission of the workspace for the user
-      operationId: getWorkspacePermission
-      parameters:
-        - name: workspace
-          in: path
-          description: Workspace ID
-          required: true
-          schema:
-            type: string
+      description: Get permission of all applications for the user
+      operationId: getAllApplicationsPermissions
       requestBody:
         required: true
         content:
@@ -33,48 +26,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/WorkspacePermissions'
+                $ref: '#/components/schemas/ApplicationsPermissions'
         400:
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /v1/permissions/user/workspace/{workspace}/applications:
-    post:
-      tags:
-        - permission
-      description: Get permission of the workspace and application for the user
-      operationId: getWorkspacePermissionApplications
-      parameters:
-        - name: workspace
-          in: path
-          description: Workspace ID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PermissionRequest'
-      responses:
-        200:
-          description: Workspace permission
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WorkspacePermissionApplications'
-        400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-  /v1/permissions/user/application/{appId}:
+  /v1/permissions/user/applications/{appId}:
     post:
       tags:
         - permission
@@ -115,29 +74,13 @@ components:
       properties:
         token:
           type: string
-    WorkspacePermissionApplications:
+    ApplicationsPermissions:
       type: object
       properties:
-        workspace:
-          $ref: '#/components/schemas/WorkspacePermissions'
         applications:
           type: array
           items:
             $ref: '#/components/schemas/ApplicationPermissions'
-    WorkspacePermissions:
-      type: object
-      properties:
-        workspaceId:
-          type: string
-        permissions:
-          type: object
-          nullable: false
-          description: resources
-          additionalProperties:
-            type: array
-            items:
-              type: string
-            uniqueItems: true
     ApplicationPermissions:
       type: object
       properties:

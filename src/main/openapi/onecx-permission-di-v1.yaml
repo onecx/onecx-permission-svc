@@ -42,7 +42,7 @@ components:
     DataImportPermissionWrapper:
       type: object
       nullable: false
-      description: application or workspace id
+      description: application id
       additionalProperties:
          $ref: '#/components/schemas/DataImportPermission'
     DataImportPermission:
@@ -66,8 +66,6 @@ components:
     DataImportTenantWrapper:
       type: object
       properties:
-        workspaces-permissions:
-          $ref: '#/components/schemas/DataImportPermissionWrapper'
         roles:
           $ref: '#/components/schemas/DataImportRoleWrapper'
     DataImportRoleWrapper:
@@ -83,12 +81,10 @@ components:
           type: string
         assignments:
           $ref: '#/components/schemas/DataImportAssignmentWrapper'
-        workspaces-assignments:
-          $ref: '#/components/schemas/DataImportAssignmentWrapper'
     DataImportAssignmentWrapper:
       type: object
       nullable: false
-      description: application or workspaces id
+      description: application id
       additionalProperties:
         $ref: '#/components/schemas/DataImportAssignment'
     DataImportAssignment:

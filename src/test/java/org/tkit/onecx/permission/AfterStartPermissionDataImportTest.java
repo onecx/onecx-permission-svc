@@ -24,12 +24,6 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
     RoleDAO roleDAO;
 
     @Inject
-    WorkspacePermissionDAO workspacePermissionDAO;
-
-    @Inject
-    WorkspaceAssignmentDAO workspaceAssignmentDAO;
-
-    @Inject
     AssignmentDAO assignmentDAO;
 
     @Inject
@@ -55,14 +49,8 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
             var roles = roleDAO.findAll().toList();
             assertThat(roles).hasSize(2);
 
-            var workspacePermissions = workspacePermissionDAO.findAll();
-            assertThat(workspacePermissions).hasSize(3);
-
             var assignments = assignmentDAO.findAll();
             assertThat(assignments).hasSize(6);
-
-            var workspaceAssignments = workspaceAssignmentDAO.findAll();
-            assertThat(workspaceAssignments).hasSize(4);
 
         } finally {
             ApplicationContext.close();

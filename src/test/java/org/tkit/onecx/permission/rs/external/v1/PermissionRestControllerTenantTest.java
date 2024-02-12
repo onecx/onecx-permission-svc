@@ -30,7 +30,7 @@ class PermissionRestControllerTenantTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, accessToken)
                 .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("/application/app1")
+                .post("app1")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
@@ -43,7 +43,7 @@ class PermissionRestControllerTenantTest extends AbstractTest {
     }
 
     @Test
-    void getWorkspacePermissionsTest() {
+    void getApplicationsPermissionsTest() {
 
         var accessToken = createToken("org1", List.of("n3-100"));
 
@@ -51,64 +51,26 @@ class PermissionRestControllerTenantTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, accessToken)
                 .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("/workspace/wapp1")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
-                .body().as(WorkspacePermissionsDTOV1.class);
+                .body().as(ApplicationsPermissionsDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getPermissions()).isNotNull().isEmpty();
+        assertThat(dto.getApplications()).isNotNull().isNotEmpty().hasSize(1);
 
         dto = given()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, accessToken)
                 .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("/workspace/wapp1-100")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
-                .body().as(WorkspacePermissionsDTOV1.class);
+                .body().as(ApplicationsPermissionsDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getPermissions()).isNotNull().hasSize(1);
-        assertThat(dto.getPermissions().get("o1")).isNotNull().hasSize(1).containsExactly("a1");
-
-    }
-
-    @Test
-    void getWorkspacePermissionApplicationsTest() {
-
-        var accessToken = createToken("org1", List.of("n3-100"));
-
-        var dto = given()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, accessToken)
-                .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("/workspace/wapp1/applications")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract()
-                .body().as(WorkspacePermissionApplicationsDTOV1.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspace()).isNotNull();
-        assertThat(dto.getWorkspace().getPermissions()).isNotNull().isEmpty();
-
-        dto = given()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, accessToken)
-                .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("/workspace/wapp1-100/applications")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract()
-                .body().as(WorkspacePermissionApplicationsDTOV1.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspace()).isNotNull();
-        assertThat(dto.getWorkspace().getPermissions()).isNotNull().hasSize(1);
-        assertThat(dto.getWorkspace().getPermissions().get("o1")).isNotNull().hasSize(1).containsExactly("a1");
         assertThat(dto.getApplications()).isNotNull().hasSize(1);
         assertThat(dto.getApplications().get(0)).isNotNull();
         assertThat(dto.getApplications().get(0).getPermissions()).isNotNull().hasSize(1);
