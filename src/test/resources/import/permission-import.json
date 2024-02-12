@@ -33,19 +33,6 @@
   },
   "tenants": {
     "i100": {
-      "workspaces-permissions": {
-        "workspace1": {
-          "menu1": {
-            "action1": "action-description11",
-            "action2": "action-description12"
-          }
-        },
-        "workspace2": {
-          "menu2": {
-            "action1": "action-description21"
-          }
-        }
-      },
       "roles": {
         "role1": {
           "description": "description1",
@@ -55,14 +42,6 @@
             },
             "application2": {
               "r4": ["a1"]
-            }
-          },
-          "workspaces-assignments": {
-            "workspace1": {
-              "menu1": ["action1"]
-            },
-            "workspace2": {
-              "menu2": ["action1"]
             }
           }
         },
@@ -74,14 +53,6 @@
             },
             "application2": {
               "r4": ["a1"]
-            }
-          },
-          "workspaces-assignments": {
-            "workspace1": {
-              "menu1": ["action1"]
-            },
-            "workspace2": {
-              "menu2": ["action1"]
             }
           }
         }

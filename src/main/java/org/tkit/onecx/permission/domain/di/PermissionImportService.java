@@ -30,12 +30,6 @@ public class PermissionImportService {
     RoleDAO roleDAO;
 
     @Inject
-    WorkspacePermissionDAO workspacePermissionDAO;
-
-    @Inject
-    WorkspaceAssignmentDAO workspaceAssignmentDAO;
-
-    @Inject
     DataImportV1Mapper mapper;
 
     @Inject
@@ -52,8 +46,6 @@ public class PermissionImportService {
             ApplicationContext.start(ctx);
 
             assignmentDAO.deleteQueryAll();
-            workspaceAssignmentDAO.deleteQueryAll();
-            workspacePermissionDAO.deleteQueryAll();
             roleDAO.deleteQueryAll();
 
         } finally {
@@ -90,12 +82,6 @@ public class PermissionImportService {
 
             ApplicationContext.start(ctx);
 
-            // create workspace permissions
-            var workspacePermissions = mapper.mapWorkspace(dto.getWorkspacesPermissions());
-            workspacePermissionDAO.create(workspacePermissions);
-            var workspacePermissionsMap = workspacePermissions.stream()
-                    .collect(Collectors.toMap(r -> r.getWorkspaceId() + r.getResource() + r.getAction(), r -> r));
-
             // create tenant roles
             var roles = mapper.createRoles(dto.getRoles());
             roleDAO.create(roles);
@@ -105,11 +91,6 @@ public class PermissionImportService {
             var mapping = mapper.createMapping(dto.getRoles());
             var assignments = mapper.createAssignments(mapping, rolesMap, permissionMap);
             assignmentDAO.create(assignments);
-
-            // create tenant workspace assignments
-            var workspaceMapping = mapper.createWorkspaceMapping(dto.getRoles());
-            var workspaceAssignments = mapper.createWorkspaceAssignments(workspaceMapping, rolesMap, workspacePermissionsMap);
-            workspaceAssignmentDAO.create(workspaceAssignments);
 
         } finally {
             ApplicationContext.close();
