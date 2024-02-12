@@ -2,7 +2,7 @@ package org.tkit.onecx.permission.rs.internal.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -39,7 +39,6 @@ public class RoleRestController implements RoleInternalApi {
     UriInfo uriInfo;
 
     @Override
-    @Transactional
     public Response createRole(CreateRoleRequestDTO createRoleRequestDTO) {
         var role = mapper.create(createRoleRequestDTO);
         role = dao.create(role);
@@ -50,7 +49,6 @@ public class RoleRestController implements RoleInternalApi {
     }
 
     @Override
-    @Transactional
     public Response deleteRole(String id) {
         dao.deleteQueryById(id);
         return Response.noContent().build();
@@ -73,7 +71,6 @@ public class RoleRestController implements RoleInternalApi {
     }
 
     @Override
-    @Transactional
     public Response updateRole(String id, UpdateRoleRequestDTO updateRoleRequestDTO) {
         var role = dao.findById(id);
         if (role == null) {
@@ -93,5 +90,10 @@ public class RoleRestController implements RoleInternalApi {
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ex) {
         return exceptionMapper.exception(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> exception(OptimisticLockException ex) {
+        return exceptionMapper.optimisticLock(ex);
     }
 }

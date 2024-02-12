@@ -225,6 +225,22 @@ class RoleRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(OK.getStatusCode());
 
+        // update Role with old modificationCount
+        var exception = given()
+                .contentType(APPLICATION_JSON)
+                .body(requestDto)
+                .when()
+                .put("r11")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals(ExceptionMapper.ErrorKeys.OPTIMISTIC_LOCK.name(), exception.getErrorCode());
+        Assertions.assertEquals(
+                "Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [org.tkit.onecx.permission.domain.models.Role#r11]",
+                exception.getDetail());
+
         // download Role
         dto = given().contentType(APPLICATION_JSON)
                 .when()

@@ -2,7 +2,6 @@ package org.tkit.onecx.permission.rs.internal.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -62,7 +61,6 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    @Transactional
     public Response createAssignment(CreateAssignmentRequestDTO createAssignmentRequestDTO) {
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {
@@ -82,7 +80,6 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    @Transactional
     public Response deleteAssignment(String id) {
         dao.deleteQueryById(id);
         return Response.noContent().build();
