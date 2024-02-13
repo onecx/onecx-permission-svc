@@ -29,9 +29,26 @@ class PermissionRestControllerTest extends AbstractTest {
     @Test
     void getApplicationPermissionsTest() {
 
-        var accessToken = createToken(List.of("n3"));
+        // bearer prefix
+        var accessToken = createTokenBearer(List.of("n3"));
 
         var dto = given()
+                .contentType(APPLICATION_JSON)
+                .body(new PermissionRequestDTOV1().token(accessToken))
+                .post("app1")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .body().as(ApplicationPermissionsDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getPermissions()).isNotNull().hasSize(1);
+        assertThat(dto.getPermissions().get("o1")).isNotNull().hasSize(1).containsExactly("a3");
+
+        // without bearer prefix
+        accessToken = createToken(null, List.of("n3"));
+
+        dto = given()
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTOV1().token(accessToken))
                 .post("app1")
@@ -83,7 +100,7 @@ class PermissionRestControllerTest extends AbstractTest {
     @Test
     void getApplicationsPermissionsTest() {
 
-        var accessToken = createToken(List.of("n3"));
+        var accessToken = createTokenBearer(List.of("n3"));
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
