@@ -50,8 +50,8 @@ public class AbstractTest {
         return createToken(organizationId, null);
     }
 
-    protected static String createToken(List<String> roles) {
-        return createToken(null, roles);
+    protected static String createTokenBearer(List<String> roles) {
+        return "Bearer " + createToken(null, roles);
     }
 
     protected static String createToken(String organizationId, List<String> roles) {

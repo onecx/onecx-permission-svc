@@ -2,6 +2,7 @@ package org.tkit.onecx.permission.common.services;
 
 import java.util.List;
 
+import io.quarkus.oidc.common.runtime.OidcConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -25,11 +26,17 @@ public class TokenService {
     @Inject
     TokenParserService tokenParserService;
 
+    private static final String BEARER_PREFIX = OidcConstants.BEARER_SCHEME + " ";
+
     public List<String> getTokenRoles(String tokenData) {
 
         try {
+            var token = tokenData;
+            if (token.startsWith(BEARER_PREFIX)) {
+                token = token.substring(BEARER_PREFIX.length());
+            }
 
-            var request = new TokenParserRequest(tokenData)
+            var request = new TokenParserRequest(token)
                     .verify(config.verified())
                     .issuerEnabled(config.publicKeyEnabled())
                     .issuerSuffix(config.publicKeyLocationSuffix());
