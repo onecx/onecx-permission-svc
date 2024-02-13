@@ -2,7 +2,6 @@ package org.tkit.onecx.permission.common.services;
 
 import java.util.List;
 
-import io.quarkus.oidc.common.runtime.OidcConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -11,6 +10,7 @@ import org.tkit.quarkus.rs.context.token.TokenClaimUtility;
 import org.tkit.quarkus.rs.context.token.TokenParserRequest;
 import org.tkit.quarkus.rs.context.token.TokenParserService;
 
+import io.quarkus.oidc.common.runtime.OidcConstants;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
