@@ -1,13 +1,10 @@
 package org.tkit.onecx.permission.domain.daos;
 
-import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.permission.domain.criteria.AssignmentSearchCriteria;
@@ -47,13 +44,11 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cq = cb.createQuery(Assignment.class);
             var root = cq.from(Assignment.class);
 
-            List<Predicate> predicates = new ArrayList<>();
-
-            addSearchStringPredicate(predicates, cb, root.get(Assignment_.permission).get(Permission_.APP_ID),
-                    criteria.getAppId());
-
-            if (!predicates.isEmpty()) {
-                cq.where(predicates.toArray(new Predicate[] {}));
+            if (criteria.getAppId() != null) {
+                List<String> filteredAppIds = Arrays.stream(criteria.getAppId()).filter(s -> !s.isBlank()).toList();
+                if (!filteredAppIds.isEmpty()) {
+                    cq.where(root.get(Assignment_.permission).get(Permission_.APP_ID).in(filteredAppIds));
+                }
             }
 
             cq.orderBy(cb.asc(root.get(AbstractTraceableEntity_.creationDate)));

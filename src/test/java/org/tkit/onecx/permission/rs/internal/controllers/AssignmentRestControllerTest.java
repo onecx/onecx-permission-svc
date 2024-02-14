@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.from;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
 
+import java.util.List;
+
 import jakarta.ws.rs.core.HttpHeaders;
 
 import org.junit.jupiter.api.Test;
@@ -136,7 +138,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(3);
         assertThat(data.getStream()).isNotNull().hasSize(3);
 
-        criteria.setAppId("  ");
+        criteria.setAppId(List.of("  "));
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -152,11 +154,13 @@ class AssignmentRestControllerTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(3);
         assertThat(data.getStream()).isNotNull().hasSize(3);
 
-        criteria.setAppId("app1");
+        var criteria2 = new AssignmentSearchCriteriaDTO();
+
+        criteria2.setAppId(List.of("app1"));
 
         data = given()
                 .contentType(APPLICATION_JSON)
-                .body(criteria)
+                .body(criteria2)
                 .post("/search")
                 .then().log().all()
                 .statusCode(OK.getStatusCode())
@@ -167,6 +171,25 @@ class AssignmentRestControllerTest extends AbstractTest {
         assertThat(data).isNotNull();
         assertThat(data.getTotalElements()).isEqualTo(2);
         assertThat(data.getStream()).isNotNull().hasSize(2);
+
+        //get by multiple appIds
+        var multipleAppIdsCriteria = new AssignmentSearchCriteriaDTO();
+        multipleAppIdsCriteria.appId(List.of("app1", "app2", ""));
+
+        var multipleAppIdsResult = given()
+                .contentType(APPLICATION_JSON)
+                .body(multipleAppIdsCriteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(AssignmentPageResultDTO.class);
+
+        assertThat(multipleAppIdsResult).isNotNull();
+        assertThat(multipleAppIdsResult.getTotalElements()).isEqualTo(3);
+        assertThat(multipleAppIdsResult.getStream()).isNotNull().hasSize(3);
+
     }
 
     @Test
