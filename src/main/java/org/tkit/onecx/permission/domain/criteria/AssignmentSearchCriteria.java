@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class AssignmentSearchCriteria {
 
-    private String appId;
+    private String[] appId;
     private Integer pageNumber;
     private Integer pageSize;
 }

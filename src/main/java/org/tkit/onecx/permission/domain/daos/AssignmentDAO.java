@@ -48,9 +48,18 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var root = cq.from(Assignment.class);
 
             List<Predicate> predicates = new ArrayList<>();
-
-            addSearchStringPredicate(predicates, cb, root.get(Assignment_.permission).get(Permission_.APP_ID),
-                    criteria.getAppId());
+            List<Predicate> appIdPredicates = new ArrayList<>();
+            if (criteria.getAppId() != null) {
+                for (String appId : criteria.getAppId()) {
+                    if (!appId.isEmpty()) {
+                        addSearchStringPredicate(appIdPredicates, cb, root.get(Assignment_.permission).get(Permission_.APP_ID),
+                                appId);
+                    }
+                }
+            }
+            if (!appIdPredicates.isEmpty()) {
+                predicates.add(cb.or(appIdPredicates.toArray(new Predicate[] {})));
+            }
 
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));

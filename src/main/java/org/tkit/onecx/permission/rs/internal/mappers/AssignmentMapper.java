@@ -34,5 +34,6 @@ public interface AssignmentMapper {
     @Mapping(target = "permissionId", ignore = true)
     Assignment create(Role role, Permission permission);
 
+    @Mapping(target = "appId", source = "permission.appId")
     AssignmentDTO map(Assignment data);
 }
