@@ -45,7 +45,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var root = cq.from(Assignment.class);
 
             if (criteria.getAppId() != null) {
-                List<String> filteredAppIds = Arrays.stream(criteria.getAppId()).filter((s) -> !s.isBlank()).toList();
+                List<String> filteredAppIds = Arrays.stream(criteria.getAppId()).filter(s -> !s.isBlank()).toList();
                 if (!filteredAppIds.isEmpty()) {
                     cq.where(root.get(Assignment_.permission).get(Permission_.APP_ID).in(filteredAppIds));
                 }
