@@ -5,7 +5,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ class PermissionRestControllerTest extends AbstractTest {
     void getApplicationPermissionsTest() {
 
         // bearer prefix
-        var accessToken = createTokenBearer(List.of("n3"));
+        var accessToken = createAccessTokenBearer(USER_ALICE);
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
@@ -46,7 +45,7 @@ class PermissionRestControllerTest extends AbstractTest {
         assertThat(dto.getPermissions().get("o1")).isNotNull().hasSize(1).containsExactly("a3");
 
         // without bearer prefix
-        accessToken = createToken(null, List.of("n3"));
+        accessToken = createAccessToken(USER_ALICE);
 
         dto = given()
                 .contentType(APPLICATION_JSON)
@@ -100,7 +99,7 @@ class PermissionRestControllerTest extends AbstractTest {
     @Test
     void getApplicationsPermissionsTest() {
 
-        var accessToken = createTokenBearer(List.of("n3"));
+        var accessToken = createAccessTokenBearer(USER_ALICE);
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
