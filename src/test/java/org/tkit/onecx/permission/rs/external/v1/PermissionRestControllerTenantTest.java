@@ -24,11 +24,12 @@ class PermissionRestControllerTenantTest extends AbstractTest {
     @Test
     void getApplicationPermissionsTest() {
 
-        var accessToken = createToken("org1", List.of("n3-100"));
+        var accessToken = createAccessTokenBearer(USER_BOB);
+        var idToken = createToken("org1", List.of("n3-100"));
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, accessToken)
+                .header(APM_HEADER_PARAM, idToken)
                 .body(new PermissionRequestDTOV1().token(accessToken))
                 .post("app1")
                 .then()
@@ -45,11 +46,13 @@ class PermissionRestControllerTenantTest extends AbstractTest {
     @Test
     void getApplicationsPermissionsTest() {
 
-        var accessToken = createToken("org1", List.of("n3-100"));
+        var accessToken = createAccessTokenBearer(USER_BOB);
+
+        var idToken = createToken("org1", List.of("n3-100"));
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, accessToken)
+                .header(APM_HEADER_PARAM, idToken)
                 .body(new PermissionRequestDTOV1().token(accessToken))
                 .post()
                 .then()
@@ -62,7 +65,7 @@ class PermissionRestControllerTenantTest extends AbstractTest {
 
         dto = given()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, accessToken)
+                .header(APM_HEADER_PARAM, idToken)
                 .body(new PermissionRequestDTOV1().token(accessToken))
                 .post()
                 .then()

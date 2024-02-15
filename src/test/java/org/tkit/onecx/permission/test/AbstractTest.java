@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.quarkus.test.Mock;
+import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import io.restassured.config.RestAssuredConfig;
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.jwt.build.Jwt;
@@ -50,8 +51,18 @@ public class AbstractTest {
         return createToken(organizationId, null);
     }
 
-    protected static String createTokenBearer(List<String> roles) {
-        return "Bearer " + createToken(null, roles);
+    protected static final String USER_ALICE = "alice";
+
+    protected static final String USER_BOB = "bob";
+
+    KeycloakTestClient keycloakClient = new KeycloakTestClient();
+
+    protected String createAccessTokenBearer(String user) {
+        return "Bearer " + createAccessToken(user);
+    }
+
+    protected String createAccessToken(String user) {
+        return keycloakClient.getAccessToken(user);
     }
 
     protected static String createToken(String organizationId, List<String> roles) {
