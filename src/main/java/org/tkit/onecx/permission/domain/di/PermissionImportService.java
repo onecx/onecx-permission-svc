@@ -66,10 +66,12 @@ public class PermissionImportService {
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public Map<String, Permission> createAllPermissions(Map<String, Map<String, Map<String, String>>> permissions) {
+    public Map<String, Permission> createAllPermissions(
+            Map<String, Map<String, Map<String, Map<String, String>>>> permissions) {
         var items = mapper.map(permissions);
         permissionDAO.create(items);
-        return items.stream().collect(Collectors.toMap(r -> r.getAppId() + r.getResource() + r.getAction(), r -> r));
+        return items.stream()
+                .collect(Collectors.toMap(r -> r.getProductName() + r.getAppId() + r.getResource() + r.getAction(), r -> r));
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)

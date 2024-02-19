@@ -23,7 +23,7 @@ public interface OperatorPermissionMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
-    Application createApp(PermissionRequestDTOV1 dto, String appId);
+    Application createApp(PermissionRequestDTOV1 dto, String appId, String productName);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -34,19 +34,20 @@ public interface OperatorPermissionMapper {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "appId", ignore = true)
+    @Mapping(target = "productName", ignore = true)
     void updateApp(PermissionRequestDTOV1 dto, @MappingTarget Application app);
 
-    default List<Permission> map(PermissionRequestDTOV1 dto, String appId) {
-        return map(dto.getPermissions(), appId);
+    default List<Permission> map(PermissionRequestDTOV1 dto, String appId, String productName) {
+        return map(dto.getPermissions(), appId, productName);
     }
 
-    default List<Permission> map(List<PermissionDTOV1> list, String appId) {
+    default List<Permission> map(List<PermissionDTOV1> list, String appId, String productName) {
         if (list == null) {
             return List.of();
         }
         List<Permission> data = new ArrayList<>();
         for (PermissionDTOV1 dto : list) {
-            data.add(map(dto, appId));
+            data.add(map(dto, appId, productName));
         }
         return data;
     }
@@ -59,5 +60,5 @@ public interface OperatorPermissionMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
-    Permission map(PermissionDTOV1 dto, String appId);
+    Permission map(PermissionDTOV1 dto, String appId, String productName);
 }

@@ -28,6 +28,7 @@ class OperatorRestControllerTest extends AbstractTest {
     void requestNoBodyTest() {
         var exception = given()
                 .contentType(APPLICATION_JSON)
+                .pathParam("productName", "test1")
                 .pathParam("appId", "app1")
                 .put()
                 .then()
@@ -49,6 +50,7 @@ class OperatorRestControllerTest extends AbstractTest {
         given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
+                .pathParam("productName", "test1")
                 .pathParam("appId", "app1")
                 .put()
                 .then()
@@ -67,6 +69,7 @@ class OperatorRestControllerTest extends AbstractTest {
         var exception = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
+                .pathParam("productName", "test1")
                 .pathParam("appId", "app1")
                 .put()
                 .then()
@@ -92,6 +95,7 @@ class OperatorRestControllerTest extends AbstractTest {
         given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
+                .pathParam("productName", "test1")
                 .pathParam("appId", "app1")
                 .put()
                 .then()
@@ -110,6 +114,7 @@ class OperatorRestControllerTest extends AbstractTest {
         var exception = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
+                .pathParam("productName", "test1")
                 .pathParam("appId", "app3")
                 .put()
                 .then()
@@ -121,6 +126,6 @@ class OperatorRestControllerTest extends AbstractTest {
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'permission_key'  Detail: Key (app_id, resource, action)=(app3, o1, a1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'permission_key'  Detail: Key (product_name, app_id, resource, action)=(test1, app3, o1, a1) already exists.]");
     }
 }

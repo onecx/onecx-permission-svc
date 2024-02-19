@@ -15,7 +15,7 @@ class ApplicationDAOTest extends AbstractDAOTest {
     @Test
     @SuppressWarnings("java:S2699")
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.loadByAppId(null),
+        methodExceptionTests(() -> dao.loadByAppId(null, null),
                 ApplicationDAO.ErrorKeys.ERROR_LOAD_BY_APP_ID);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 ApplicationDAO.ErrorKeys.ERROR_FIND_APPLICATIONS_BY_CRITERIA);

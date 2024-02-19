@@ -8,38 +8,19 @@ servers:
 tags:
   - name: permission
 paths:
-  /v1/permissions/user/applications:
+  /v1/permissions/user/{productName}/{appId}:
     post:
       tags:
         - permission
-      description: Get permission of all applications for the user
-      operationId: getAllApplicationsPermissions
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PermissionRequest'
-      responses:
-        200:
-          description: Workspace permission
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApplicationsPermissions'
-        400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-  /v1/permissions/user/applications/{appId}:
-    post:
-      tags:
-        - permission
-      description: Get permissions of the application for the user
+      description: Get permissions of the product application for the user
       operationId: getApplicationPermissions
       parameters:
+        - name: productName
+          in: path
+          description: Product name
+          required: true
+          schema:
+            type: string
         - name: appId
           in: path
           description: Application ID
@@ -85,6 +66,8 @@ components:
       type: object
       properties:
         appId:
+          type: string
+        productName:
           type: string
         permissions:
           type: object

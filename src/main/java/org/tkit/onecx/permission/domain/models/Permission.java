@@ -11,15 +11,18 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "PERMISSION", uniqueConstraints = {
-        @UniqueConstraint(name = "PERMISSION_KEY", columnNames = { "APP_ID", "RESOURCE", "ACTION" }),
+        @UniqueConstraint(name = "PERMISSION_KEY", columnNames = { "PRODUCT_NAME", "APP_ID", "RESOURCE", "ACTION" }),
 }, indexes = {
-        @Index(name = "PERMISSION_APP_ID", columnList = "APP_ID")
+        @Index(name = "PERMISSION_PRODUCT_APP_ID", columnList = "PRODUCT_NAME,APP_ID")
 })
 @SuppressWarnings("squid:S2160")
 public class Permission extends TraceableEntity {
 
     @Column(name = "APP_ID")
     private String appId;
+
+    @Column(name = "PRODUCT_NAME")
+    private String productName;
 
     /**
      * The permission action.

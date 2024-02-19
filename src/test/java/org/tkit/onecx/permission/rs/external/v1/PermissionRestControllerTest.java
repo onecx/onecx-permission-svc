@@ -34,7 +34,9 @@ class PermissionRestControllerTest extends AbstractTest {
         var dto = given()
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("app1")
+                .pathParam("productName", "test1")
+                .pathParam("appId", "app1")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
@@ -50,7 +52,9 @@ class PermissionRestControllerTest extends AbstractTest {
         dto = given()
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("app1")
+                .pathParam("productName", "test1")
+                .pathParam("appId", "app1")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
@@ -64,16 +68,18 @@ class PermissionRestControllerTest extends AbstractTest {
 
     private static Stream<Arguments> badRequestData() {
         return Stream.of(
-                Arguments.of("app1", "getApplicationPermissions.permissionRequestDTOV1: must not be null"));
+                Arguments.of("test1", "app1", "getApplicationPermissions.permissionRequestDTOV1: must not be null"));
     }
 
     @ParameterizedTest
     @MethodSource("badRequestData")
-    void getApplicationPermissionsNoBodyTest(String post, String check) {
+    void getApplicationPermissionsNoBodyTest(String productName, String appId, String check) {
 
         var exception = given()
                 .contentType(APPLICATION_JSON)
-                .post(post)
+                .pathParam("productName", productName)
+                .pathParam("appId", appId)
+                .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract()
@@ -91,29 +97,11 @@ class PermissionRestControllerTest extends AbstractTest {
         given()
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTOV1().token("this-is-not-token"))
-                .post("app1")
+                .pathParam("productName", "test1")
+                .pathParam("appId", "app1")
+                .post()
                 .then()
                 .statusCode(INTERNAL_SERVER_ERROR.getStatusCode());
     }
 
-    @Test
-    void getApplicationsPermissionsTest() {
-
-        var accessToken = createAccessTokenBearer(USER_ALICE);
-
-        var dto = given()
-                .contentType(APPLICATION_JSON)
-                .body(new PermissionRequestDTOV1().token(accessToken))
-                .post()
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract()
-                .body().as(ApplicationsPermissionsDTOV1.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getApplications()).isNotNull().hasSize(1);
-        assertThat(dto.getApplications().get(0)).isNotNull();
-        assertThat(dto.getApplications().get(0).getPermissions()).isNotNull().hasSize(1);
-        assertThat(dto.getApplications().get(0).getPermissions().get("o1")).isNotNull().hasSize(1).containsExactly("a3");
-    }
 }

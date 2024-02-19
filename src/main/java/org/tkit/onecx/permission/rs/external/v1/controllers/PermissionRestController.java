@@ -35,14 +35,8 @@ public class PermissionRestController implements PermissionApiV1 {
     ExceptionMapper exceptionMapper;
 
     @Override
-    public Response getAllApplicationsPermissions(PermissionRequestDTOV1 permissionRequestDTOV1) {
-        var roles = tokenService.getTokenRoles(permissionRequestDTOV1.getToken());
-        var permissions = permissionDAO.findAllPermissionForUser(roles);
-        return Response.ok(mapper.create(permissions)).build();
-    }
-
-    @Override
-    public Response getApplicationPermissions(String appId, @LogExclude PermissionRequestDTOV1 permissionRequestDTOV1) {
+    public Response getApplicationPermissions(String productName, String appId,
+            @LogExclude PermissionRequestDTOV1 permissionRequestDTOV1) {
         var roles = tokenService.getTokenRoles(permissionRequestDTOV1.getToken());
         var permissions = permissionDAO.findPermissionForUser(appId, roles);
         return Response.ok(mapper.create(appId, permissions)).build();
