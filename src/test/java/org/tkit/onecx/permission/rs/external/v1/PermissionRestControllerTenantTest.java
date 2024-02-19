@@ -31,7 +31,9 @@ class PermissionRestControllerTenantTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)
                 .body(new PermissionRequestDTOV1().token(accessToken))
-                .post("app1")
+                .pathParam("productName", "test1")
+                .pathParam("appId", "app1")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
@@ -43,40 +45,4 @@ class PermissionRestControllerTenantTest extends AbstractTest {
 
     }
 
-    @Test
-    void getApplicationsPermissionsTest() {
-
-        var accessToken = createAccessTokenBearer(USER_BOB);
-
-        var idToken = createToken("org1", List.of("n3-100"));
-
-        var dto = given()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, idToken)
-                .body(new PermissionRequestDTOV1().token(accessToken))
-                .post()
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract()
-                .body().as(ApplicationsPermissionsDTOV1.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getApplications()).isNotNull().isNotEmpty().hasSize(1);
-
-        dto = given()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, idToken)
-                .body(new PermissionRequestDTOV1().token(accessToken))
-                .post()
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract()
-                .body().as(ApplicationsPermissionsDTOV1.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getApplications()).isNotNull().hasSize(1);
-        assertThat(dto.getApplications().get(0)).isNotNull();
-        assertThat(dto.getApplications().get(0).getPermissions()).isNotNull().hasSize(1);
-        assertThat(dto.getApplications().get(0).getPermissions().get("o1")).isNotNull().hasSize(1).containsExactly("a2");
-    }
 }

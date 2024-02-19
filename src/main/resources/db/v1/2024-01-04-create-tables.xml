@@ -6,46 +6,23 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
-    <changeSet author="dev (generated)" id="1704377753835-1">
-        <createTable tableName="permission">
+    <changeSet author="dev (generated)" id="1708346493208-1">
+        <createTable tableName="application">
             <column name="optlock" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="action" type="VARCHAR(255)"/>
             <column name="app_id" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(255)"/>
             <column name="guid" type="VARCHAR(255)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="permission_pkey"/>
-            </column>
-            <column name="resource" type="VARCHAR(255)"/>
-            <column name="creationuser" type="VARCHAR(255)"/>
-            <column name="modificationuser" type="VARCHAR(255)"/>
-        </createTable>
-
-        <addUniqueConstraint columnNames="app_id, resource, action" constraintName="permission_key" tableName="permission"/>
-
-
-        <createTable tableName="role">
-            <column name="optlock" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
-            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="description" type="VARCHAR(255)"/>
-            <column name="guid" type="VARCHAR(255)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="role_pkey"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="application_pkey"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
-            <column name="tenant_id" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="product_name" type="VARCHAR(255)"/>
             <column name="creationuser" type="VARCHAR(255)"/>
             <column name="modificationuser" type="VARCHAR(255)"/>
         </createTable>
-
-        <addUniqueConstraint columnNames="tenant_id, name" constraintName="role_name" tableName="role"/>
 
         <createTable tableName="assignment">
             <column name="optlock" type="INTEGER">
@@ -65,64 +42,63 @@
             <column name="modificationuser" type="VARCHAR(255)"/>
         </createTable>
 
-        <addUniqueConstraint columnNames="tenant_id, role_id, permission_id" constraintName="assignment_key" tableName="assignment"/>
-
-        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="assignment" constraintName="fke77g1bxkop46jx1blgcd6q5ww" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="permission" validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="assignment" constraintName="fkibbkfxe1mngrihxnc7p9wdhup" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="role" validate="true"/>
-
-        <createTable tableName="workspace_assignment">
-            <column name="optlock" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
-            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="guid" type="VARCHAR(255)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="workspace_assignment_pkey"/>
-            </column>
-            <column name="permission_id" type="VARCHAR(255)"/>
-            <column name="role_id" type="VARCHAR(255)"/>
-            <column name="tenant_id" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="creationuser" type="VARCHAR(255)"/>
-            <column name="modificationuser" type="VARCHAR(255)"/>
-        </createTable>
-
-        <addUniqueConstraint columnNames="tenant_id, role_id, permission_id" constraintName="workspace_assignment_key" tableName="workspace_assignment"/>
-
-        <createTable tableName="workspace_permission">
+        <createTable tableName="permission">
             <column name="optlock" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="action" type="VARCHAR(255)"/>
+            <column name="app_id" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(255)"/>
             <column name="guid" type="VARCHAR(255)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="workspace_permission_pkey"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="permission_pkey"/>
             </column>
+            <column name="product_name" type="VARCHAR(255)"/>
             <column name="resource" type="VARCHAR(255)"/>
-            <column name="tenant_id" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="workspace_id" type="VARCHAR(255)"/>
             <column name="creationuser" type="VARCHAR(255)"/>
             <column name="modificationuser" type="VARCHAR(255)"/>
         </createTable>
 
-        <addUniqueConstraint columnNames="tenant_id, workspace_id, resource, action" constraintName="workspace_permission_key" tableName="workspace_permission"/>
+        <createTable tableName="role">
+            <column name="optlock" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="guid" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="role_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationuser" type="VARCHAR(255)"/>
+            <column name="modificationuser" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex indexName="application_app_id" tableName="application">
+            <column name="product_name"/>
+            <column name="app_id"/>
+        </createIndex>
 
-        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="workspace_assignment" constraintName="fklf3cck88v4e34369mfs3ehiy5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace_permission" validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="workspace_assignment" constraintName="fkshtaxb2mjneer4fl3xg44xyr2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="role" validate="true"/>
-
-
+        <addUniqueConstraint columnNames="product_name, app_id" constraintName="application_key" tableName="application"/>
         <createIndex indexName="assignment_tenant_id" tableName="assignment">
             <column name="tenant_id"/>
         </createIndex>
 
-        <createIndex indexName="permission_app_id" tableName="permission">
+        <addUniqueConstraint columnNames="tenant_id, role_id, permission_id" constraintName="assignment_key" tableName="assignment"/>
+        <createIndex indexName="permission_product_app_id" tableName="permission">
+            <column name="product_name"/>
             <column name="app_id"/>
         </createIndex>
 
+        <addUniqueConstraint columnNames="product_name, app_id, resource, action" constraintName="permission_key" tableName="permission"/>
+        <addUniqueConstraint columnNames="tenant_id, name" constraintName="role_name" tableName="role"/>
+
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="assignment" constraintName="assignment_permission_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="permission" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="assignment" constraintName="assignment_role_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="role" validate="true"/>
+
     </changeSet>
+
 </databaseChangeLog>

@@ -27,7 +27,7 @@ components:
         applications:
           $ref: '#/components/schemas/DataImportApplicationWrapper'
         permissions:
-          $ref: '#/components/schemas/DataImportPermissionWrapper'
+          $ref: '#/components/schemas/DataImportProductWrapper'
     DataImportApplicationWrapper:
       type: object
       nullable: false
@@ -37,8 +37,16 @@ components:
         properties:
           name:
             type: string
+          productName:
+            type: string
           description:
             type: string
+    DataImportProductWrapper:
+      type: object
+      nullable: false
+      description: product name
+      additionalProperties:
+        $ref: '#/components/schemas/DataImportPermissionWrapper'
     DataImportPermissionWrapper:
       type: object
       nullable: false
@@ -80,7 +88,13 @@ components:
         description:
           type: string
         assignments:
-          $ref: '#/components/schemas/DataImportAssignmentWrapper'
+          $ref: '#/components/schemas/DataImportProductAssignmentWrapper'
+    DataImportProductAssignmentWrapper:
+      type: object
+      nullable: false
+      description: product name
+      additionalProperties:
+        $ref: '#/components/schemas/DataImportAssignmentWrapper'
     DataImportAssignmentWrapper:
       type: object
       nullable: false

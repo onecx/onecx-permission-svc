@@ -30,8 +30,9 @@ public interface DataImportV1Mapper {
         dtoRoles.forEach((role, item) -> {
             Set<String> perms = new HashSet<>();
 
-            item.getAssignments().forEach((appId, an) -> an
-                    .forEach((resource, actions) -> actions.forEach(action -> perms.add(appId + resource + action))));
+            item.getAssignments()
+                    .forEach((productName, apps) -> apps.forEach((appId, an) -> an.forEach((resource, actions) -> actions
+                            .forEach(action -> perms.add(productName + appId + resource + action)))));
 
             mapping.put(role, perms);
         });
@@ -75,7 +76,7 @@ public interface DataImportV1Mapper {
         }
         List<Application> result = new ArrayList<>();
         dtos.forEach((appId, dto) -> {
-            var tmp = createApp(appId, dto.getName(), dto.getDescription());
+            var tmp = createApp(appId, dto.getName(), dto.getDescription(), dto.getProductName());
             result.add(tmp);
         });
         return result;
@@ -90,21 +91,21 @@ public interface DataImportV1Mapper {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "description", ignore = true)
-    Application createApp(String appId, String name, String description);
+    Application createApp(String appId, String name, String description, String productName);
 
-    default List<Permission> map(Map<String, Map<String, Map<String, String>>> permissions) {
+    default List<Permission> map(Map<String, Map<String, Map<String, Map<String, String>>>> permissions) {
         if (permissions == null) {
             return List.of();
         }
         List<Permission> result = new ArrayList<>();
-        permissions.forEach((appId, perm) -> perm.forEach((resource, actions) -> actions
+        permissions.forEach((productName, apps) -> apps.forEach((appId, perm) -> perm.forEach((resource, actions) -> actions
                 .forEach((action, description) -> {
-                    var tmp = map(appId, resource, action);
+                    var tmp = map(appId, resource, action, productName);
                     if (tmp != null) {
                         tmp.setDescription(description);
                         result.add(tmp);
                     }
-                })));
+                }))));
         return result;
     }
 
@@ -117,5 +118,5 @@ public interface DataImportV1Mapper {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "description", ignore = true)
-    Permission map(String appId, String resource, String action);
+    Permission map(String appId, String resource, String action, String productName);
 }

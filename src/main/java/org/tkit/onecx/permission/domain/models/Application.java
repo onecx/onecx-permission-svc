@@ -11,9 +11,9 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "APPLICATION", uniqueConstraints = {
-        @UniqueConstraint(name = "APPLICATION_KEY", columnNames = { "APP_ID" }),
+        @UniqueConstraint(name = "APPLICATION_KEY", columnNames = { "PRODUCT_NAME", "APP_ID" }),
 }, indexes = {
-        @Index(name = "APPLICATION_APP_ID", columnList = "APP_ID")
+        @Index(name = "APPLICATION_APP_ID", columnList = "PRODUCT_NAME,APP_ID")
 })
 @SuppressWarnings("squid:S2160")
 public class Application extends TraceableEntity {
@@ -26,4 +26,7 @@ public class Application extends TraceableEntity {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @Column(name = "PRODUCT_NAME")
+    private String productName;
 }

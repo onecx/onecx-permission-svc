@@ -433,6 +433,8 @@ components:
       properties:
         appId:
           type: string
+        productName:
+          type: string
         pageNumber:
           format: int32
           description: The number of page.
@@ -447,6 +449,8 @@ components:
       type: object
       properties:
         appId:
+          type: string
+        productName:
           type: string
         name:
           type: string
@@ -498,6 +502,8 @@ components:
           type: string
         appId:
           type: string
+        productName:
+          type: string
         name:
           type: string
         description:
@@ -539,6 +545,8 @@ components:
         id:
           type: string
         appId:
+          type: string
+        productName:
           type: string
         resource:
           type: string

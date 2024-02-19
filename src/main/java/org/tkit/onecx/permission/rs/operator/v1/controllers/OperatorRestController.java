@@ -42,17 +42,17 @@ public class OperatorRestController implements PermissionOperatorApi {
     @Override
     @TenantExclude
     @Transactional(Transactional.TxType.REQUIRED)
-    public Response createOrUpdatePermission(String appId, PermissionRequestDTOV1 permissionRequestDTOV1) {
+    public Response createOrUpdatePermission(String productName, String appId, PermissionRequestDTOV1 permissionRequestDTOV1) {
 
-        var app = applicationDAO.loadByAppId(appId);
+        var app = applicationDAO.loadByAppId(productName, appId);
         if (app == null) {
-            app = mapper.createApp(permissionRequestDTOV1, appId);
+            app = mapper.createApp(permissionRequestDTOV1, appId, productName);
             applicationDAO.create(app);
         } else {
             mapper.updateApp(permissionRequestDTOV1, app);
             applicationDAO.update(app);
         }
-        var data = mapper.map(permissionRequestDTOV1, appId);
+        var data = mapper.map(permissionRequestDTOV1, appId, productName);
         if (data.isEmpty()) {
             return Response.ok().build();
         }

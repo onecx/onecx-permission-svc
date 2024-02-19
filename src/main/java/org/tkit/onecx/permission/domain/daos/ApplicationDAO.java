@@ -41,12 +41,14 @@ public class ApplicationDAO extends AbstractDAO<Application> {
         }
     }
 
-    public Application loadByAppId(String appId) {
+    public Application loadByAppId(String productName, String appId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Application.class);
             var root = cq.from(Application.class);
-            cq.where(cb.equal(root.get(Application_.APP_ID), appId));
+            cq.where(
+                    cb.equal(root.get(Application_.PRODUCT_NAME), productName),
+                    cb.equal(root.get(Application_.APP_ID), appId));
             return this.getEntityManager().createQuery(cq).getSingleResult();
         } catch (NoResultException ne) {
             return null;

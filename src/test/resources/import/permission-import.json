@@ -2,32 +2,36 @@
   "applications": {
     "application1": {
       "name": "test",
+      "productName": "test",
       "description": "description"
     },
     "application2": {
       "name": "test2",
+      "productName": "test",
       "description": "description2"
     }
   },
   "permissions": {
-    "application1" : {
-      "resource1": {
-        "action1": "description11",
-        "action2": "description12"
+    "product1": {
+      "application1": {
+        "resource1": {
+          "action1": "description11",
+          "action2": "description12"
+        },
+        "resource2": {
+          "action1": "description21",
+          "action2": "description22"
+        }
       },
-      "resource2": {
-        "action1": "description21",
-        "action2": "description22"
-      }
-    },
-    "application2" : {
-      "r3": {
-        "a1": "d31",
-        "a2": "d31"
-      },
-      "r4": {
-        "a1": "d41",
-        "a2": "d41"
+      "application2": {
+        "r3": {
+          "a1": "d31",
+          "a2": "d31"
+        },
+        "r4": {
+          "a1": "d41",
+          "a2": "d41"
+        }
       }
     }
   },
@@ -37,22 +41,36 @@
         "role1": {
           "description": "description1",
           "assignments": {
-            "application1": {
-              "resource1": ["action1","action2"]
-            },
-            "application2": {
-              "r4": ["a1"]
+            "product1": {
+              "application1": {
+                "resource1": [
+                  "action1",
+                  "action2"
+                ]
+              },
+              "application2": {
+                "r4": [
+                  "a1"
+                ]
+              }
             }
           }
         },
         "role2": {
           "description": "description1",
           "assignments": {
-            "application1": {
-              "resource1": ["action1","action2"]
-            },
-            "application2": {
-              "r4": ["a1"]
+            "product1": {
+              "application1": {
+                "resource1": [
+                  "action1",
+                  "action2"
+                ]
+              },
+              "application2": {
+                "r4": [
+                  "a1"
+                ]
+              }
             }
           }
         }
