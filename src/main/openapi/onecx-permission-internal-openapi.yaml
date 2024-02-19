@@ -222,9 +222,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RolePageResult'
+                $ref: '#/components/schemas/RolePageResult'
         400:
           description: Bad request
           content:
@@ -249,9 +247,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PermissionPageResult'
+                $ref: '#/components/schemas/PermissionPageResult'
         400:
           description: Bad request
           content:
@@ -276,9 +272,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ApplicationPageResult'
+                $ref: '#/components/schemas/ApplicationPageResult'
         400:
           description: Bad request
           content:
