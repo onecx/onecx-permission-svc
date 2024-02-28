@@ -22,9 +22,7 @@ public interface RoleMapper {
     RoleSearchCriteria map(RoleSearchCriteriaDTO dto);
 
     default List<Role> create(CreateRolesRequestDTO dto) {
-        List<Role> roles = new ArrayList<>();
-        roles = mapList(dto.getRoles());
-        return roles;
+      return mapList(dto.getRoles());
     }
 
     List<Role> mapList(List<CreateRoleDTO> roles);
