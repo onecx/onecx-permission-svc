@@ -348,7 +348,7 @@ components:
           type: string
         permissionId:
           type: string
-        appId:
+        productNames:
           type: array
           items:
             type: string

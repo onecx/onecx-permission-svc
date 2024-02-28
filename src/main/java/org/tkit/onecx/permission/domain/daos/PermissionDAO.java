@@ -53,15 +53,15 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
-    public List<Permission> loadByAppIds(List<String> appId) {
+    public List<Permission> loadByProductNames(List<String> productNames) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
             var root = cq.from(Permission.class);
-            cq.where(root.get(Permission_.APP_ID).in(appId));
+            cq.where(root.get(Permission_.PRODUCT_NAME).in(productNames));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_BY_APP_ID, ex);
+            throw new DAOException(ErrorKeys.ERROR_LOAD_BY_PRODUCT_NAMES, ex);
         }
     }
 
@@ -90,6 +90,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
         ERROR_FIND_PERMISSION_FOR_USER,
         ERROR_LOAD_BY_APP_ID,
-        ERROR_FIND_PERMISSION_BY_CRITERIA;
+        ERROR_FIND_PERMISSION_BY_CRITERIA,
+        ERROR_LOAD_BY_PRODUCT_NAMES;
     }
 }

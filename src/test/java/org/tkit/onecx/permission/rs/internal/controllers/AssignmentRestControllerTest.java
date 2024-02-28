@@ -105,7 +105,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         // create Assignment
         var requestDTO = new CreateRevokeAssignmentRequestDTO();
         requestDTO.setRoleId("r14");
-        requestDTO.setAppId(List.of("app1", "app2"));
+        requestDTO.setProductNames(List.of("test1"));
 
         var output = given()
                 .when()
@@ -132,7 +132,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         var request = new CreateRevokeAssignmentRequestDTO();
         request.setRoleId("r12");
-        request.setAppId(List.of("randomAppId"));
+        request.setProductNames(List.of("randomProductName"));
 
         given()
                 .when()
@@ -193,23 +193,13 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .get("a12")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
-
-        //not-existing permissionId
-        requestDTO.setPermissionId("not-existing");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
     }
 
     @Test
     void revokeAssignmentsByRoleIdAndAppIdsTest() {
         var requestDTO = new CreateRevokeAssignmentRequestDTO();
         requestDTO.roleId("r14");
-        requestDTO.appId(List.of("app1"));
+        requestDTO.setProductNames(List.of("test1"));
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
@@ -222,16 +212,6 @@ class AssignmentRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .get("a12")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        //not-existing appIds
-        requestDTO.setAppId(List.of("not-existing"));
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }
