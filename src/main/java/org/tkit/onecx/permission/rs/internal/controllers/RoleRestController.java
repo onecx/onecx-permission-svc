@@ -17,7 +17,7 @@ import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.permission.rs.internal.RoleInternalApi;
-import gen.org.tkit.onecx.permission.rs.internal.model.CreateRolesRequestDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.CreateRoleRequestDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.ProblemDetailResponseDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.RoleSearchCriteriaDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.UpdateRoleRequestDTO;
@@ -39,12 +39,12 @@ public class RoleRestController implements RoleInternalApi {
     UriInfo uriInfo;
 
     @Override
-    public Response createRole(CreateRolesRequestDTO createRolesRequestDTO) {
-        var roles = mapper.create(createRolesRequestDTO);
-        roles = dao.create(roles).toList();
+    public Response createRole(CreateRoleRequestDTO createRoleRequestDTO) {
+        var role = mapper.create(createRoleRequestDTO);
+        role = dao.create(role);
         return Response
-                .status(Response.Status.CREATED).entity(mapper.map(roles))
-                .build();
+                .created(uriInfo.getAbsolutePathBuilder().path(role.getId()).build())
+                .entity(mapper.map(role)).build();
     }
 
     @Override

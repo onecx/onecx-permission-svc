@@ -138,14 +138,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateRolesRequest'
+              $ref: '#/components/schemas/CreateRoleRequest'
       responses:
         201:
           description: New role created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateRolesResponse'
+                $ref: '#/components/schemas/Role'
         400:
           description: Bad request
           content:
@@ -387,27 +393,13 @@ components:
           type: string
         description:
           type: string
-    CreateRolesRequest:
-      type: object
-      properties:
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreateRole'
-    CreateRole:
+    CreateRoleRequest:
       type: object
       properties:
         name:
           type: string
         description:
           type: string
-    CreateRolesResponse:
-      type: object
-      properties:
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/Role'
     Role:
       type: object
       properties:

@@ -1,7 +1,5 @@
 package org.tkit.onecx.permission.rs.internal.mappers;
 
-import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -20,22 +18,6 @@ public interface RoleMapper {
 
     RoleSearchCriteria map(RoleSearchCriteriaDTO dto);
 
-    default List<Role> create(CreateRolesRequestDTO dto) {
-        return mapList(dto.getRoles());
-    }
-
-    List<Role> mapList(List<CreateRoleDTO> roles);
-
-    default CreateRolesResponseDTO map(List<Role> roles) {
-        CreateRolesResponseDTO responseDTO = new CreateRolesResponseDTO();
-        responseDTO.setRoles(mapListResponse(roles));
-        return responseDTO;
-    }
-
-    List<RoleDTO> mapListResponse(List<Role> roles);
-
-    CreateRoleDTO create(Role role);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
@@ -45,7 +27,7 @@ public interface RoleMapper {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    Role map(CreateRoleDTO dto);
+    Role create(CreateRoleRequestDTO dto);
 
     RoleDTO map(Role data);
 
