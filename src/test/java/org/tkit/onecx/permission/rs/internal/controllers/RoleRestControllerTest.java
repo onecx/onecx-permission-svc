@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 
-import java.util.List;
+import jakarta.ws.rs.core.HttpHeaders;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,11 +27,9 @@ class RoleRestControllerTest extends AbstractTest {
     void createNewRoleTest() {
 
         // create Role
-        var requestDTO = new CreateRolesRequestDTO();
-        CreateRoleDTO role = new CreateRoleDTO();
-        role.setName("test01");
-        role.setDescription("description");
-        requestDTO.setRoles(List.of(role));
+        var requestDTO = new CreateRoleRequestDTO();
+        requestDTO.setName("test01");
+        requestDTO.setDescription("description");
 
         var uri = given()
                 .when()
@@ -39,19 +37,19 @@ class RoleRestControllerTest extends AbstractTest {
                 .body(requestDTO)
                 .post()
                 .then().statusCode(CREATED.getStatusCode())
-                .extract().as(CreateRolesResponseDTO.class);
+                .extract().header(HttpHeaders.LOCATION);
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
-                .get(uri.getRoles().get(0).getId())
+                .get(uri)
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
                 .body().as(RoleDTO.class);
 
         assertThat(dto).isNotNull()
-                .returns(requestDTO.getRoles().get(0).getName(), from(RoleDTO::getName))
-                .returns(requestDTO.getRoles().get(0).getDescription(), from(RoleDTO::getDescription));
+                .returns(requestDTO.getName(), from(RoleDTO::getName))
+                .returns(requestDTO.getDescription(), from(RoleDTO::getDescription));
 
         // create Role without body
         var exception = given()
@@ -63,7 +61,23 @@ class RoleRestControllerTest extends AbstractTest {
                 .extract().as(ProblemDetailResponseDTO.class);
 
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo("createRole.createRolesRequestDTO: must not be null");
+        assertThat(exception.getDetail()).isEqualTo("createRole.createRoleRequestDTO: must not be null");
+
+        // create Role with existing name
+        requestDTO = new CreateRoleRequestDTO();
+        requestDTO.setName("n1");
+
+        exception = given().when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
+        assertThat(exception.getDetail()).isEqualTo(
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'role_name'  Detail: Key (tenant_id, name)=(default, n1) already exists.]");
     }
 
     @Test
