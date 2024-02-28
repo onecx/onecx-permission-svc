@@ -19,9 +19,7 @@ import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.permission.rs.internal.AssignmentInternalApi;
-import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentSearchCriteriaDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.CreateRevokeAssignmentRequestDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.ProblemDetailResponseDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped
@@ -56,27 +54,11 @@ public class AssignmentRestController implements AssignmentInternalApi {
 
     @Override
     @Transactional
-    public Response revokeAssignments(CreateRevokeAssignmentRequestDTO createRevokeAssignmentRequestDTO) {
-        var role = roleDAO.findById(createRevokeAssignmentRequestDTO.getRoleId());
-        if (role == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+    public Response revokeAssignments(RevokeAssignmentRequestDTO createRevokeAssignmentRequestDTO) {
+        dao.deleteByCriteria(createRevokeAssignmentRequestDTO.getRoleId(),
+                createRevokeAssignmentRequestDTO.getProductNames(),
+                createRevokeAssignmentRequestDTO.getPermissionId());
 
-        // case 1 ONLY ROLE ID
-        if (createRevokeAssignmentRequestDTO.getPermissionId() == null
-                && createRevokeAssignmentRequestDTO.getProductNames() == null) {
-            dao.deleteByCriteria(role.getId(), null, null);
-        }
-
-        // case 2 ROLE ID + PRODUCT NAMES
-        if (createRevokeAssignmentRequestDTO.getProductNames() != null) {
-            dao.deleteByCriteria(role.getId(), createRevokeAssignmentRequestDTO.getProductNames(), null);
-        }
-
-        // case 3 ROLE ID + permissionID
-        if (createRevokeAssignmentRequestDTO.getPermissionId() != null) {
-            dao.deleteByCriteria(role.getId(), null, createRevokeAssignmentRequestDTO.getPermissionId());
-        }
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
@@ -88,42 +70,42 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
+    public Response createAssignment(CreateAssignmentRequestDTO createAssignmentRequestDTO) {
+        var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var permission = permissionDAO.findById(createAssignmentRequestDTO.getPermissionId());
+        if (permission == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        var data = mapper.create(role, permission);
+        data = dao.create(data);
+        return Response
+                .created(uriInfo.getAbsolutePathBuilder().path(data.getId()).build())
+                .entity(mapper.map(data))
+                .build();
+    }
+
+    @Override
     @Transactional
-    public Response createAssignment(CreateRevokeAssignmentRequestDTO createAssignmentRequestDTO) {
+    public Response createProductAssignment(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        // single assignment
-        if (createAssignmentRequestDTO.getPermissionId() != null) {
-            var permission = permissionDAO.findById(createAssignmentRequestDTO.getPermissionId());
-            if (permission == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            var data = mapper.create(role, permission);
-            data = dao.create(data);
-            return Response
-                    .created(uriInfo.getAbsolutePathBuilder().path(data.getId()).build())
-                    .entity(mapper.mapResponseList(null, data))
-                    .build();
+        var permissions = permissionDAO.loadByProductNames(createAssignmentRequestDTO.getProductNames());
+        if (permissions.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
+        var data = mapper.createList(role, permissions);
 
-        // batch operation for all permissions by productNames
-        if (createAssignmentRequestDTO.getProductNames() != null) {
-            var permissions = permissionDAO.loadByProductNames(createAssignmentRequestDTO.getProductNames());
-            if (permissions.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            var data = mapper.createList(role, permissions);
+        dao.deleteByCriteria(role.getId(), createAssignmentRequestDTO.getProductNames(), null);
+        dao.create(data);
+        return Response.status(Response.Status.CREATED).build();
 
-            dao.deleteByCriteria(role.getId(), createAssignmentRequestDTO.getProductNames(), null);
-            var result = dao.create(data).toList();
-            return Response.status(Response.Status.CREATED).entity(mapper.mapResponseList(result, null)).build();
-        }
-
-        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @Override

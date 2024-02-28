@@ -29,9 +29,10 @@ public class InternalLogParam implements LogParam {
                     return RoleSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + "," + d.getPageSize()
                             + "]";
                 }),
-                item(10, CreateRevokeAssignmentRequestDTO.class, x -> {
-                    CreateRevokeAssignmentRequestDTO d = (CreateRevokeAssignmentRequestDTO) x;
-                    return CreateRevokeAssignmentRequestDTO.class.getSimpleName() + ":r=" + d.getRoleId();
+                item(10, CreateAssignmentRequestDTO.class, x -> {
+                    CreateAssignmentRequestDTO d = (CreateAssignmentRequestDTO) x;
+                    return CreateAssignmentRequestDTO.class.getSimpleName() + ":r=" + d.getRoleId() + ":p="
+                            + d.getPermissionId();
                 }),
                 item(10, CreateRoleRequestDTO.class,
                         x -> x.getClass().getSimpleName() + ": size: " + ((CreateRoleRequestDTO) x).getName()),

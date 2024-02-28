@@ -15,7 +15,6 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentPageResultDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentSearchCriteriaDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.CreateAssignmentResponseDTO;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface AssignmentMapper {
@@ -46,16 +45,4 @@ public interface AssignmentMapper {
         permissions.forEach(permission -> assignments.add(create(role, permission)));
         return assignments;
     }
-
-    default CreateAssignmentResponseDTO mapResponseList(List<Assignment> assignmentList, Assignment singleAssignment) {
-        CreateAssignmentResponseDTO responseDTO = new CreateAssignmentResponseDTO();
-        if (assignmentList != null) {
-            responseDTO.setAssignments(mapList(assignmentList));
-        } else {
-            responseDTO.setAssignments(List.of(map(singleAssignment)));
-        }
-        return responseDTO;
-    }
-
-    List<AssignmentDTO> mapList(List<Assignment> data);
 }
