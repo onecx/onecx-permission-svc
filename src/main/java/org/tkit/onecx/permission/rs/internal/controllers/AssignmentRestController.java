@@ -2,6 +2,7 @@ package org.tkit.onecx.permission.rs.internal.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -18,9 +19,7 @@ import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.permission.rs.internal.AssignmentInternalApi;
-import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentSearchCriteriaDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.CreateAssignmentRequestDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.ProblemDetailResponseDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped
@@ -54,6 +53,16 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
+    @Transactional
+    public Response revokeAssignments(RevokeAssignmentRequestDTO createRevokeAssignmentRequestDTO) {
+        dao.deleteByCriteria(createRevokeAssignmentRequestDTO.getRoleId(),
+                createRevokeAssignmentRequestDTO.getProductNames(),
+                createRevokeAssignmentRequestDTO.getPermissionId());
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @Override
     public Response searchAssignments(AssignmentSearchCriteriaDTO assignmentSearchCriteriaDTO) {
         var criteria = mapper.map(assignmentSearchCriteriaDTO);
         var result = dao.findByCriteria(criteria);
@@ -77,6 +86,26 @@ public class AssignmentRestController implements AssignmentInternalApi {
                 .created(uriInfo.getAbsolutePathBuilder().path(data.getId()).build())
                 .entity(mapper.map(data))
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public Response createProductAssignment(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
+        var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        var permissions = permissionDAO.loadByProductNames(createAssignmentRequestDTO.getProductNames());
+        if (permissions.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var data = mapper.createList(role, permissions);
+
+        dao.deleteByCriteria(role.getId(), createAssignmentRequestDTO.getProductNames(), null);
+        dao.create(data);
+        return Response.status(Response.Status.CREATED).build();
+
     }
 
     @Override

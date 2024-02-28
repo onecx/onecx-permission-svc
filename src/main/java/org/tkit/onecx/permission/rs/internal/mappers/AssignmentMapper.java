@@ -1,5 +1,8 @@
 package org.tkit.onecx.permission.rs.internal.mappers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.permission.domain.criteria.AssignmentSearchCriteria;
@@ -36,4 +39,10 @@ public interface AssignmentMapper {
 
     @Mapping(target = "appId", source = "permission.appId")
     AssignmentDTO map(Assignment data);
+
+    default List<Assignment> createList(Role role, List<Permission> permissions) {
+        List<Assignment> assignments = new ArrayList<>();
+        permissions.forEach(permission -> assignments.add(create(role, permission)));
+        return assignments;
+    }
 }

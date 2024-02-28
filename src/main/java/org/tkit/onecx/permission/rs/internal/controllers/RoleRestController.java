@@ -44,8 +44,7 @@ public class RoleRestController implements RoleInternalApi {
         role = dao.create(role);
         return Response
                 .created(uriInfo.getAbsolutePathBuilder().path(role.getId()).build())
-                .entity(mapper.map(role))
-                .build();
+                .entity(mapper.map(role)).build();
     }
 
     @Override

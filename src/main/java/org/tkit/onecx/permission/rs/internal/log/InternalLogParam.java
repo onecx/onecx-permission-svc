@@ -31,11 +31,11 @@ public class InternalLogParam implements LogParam {
                 }),
                 item(10, CreateAssignmentRequestDTO.class, x -> {
                     CreateAssignmentRequestDTO d = (CreateAssignmentRequestDTO) x;
-                    return CreateAssignmentRequestDTO.class.getSimpleName() + ":r=" + d.getRoleId() + ",p="
+                    return CreateAssignmentRequestDTO.class.getSimpleName() + ":r=" + d.getRoleId() + ":p="
                             + d.getPermissionId();
                 }),
                 item(10, CreateRoleRequestDTO.class,
-                        x -> x.getClass().getSimpleName() + ":" + ((CreateRoleRequestDTO) x).getName()),
+                        x -> x.getClass().getSimpleName() + ": size: " + ((CreateRoleRequestDTO) x).getName()),
                 item(10, UpdateRoleRequestDTO.class,
                         x -> x.getClass().getSimpleName() + ":" + ((UpdateRoleRequestDTO) x).getName()));
     }

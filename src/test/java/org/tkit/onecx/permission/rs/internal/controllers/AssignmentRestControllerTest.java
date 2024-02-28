@@ -112,6 +112,129 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void batchCreateAssignmentsTest() {
+        // create Assignment
+        var requestDTO = new CreateProductAssignmentRequestDTO();
+        requestDTO.setRoleId("r14");
+        requestDTO.setProductNames(List.of("test1"));
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/product")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+        //should return not-found when no productNames are set
+        var invalidRequestDTO = new CreateProductAssignmentRequestDTO();
+        invalidRequestDTO.setRoleId("r12");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(invalidRequestDTO)
+                .post("/product")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //should return not-found when role not existing
+        invalidRequestDTO.setRoleId("not-existing");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(invalidRequestDTO)
+                .post("/product")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //should return not-found when no permissions with given productNames exists
+
+        var request = new CreateProductAssignmentRequestDTO();
+        request.setRoleId("r12");
+        request.setProductNames(List.of("randomProductName"));
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/product")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void revokeAssignmentsByOnlyRoleIdTest() {
+        var requestDTO = new RevokeAssignmentRequestDTO();
+        requestDTO.roleId("r14");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment is gone
+        given()
+                .when()
+                .get("a12")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //not-exiting role id
+        requestDTO.setRoleId("not-existing");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+    }
+
+    @Test
+    void revokeAssignmentsByRoleIdAndPermissionIdTest() {
+        var requestDTO = new RevokeAssignmentRequestDTO();
+        requestDTO.roleId("r14");
+        requestDTO.permissionId("p13");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment is gone
+        given()
+                .when()
+                .get("a12")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void revokeAssignmentsByRoleIdAndAppIdsTest() {
+        var requestDTO = new RevokeAssignmentRequestDTO();
+        requestDTO.roleId("r14");
+        requestDTO.setProductNames(List.of("test1"));
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment is gone
+        given()
+                .when()
+                .get("a12")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
     void getNotFoundAssignment() {
         given()
                 .contentType(APPLICATION_JSON)
