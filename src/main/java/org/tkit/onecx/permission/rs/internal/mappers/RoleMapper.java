@@ -1,6 +1,5 @@
 package org.tkit.onecx.permission.rs.internal.mappers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -22,7 +21,7 @@ public interface RoleMapper {
     RoleSearchCriteria map(RoleSearchCriteriaDTO dto);
 
     default List<Role> create(CreateRolesRequestDTO dto) {
-      return mapList(dto.getRoles());
+        return mapList(dto.getRoles());
     }
 
     List<Role> mapList(List<CreateRoleDTO> roles);

@@ -13,7 +13,6 @@ import org.tkit.onecx.permission.domain.criteria.AssignmentSearchCriteria;
 import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.models.Assignment_;
 import org.tkit.onecx.permission.domain.models.Permission_;
-import org.tkit.onecx.permission.domain.models.Role_;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
