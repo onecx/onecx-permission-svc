@@ -1,16 +1,19 @@
 package org.tkit.onecx.permission.domain.daos;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.permission.domain.criteria.AssignmentSearchCriteria;
 import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.models.Assignment_;
 import org.tkit.onecx.permission.domain.models.Permission_;
+import org.tkit.onecx.permission.domain.models.Role_;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
@@ -57,6 +60,24 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA, ex);
         }
+    }
+
+    public void deleteByRoleAndPermissionId(String roleId, List<String> permissionId) {
+        var cb = getEntityManager().getCriteriaBuilder();
+        var dq = this.deleteQuery();
+        var root = dq.from(Assignment.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(cb.equal(root.get(Assignment_.ROLE).get(Role_.ID), roleId));
+
+        if (permissionId != null) {
+            predicates.add(root.get(Assignment_.PERMISSION).get(Permission_.ID).in(permissionId));
+        }
+
+        dq.where(cb.and(predicates.toArray(new Predicate[0])));
+
+        this.getEntityManager().createQuery(dq).executeUpdate();
     }
 
     public enum ErrorKeys {

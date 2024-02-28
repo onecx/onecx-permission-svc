@@ -49,7 +49,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateAssignmentRequest'
+              $ref: '#/components/schemas/CreateRevokeAssignmentRequest'
       responses:
         201:
           description: New assignment created
@@ -62,9 +62,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Assignment'
+                $ref: '#/components/schemas/CreateAssignmentResponse'
         404:
           description: Data not found
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments/revoke:
+    post:
+      tags:
+        - assignmentInternal
+      description: delete assignments by criteria
+      operationId: revokeAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRevokeAssignmentRequest'
+      responses:
+        204:
+          description: New assignment created
         400:
           description: Bad request
           content:
@@ -121,12 +142,6 @@ paths:
       responses:
         201:
           description: New role created
-          headers:
-            Location:
-              required: true
-              schema:
-                type: string
-                format: url
           content:
             application/json:
               schema:
@@ -318,16 +333,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Assignment'
-    CreateAssignmentRequest:
+    CreateRevokeAssignmentRequest:
       type: object
       required:
         - roleId
-        - permissionId
       properties:
         roleId:
           type: string
         permissionId:
           type: string
+        appId:
+          type: array
+          items:
+            type: string
+    CreateAssignmentResponse:
+      type: object
+      properties:
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
     Assignment:
       type: object
       properties:
@@ -347,6 +372,8 @@ components:
         permissionId:
           type: string
         appId:
+          type: string
+        id:
           type: string
     UpdateRoleRequest:
       type: object

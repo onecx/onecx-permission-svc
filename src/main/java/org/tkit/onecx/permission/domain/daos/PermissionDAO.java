@@ -53,6 +53,18 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
+    public List<Permission> loadByAppIds(List<String> appId) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+            cq.where(root.get(Permission_.APP_ID).in(appId));
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_LOAD_BY_APP_ID, ex);
+        }
+    }
+
     public List<Permission> findPermissionForUser(String appId, List<String> roles) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();

@@ -3,13 +3,10 @@ package org.tkit.onecx.permission.rs.internal.controllers;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.from;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
 
 import java.util.List;
-
-import jakarta.ws.rs.core.HttpHeaders;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
@@ -28,7 +25,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     @Test
     void createAssignment() {
         // create Assignment
-        var requestDTO = new CreateAssignmentRequestDTO();
+        var requestDTO = new CreateRevokeAssignmentRequestDTO();
         requestDTO.setPermissionId("p11");
         requestDTO.setRoleId("r11");
 
@@ -39,19 +36,11 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .post()
                 .then()
                 .statusCode(CREATED.getStatusCode())
-                .extract().header(HttpHeaders.LOCATION);
+                .extract().as(CreateAssignmentResponseDTO.class);
 
-        var dto = given()
-                .contentType(APPLICATION_JSON)
-                .get(uri)
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract()
-                .body().as(AssignmentDTO.class);
-
-        assertThat(dto).isNotNull()
-                .returns(requestDTO.getRoleId(), from(AssignmentDTO::getRoleId))
-                .returns(requestDTO.getPermissionId(), from(AssignmentDTO::getPermissionId));
+        assertThat(uri).isNotNull();
+        assertThat(uri.getAssignments().get(0).getRoleId()).isEqualTo(requestDTO.getRoleId());
+        assertThat(uri.getAssignments().get(0).getPermissionId()).isEqualTo(requestDTO.getPermissionId());
 
         // create Role without body
         var exception = given()
@@ -63,10 +52,10 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .extract().as(ProblemDetailResponseDTO.class);
 
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo("createAssignment.createAssignmentRequestDTO: must not be null");
+        assertThat(exception.getDetail()).isEqualTo("createAssignment.createRevokeAssignmentRequestDTO: must not be null");
 
         // create Role with existing name
-        requestDTO = new CreateAssignmentRequestDTO();
+        requestDTO = new CreateRevokeAssignmentRequestDTO();
         requestDTO.setPermissionId("p13");
         requestDTO.setRoleId("r13");
 
@@ -87,7 +76,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     @Test
     void createAssignmentWrong() {
         // create Assignment
-        var requestDTO = new CreateAssignmentRequestDTO();
+        var requestDTO = new CreateRevokeAssignmentRequestDTO();
         requestDTO.setPermissionId("does-not-exists");
         requestDTO.setRoleId("r11");
 
@@ -107,6 +96,142 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void batchCreateAssignmentsTest() {
+        // create Assignment
+        var requestDTO = new CreateRevokeAssignmentRequestDTO();
+        requestDTO.setRoleId("r14");
+        requestDTO.setAppId(List.of("app1", "app2"));
+
+        var output = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post()
+                .then()
+                .statusCode(CREATED.getStatusCode())
+                .extract().as(CreateAssignmentResponseDTO.class);
+        assertThat(output.getAssignments()).hasSize(7);
+
+        //should return not-found when no permission-id and app-ids are set
+        var invalidRequestDTO = new CreateRevokeAssignmentRequestDTO();
+        invalidRequestDTO.setRoleId("r12");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(invalidRequestDTO)
+                .post()
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //should return not-found when no permissions with given appId exists
+
+        var request = new CreateRevokeAssignmentRequestDTO();
+        request.setRoleId("r12");
+        request.setAppId(List.of("randomAppId"));
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post()
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+    }
+
+    @Test
+    void revokeAssignmentsByOnlyRoleIdTest() {
+        var requestDTO = new CreateRevokeAssignmentRequestDTO();
+        requestDTO.roleId("r14");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment is gone
+        given()
+                .when()
+                .get("a12")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //not-exiting role id
+        requestDTO.setRoleId("not-existing");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void revokeAssignmentsByRoleIdAndPermissionIdTest() {
+        var requestDTO = new CreateRevokeAssignmentRequestDTO();
+        requestDTO.roleId("r14");
+        requestDTO.permissionId("p13");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment is gone
+        given()
+                .when()
+                .get("a12")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //not-existing permissionId
+        requestDTO.setPermissionId("not-existing");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void revokeAssignmentsByRoleIdAndAppIdsTest() {
+        var requestDTO = new CreateRevokeAssignmentRequestDTO();
+        requestDTO.roleId("r14");
+        requestDTO.appId(List.of("app1"));
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment is gone
+        given()
+                .when()
+                .get("a12")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        //not-existing appIds
+        requestDTO.setAppId(List.of("not-existing"));
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }

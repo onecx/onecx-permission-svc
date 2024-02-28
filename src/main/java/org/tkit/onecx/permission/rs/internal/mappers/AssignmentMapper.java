@@ -1,5 +1,8 @@
 package org.tkit.onecx.permission.rs.internal.mappers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.permission.domain.criteria.AssignmentSearchCriteria;
@@ -12,6 +15,7 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentPageResultDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentSearchCriteriaDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.CreateAssignmentResponseDTO;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface AssignmentMapper {
@@ -36,4 +40,22 @@ public interface AssignmentMapper {
 
     @Mapping(target = "appId", source = "permission.appId")
     AssignmentDTO map(Assignment data);
+
+    default List<Assignment> createList(Role role, List<Permission> permissions) {
+        List<Assignment> assignments = new ArrayList<>();
+        permissions.forEach(permission -> assignments.add(create(role, permission)));
+        return assignments;
+    }
+
+    default CreateAssignmentResponseDTO mapResponseList(List<Assignment> assignmentList, Assignment singleAssignment) {
+        CreateAssignmentResponseDTO responseDTO = new CreateAssignmentResponseDTO();
+        if (assignmentList != null) {
+            responseDTO.setAssignments(mapList(assignmentList));
+        } else {
+            responseDTO.setAssignments(List.of(map(singleAssignment)));
+        }
+        return responseDTO;
+    }
+
+    List<AssignmentDTO> mapList(List<Assignment> data);
 }
