@@ -61,6 +61,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         }
     }
 
+    @Transactional
     public void deleteByCriteria(String roleId, List<String> productNames, String permissionId) {
         var cb = getEntityManager().getCriteriaBuilder();
         var dq = this.deleteQuery();

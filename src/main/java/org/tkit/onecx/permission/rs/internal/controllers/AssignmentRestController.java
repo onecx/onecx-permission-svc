@@ -53,7 +53,6 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    @Transactional
     public Response revokeAssignments(RevokeAssignmentRequestDTO createRevokeAssignmentRequestDTO) {
         dao.deleteByCriteria(createRevokeAssignmentRequestDTO.getRoleId(),
                 createRevokeAssignmentRequestDTO.getProductNames(),
