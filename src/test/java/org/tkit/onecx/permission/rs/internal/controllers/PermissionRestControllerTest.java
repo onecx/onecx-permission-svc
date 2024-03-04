@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
 import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.test.AbstractTest;
@@ -75,6 +77,23 @@ class PermissionRestControllerTest extends AbstractTest {
         assertThat(data).isNotNull();
         assertThat(data.getTotalElements()).isEqualTo(5);
         assertThat(data.getStream()).isNotNull().hasSize(5);
+
+        var productNamesCriteria = new PermissionSearchCriteriaDTO();
+        productNamesCriteria.setProductNames(List.of("test1"));
+        var output = given()
+                .contentType(APPLICATION_JSON)
+                .body(productNamesCriteria)
+                .post()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(PermissionPageResultDTO.class);
+
+        assertThat(output).isNotNull();
+        assertThat(output.getTotalElements()).isEqualTo(7);
+        assertThat(output.getStream()).isNotNull().hasSize(7);
+
     }
 
     @Test
