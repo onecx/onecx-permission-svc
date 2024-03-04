@@ -500,8 +500,11 @@ components:
       properties:
         appId:
           type: string
-        productName:
-          type: string
+        productNames:
+          type: array
+          items:
+            type:
+              string
         pageNumber:
           format: int32
           description: The number of page.
