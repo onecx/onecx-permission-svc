@@ -1,75 +1,84 @@
 {
-  "applications": {
-    "application1": {
-      "name": "test",
-      "productName": "test",
-      "description": "description"
-    },
-    "application2": {
-      "name": "test2",
-      "productName": "test",
-      "description": "description2"
-    }
-  },
-  "permissions": {
-    "product1": {
-      "application1": {
-        "resource1": {
-          "action1": "description11",
-          "action2": "description12"
+  "products" : {
+    "onecx-permission" : {
+      "applications": {
+        "onecx-permission-bff": {
+          "name": "onecx-permission-bff",
+          "description": "onecx-permission-bff",
+          "permissions": {
+            "permission": {
+              "read": "permission on all GET requests and POST search",
+              "write": "permission on PUT, POST, PATCH requests, where objects are saved or updated",
+              "delete": "permission on all DELETE requests"
+            },
+            "role": {
+              "read": "role on all GET requests and POST search",
+              "write": "role on PUT, POST, PATCH requests, where objects are saved or updated",
+              "delete": "role on all DELETE requests"
+            },
+            "assignment": {
+              "read": "assignment on all GET requests and POST search",
+              "write": "assignment on PUT, POST, PATCH requests, where objects are saved or updated",
+              "delete": "assignment on all DELETE requests"
+            },
+            "application": {
+              "read": "application on all GET requests and POST search",
+              "write": "application on PUT, POST, PATCH requests, where objects are saved or updated",
+              "delete": "application on all DELETE requests"
+            },
+            "workspace": {
+              "read": "workspace on all GET requests and POST search",
+              "write": "workspace on PUT, POST, PATCH requests, where objects are saved or updated",
+              "delete": "workspace on all DELETE requests"
+            }
+          }
         },
-        "resource2": {
-          "action1": "description21",
-          "action2": "description22"
-        }
-      },
-      "application2": {
-        "r3": {
-          "a1": "d31",
-          "a2": "d31"
-        },
-        "r4": {
-          "a1": "d41",
-          "a2": "d41"
+        "onecx-permission-ui": {
+          "name": "onecx-permission-ui",
+          "description": "onecx-permission-ui",
+          "permissions": {
+            "APP": {
+              "EDIT": "Edit app",
+              "SAVE": "Update and save app",
+              "SEARCH": "Search apps",
+              "VIEW": "View mode for app"
+            },
+            "PERMISSION": {
+              "GRANT": "Assign or remove assignment of a permission to a role",
+              "CREATE": "Create permission",
+              "DELETE": "Delete permission",
+              "EDIT": "Edit app",
+              "SAVE": "Update and save app"
+            },
+            "ROLE": {
+              "CREATE": "Create role",
+              "DELETE": "Delete role",
+              "EDIT": "Edit app",
+              "SAVE": "Update and save app"
+            }
+          }
         }
       }
     }
   },
   "tenants": {
-    "i100": {
+    "default": {
       "roles": {
-        "role1": {
-          "description": "description1",
+        "onecx-admin": {
+          "description": "onecx-admin",
           "assignments": {
-            "product1": {
-              "application1": {
-                "resource1": [
-                  "action1",
-                  "action2"
-                ]
+            "onecx-permission": {
+              "onecx-permission-bff": {
+                "permission": [ "read", "write", "delete"],
+                "role": [ "read", "write", "delete"],
+                "assignment": [ "read", "write", "delete"],
+                "application": [ "read", "write", "delete"],
+                "workspace": [ "read", "write", "delete"]
               },
-              "application2": {
-                "r4": [
-                  "a1"
-                ]
-              }
-            }
-          }
-        },
-        "role2": {
-          "description": "description1",
-          "assignments": {
-            "product1": {
-              "application1": {
-                "resource1": [
-                  "action1",
-                  "action2"
-                ]
-              },
-              "application2": {
-                "r4": [
-                  "a1"
-                ]
+              "onecx-permission-ui": {
+                "APP": [ "EDIT", "SAVE", "SEARCH", "VIEW" ],
+                "PERMISSION": [ "GRANT", "CREATE", "DELETE", "EDIT", "SAVE" ],
+                "ROLE": [ "CREATE", "DELETE", "EDIT", "SAVE" ]
               }
             }
           }

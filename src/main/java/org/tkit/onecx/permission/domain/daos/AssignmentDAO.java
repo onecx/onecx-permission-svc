@@ -3,6 +3,7 @@ package org.tkit.onecx.permission.domain.daos;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
@@ -10,9 +11,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.permission.domain.criteria.AssignmentSearchCriteria;
-import org.tkit.onecx.permission.domain.models.Assignment;
-import org.tkit.onecx.permission.domain.models.Assignment_;
-import org.tkit.onecx.permission.domain.models.Permission_;
+import org.tkit.onecx.permission.domain.models.*;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
@@ -46,13 +45,16 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cq = cb.createQuery(Assignment.class);
             var root = cq.from(Assignment.class);
 
+            List<Predicate> predicates = new ArrayList<>();
             if (criteria.getAppId() != null) {
                 List<String> filteredAppIds = Arrays.stream(criteria.getAppId()).filter(s -> !s.isBlank()).toList();
                 if (!filteredAppIds.isEmpty()) {
-                    cq.where(root.get(Assignment_.permission).get(Permission_.APP_ID).in(filteredAppIds));
+                    predicates.add(root.get(Assignment_.permission).get(Permission_.APP_ID).in(filteredAppIds));
                 }
             }
-
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[] {}));
+            }
             cq.orderBy(cb.asc(root.get(AbstractTraceableEntity_.creationDate)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
@@ -84,7 +86,29 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         this.getEntityManager().createQuery(dq).executeUpdate();
     }
 
+    public List<PermissionAction> findPermissionActionForProducts(Set<String> productNames) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(PermissionAction.class);
+            var root = cq.from(Assignment.class);
+
+            cq.select(cb.construct(PermissionAction.class,
+                    root.get(Assignment_.ROLE).get(Role_.NAME),
+                    root.get(Assignment_.permission).get(Permission_.PRODUCT_NAME),
+                    root.get(Assignment_.permission).get(Permission_.APP_ID),
+                    root.get(Assignment_.permission).get(Permission_.RESOURCE),
+                    root.get(Assignment_.permission).get(Permission_.ACTION)));
+            cq.where(root.get(Assignment_.permission).get(Permission_.PRODUCT_NAME).in(productNames));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS, ex);
+        }
+    }
+
     public enum ErrorKeys {
+
+        ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS,
 
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_FIND_ASSIGNMENT_BY_CRITERIA;

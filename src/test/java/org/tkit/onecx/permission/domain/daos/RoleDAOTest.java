@@ -15,6 +15,8 @@ class RoleDAOTest extends AbstractDAOTest {
     @Test
     @SuppressWarnings("java:S2699")
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.findByNames(null),
+                RoleDAO.ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA);
         methodExceptionTests(() -> dao.findById(null),
                 RoleDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByCriteria(null),

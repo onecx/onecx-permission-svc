@@ -56,7 +56,7 @@ public class OperatorRestController implements PermissionOperatorApi {
         if (data.isEmpty()) {
             return Response.ok().build();
         }
-        var permissions = dao.loadByAppId(appId);
+        var permissions = dao.findByProductAndAppId(productName, appId);
         var map = permissions.stream().collect(Collectors.toMap(x -> x.getResource() + x.getAction(), x -> x));
 
         for (Permission item : data) {

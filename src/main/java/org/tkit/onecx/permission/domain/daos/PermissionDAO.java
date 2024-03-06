@@ -3,6 +3,7 @@ package org.tkit.onecx.permission.domain.daos;
 import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -30,9 +31,6 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
             List<Predicate> predicates = new ArrayList<>();
             addSearchStringPredicate(predicates, cb, root.get(Permission_.appId), criteria.getAppId());
-            if (criteria.getProductNames() != null) {
-                predicates.add(root.get(Permission_.PRODUCT_NAME).in(criteria.getProductNames()));
-            }
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
@@ -43,19 +41,21 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
-    public List<Permission> loadByAppId(String appId) {
+    public List<Permission> findByProductAndAppId(String productName, String appId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
             var root = cq.from(Permission.class);
-            cq.where(cb.equal(root.get(Permission_.APP_ID), appId));
+            cq.where(cb.and(
+                    cb.equal(root.get(Permission_.PRODUCT_NAME), productName),
+                    cb.equal(root.get(Permission_.APP_ID), appId)));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_BY_APP_ID, ex);
+            throw new DAOException(ErrorKeys.ERROR_FIND_BY_PRODUCT_AND_APP_ID, ex);
         }
     }
 
-    public List<Permission> loadByProductNames(List<String> productNames) {
+    public List<Permission> findByProductNames(Collection<String> productNames) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
@@ -63,7 +63,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             cq.where(root.get(Permission_.PRODUCT_NAME).in(productNames));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_BY_PRODUCT_NAMES, ex);
+            throw new DAOException(ErrorKeys.ERROR_FIND_BY_PRODUCT_NAMES, ex);
         }
     }
 
@@ -91,8 +91,8 @@ public class PermissionDAO extends AbstractDAO<Permission> {
     public enum ErrorKeys {
 
         ERROR_FIND_PERMISSION_FOR_USER,
-        ERROR_LOAD_BY_APP_ID,
+        ERROR_FIND_BY_PRODUCT_AND_APP_ID,
         ERROR_FIND_PERMISSION_BY_CRITERIA,
-        ERROR_LOAD_BY_PRODUCT_NAMES;
+        ERROR_FIND_BY_PRODUCT_NAMES;
     }
 }

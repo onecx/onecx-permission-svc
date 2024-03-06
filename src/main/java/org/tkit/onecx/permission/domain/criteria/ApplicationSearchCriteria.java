@@ -10,7 +10,6 @@ public class ApplicationSearchCriteria {
     private String appId;
 
     private String name;
-
-    private Integer pageNumber;
-    private Integer pageSize;
+    private Integer pageNumber = 0;
+    private Integer pageSize = 100;
 }

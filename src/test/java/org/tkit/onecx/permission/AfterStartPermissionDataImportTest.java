@@ -35,7 +35,7 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
         try {
             var ctx = Context.builder()
                     .principal("data-import")
-                    .tenantId("i100")
+                    .tenantId("default")
                     .build();
 
             ApplicationContext.start(ctx);
@@ -44,13 +44,13 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
             assertThat(applications).hasSize(2);
 
             var permissions = permissionDAO.findAll().toList();
-            assertThat(permissions).hasSize(8);
+            assertThat(permissions).hasSize(28);
 
             var roles = roleDAO.findAll().toList();
-            assertThat(roles).hasSize(2);
+            assertThat(roles).hasSize(1);
 
             var assignments = assignmentDAO.findAll();
-            assertThat(assignments).hasSize(6);
+            assertThat(assignments).hasSize(28);
 
         } finally {
             ApplicationContext.close();

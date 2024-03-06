@@ -1,6 +1,7 @@
 package org.tkit.onecx.permission.domain.di;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.onecx.permission.domain.di.PermissionDataImportV1.METADATA_OPERATION;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +20,12 @@ import org.tkit.quarkus.test.WithDBData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportDTOV1;
-import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportTenantWrapperDTOV1;
+import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportProductValueDTOV1;
+import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportTenantValueDTOV1;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@WithDBData(value = "data/test-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/test-di.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 class PermissionDataImportServiceTest extends AbstractTest {
 
     @Inject
@@ -37,33 +39,31 @@ class PermissionDataImportServiceTest extends AbstractTest {
 
     @Test
     void checkTest() {
-        var data = new DataImportDTOV1();
-        data.setTenants(null);
-        data.setPermissions(null);
+        var data = new DataImportDTOV1().tenants(null).products(null);
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
         data.setTenants(null);
-        data.setPermissions(Map.of());
+        data.products(Map.of());
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
         data.setTenants(Map.of());
-        data.setPermissions(Map.of());
+        data.products(Map.of());
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
         data.setTenants(Map.of());
-        data.setPermissions(null);
+        data.products(null);
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
-        data.setTenants(Map.of("2", new DataImportTenantWrapperDTOV1()));
-        data.setPermissions(Map.of("2", new HashMap<>()));
+        data.setTenants(Map.of("2", new DataImportTenantValueDTOV1()));
+        data.products(Map.of("2", new DataImportProductValueDTOV1()));
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isFalse();
 
-        data.setTenants(Map.of("2", new DataImportTenantWrapperDTOV1()));
-        data.setPermissions(null);
+        data.setTenants(Map.of("2", new DataImportTenantValueDTOV1()));
+        data.products(null);
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isFalse();
 
         data.setTenants(null);
-        data.setPermissions(Map.of("2", new HashMap<>()));
+        data.products(Map.of("2", new DataImportProductValueDTOV1()));
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isFalse();
     }
 
@@ -71,7 +71,7 @@ class PermissionDataImportServiceTest extends AbstractTest {
     void importDataNotSupportedActionTest() {
 
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("operation", "CUSTOM_NOT_SUPPORTED");
+        metadata.put(METADATA_OPERATION, "CUSTOM_NOT_SUPPORTED");
         DataImportConfig config = new DataImportConfig() {
             @Override
             public Map<String, String> getMetadata() {
@@ -82,7 +82,7 @@ class PermissionDataImportServiceTest extends AbstractTest {
         service.importData(config);
 
         List<Permission> data = permissionDAO.findAll().toList();
-        assertThat(data).isNotNull().hasSize(7);
+        assertThat(data).isNotNull().hasSize(8);
 
     }
 
@@ -92,14 +92,14 @@ class PermissionDataImportServiceTest extends AbstractTest {
             service.importData(new DataImportConfig() {
                 @Override
                 public Map<String, String> getMetadata() {
-                    return Map.of("operation", "CLEAN_INSERT");
+                    return Map.of(METADATA_OPERATION, PermissionDataImportV1.Operation.CLEAN_INSERT.name());
                 }
             });
 
             service.importData(new DataImportConfig() {
                 @Override
                 public Map<String, String> getMetadata() {
-                    return Map.of("operation", "CLEAN_INSERT");
+                    return Map.of(METADATA_OPERATION, "NOT_SUPPORTED");
                 }
 
                 @Override
@@ -111,7 +111,19 @@ class PermissionDataImportServiceTest extends AbstractTest {
             service.importData(new DataImportConfig() {
                 @Override
                 public Map<String, String> getMetadata() {
-                    return Map.of("operation", "CLEAN_INSERT");
+                    return Map.of(METADATA_OPERATION, PermissionDataImportV1.Operation.CLEAN_INSERT.name());
+                }
+
+                @Override
+                public byte[] getData() {
+                    return new byte[] {};
+                }
+            });
+
+            service.importData(new DataImportConfig() {
+                @Override
+                public Map<String, String> getMetadata() {
+                    return Map.of(METADATA_OPERATION, PermissionDataImportV1.Operation.CLEAN_INSERT.name());
                 }
 
                 @Override
@@ -127,14 +139,14 @@ class PermissionDataImportServiceTest extends AbstractTest {
             service.importData(new DataImportConfig() {
                 @Override
                 public Map<String, String> getMetadata() {
-                    return Map.of("operation", "CLEAN_INSERT");
+                    return Map.of(METADATA_OPERATION, PermissionDataImportV1.Operation.CLEAN_INSERT.name());
                 }
 
                 @Override
                 public byte[] getData() {
                     try {
                         var data = new DataImportDTOV1();
-                        data.setPermissions(null);
+                        data.setProducts(null);
                         data.setTenants(null);
                         return mapper.writeValueAsBytes(data);
                     } catch (Exception ex) {
@@ -146,14 +158,14 @@ class PermissionDataImportServiceTest extends AbstractTest {
             service.importData(new DataImportConfig() {
                 @Override
                 public Map<String, String> getMetadata() {
-                    return Map.of("operation", "CLEAN_INSERT");
+                    return Map.of(METADATA_OPERATION, PermissionDataImportV1.Operation.CLEAN_INSERT.name());
                 }
 
                 @Override
                 public byte[] getData() {
                     try {
                         var data = new DataImportDTOV1();
-                        data.setPermissions(null);
+                        data.setProducts(null);
                         data.setTenants(Map.of());
                         return mapper.writeValueAsBytes(data);
                     } catch (Exception ex) {
@@ -167,7 +179,7 @@ class PermissionDataImportServiceTest extends AbstractTest {
         var config = new DataImportConfig() {
             @Override
             public Map<String, String> getMetadata() {
-                return Map.of("operation", "CLEAN_INSERT");
+                return Map.of(METADATA_OPERATION, PermissionDataImportV1.Operation.CLEAN_INSERT.name());
             }
 
             @Override
@@ -178,4 +190,31 @@ class PermissionDataImportServiceTest extends AbstractTest {
         Assertions.assertThrows(PermissionDataImportV1.ImportException.class, () -> service.importData(config));
 
     }
+
+    @Test
+    void importEmptyProductsDataTest() {
+        Assertions.assertDoesNotThrow(() -> {
+            service.importData(new DataImportConfig() {
+                @Override
+                public Map<String, String> getMetadata() {
+                    return Map.of(METADATA_OPERATION, PermissionDataImportV1.Operation.CLEAN_INSERT.name());
+                }
+
+                @Override
+                public byte[] getData() {
+                    try {
+                        var data = new DataImportDTOV1();
+                        data.setProducts(new HashMap<>());
+                        data.setTenants(Map.of(
+                                "default", new DataImportTenantValueDTOV1(),
+                                "100", new DataImportTenantValueDTOV1()));
+                        return mapper.writeValueAsBytes(data);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        });
+    }
+
 }

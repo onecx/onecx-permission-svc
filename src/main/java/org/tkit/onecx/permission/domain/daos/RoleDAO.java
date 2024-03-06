@@ -4,6 +4,7 @@ import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredic
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
@@ -54,6 +55,18 @@ public class RoleDAO extends AbstractDAO<Role> {
             }
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA, ex);
+        }
+    }
+
+    public List<Role> findByNames(Set<String> names) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Role.class);
+            var root = cq.from(Role.class);
+            cq.where(root.get(Role_.name).in(names));
+            return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA, ex);
         }

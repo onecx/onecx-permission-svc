@@ -4,6 +4,7 @@ import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredic
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
@@ -30,7 +31,6 @@ public class ApplicationDAO extends AbstractDAO<Application> {
             List<Predicate> predicates = new ArrayList<>();
             addSearchStringPredicate(predicates, cb, root.get(Application_.appId), criteria.getAppId());
             addSearchStringPredicate(predicates, cb, root.get(Application_.name), criteria.getName());
-
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
@@ -57,7 +57,21 @@ public class ApplicationDAO extends AbstractDAO<Application> {
         }
     }
 
+    public List<Application> findByProductNames(Set<String> productNames) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Application.class);
+            var root = cq.from(Application.class);
+            cq.where(root.get(Permission_.PRODUCT_NAME).in(productNames));
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_APPLICATIONS_BY_PRODUCT_NAMES, ex);
+        }
+    }
+
     public enum ErrorKeys {
+
+        ERROR_FIND_APPLICATIONS_BY_PRODUCT_NAMES,
 
         ERROR_FIND_APPLICATIONS_BY_CRITERIA,
         ERROR_LOAD_BY_APP_ID;
