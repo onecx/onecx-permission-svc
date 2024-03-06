@@ -24,11 +24,18 @@ components:
       properties:
         tenants:
           $ref: '#/components/schemas/DataImportTenant'
-        applications:
-          $ref: '#/components/schemas/DataImportApplicationWrapper'
-        permissions:
-          $ref: '#/components/schemas/DataImportProductWrapper'
-    DataImportApplicationWrapper:
+        products:
+          $ref: '#/components/schemas/DataImportProduct'
+    DataImportProduct:
+      type: object
+      nullable: false
+      description: product name
+      additionalProperties:
+        type: object
+        properties:
+          applications:
+             $ref: '#/components/schemas/DataImportApplication'
+    DataImportApplication:
       type: object
       nullable: false
       description: application id
@@ -37,23 +44,11 @@ components:
         properties:
           name:
             type: string
-          productName:
-            type: string
           description:
             type: string
-    DataImportProductWrapper:
-      type: object
-      nullable: false
-      description: product name
-      additionalProperties:
-        $ref: '#/components/schemas/DataImportPermissionWrapper'
-    DataImportPermissionWrapper:
-      type: object
-      nullable: false
-      description: application id
-      additionalProperties:
-         $ref: '#/components/schemas/DataImportPermission'
-    DataImportPermission:
+          permissions:
+            $ref: '#/components/schemas/DataImportApplicationPermission'
+    DataImportApplicationPermission:
       type: object
       nullable: false
       description: resource id
@@ -62,7 +57,7 @@ components:
     DataImportPermissionAction:
       type: object
       nullable: false
-      description: action id
+      description: action id, description
       additionalProperties:
         type: string
     DataImportTenant:
@@ -70,38 +65,33 @@ components:
       nullable: false
       description: tenant id
       additionalProperties:
-        $ref: '#/components/schemas/DataImportTenantWrapper'
-    DataImportTenantWrapper:
-      type: object
-      properties:
-        roles:
-          $ref: '#/components/schemas/DataImportRoleWrapper'
-    DataImportRoleWrapper:
+        type: object
+        properties:
+          roles:
+            $ref: '#/components/schemas/DataImportTenantRole'
+    DataImportTenantRole:
       type: object
       nullable: false
       description: role name
       additionalProperties:
-        $ref: '#/components/schemas/DataImportRole'
-    DataImportRole:
-      type: object
-      properties:
-        description:
-          type: string
-        assignments:
-          $ref: '#/components/schemas/DataImportProductAssignmentWrapper'
-    DataImportProductAssignmentWrapper:
+        properties:
+          description:
+            type: string
+          assignments:
+            $ref: '#/components/schemas/DataImportTenantProductAssignment'
+    DataImportTenantProductAssignment:
       type: object
       nullable: false
       description: product name
       additionalProperties:
-        $ref: '#/components/schemas/DataImportAssignmentWrapper'
-    DataImportAssignmentWrapper:
+        $ref: '#/components/schemas/DataImportTenantProductApplicationAssignment'
+    DataImportTenantProductApplicationAssignment:
       type: object
       nullable: false
       description: application id
       additionalProperties:
-        $ref: '#/components/schemas/DataImportAssignment'
-    DataImportAssignment:
+        $ref: '#/components/schemas/DataImportTenantAssignment'
+    DataImportTenantAssignment:
       type: object
       nullable: false
       description: action

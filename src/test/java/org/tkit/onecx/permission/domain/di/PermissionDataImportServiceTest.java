@@ -19,7 +19,8 @@ import org.tkit.quarkus.test.WithDBData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportDTOV1;
-import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportTenantWrapperDTOV1;
+import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportProductValueDTOV1;
+import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportTenantValueDTOV1;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
@@ -37,33 +38,31 @@ class PermissionDataImportServiceTest extends AbstractTest {
 
     @Test
     void checkTest() {
-        var data = new DataImportDTOV1();
-        data.setTenants(null);
-        data.setPermissions(null);
+        var data = new DataImportDTOV1().tenants(null).products(null);
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
         data.setTenants(null);
-        data.setPermissions(Map.of());
+        data.products(Map.of());
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
         data.setTenants(Map.of());
-        data.setPermissions(Map.of());
+        data.products(Map.of());
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
         data.setTenants(Map.of());
-        data.setPermissions(null);
+        data.products(null);
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isTrue();
 
-        data.setTenants(Map.of("2", new DataImportTenantWrapperDTOV1()));
-        data.setPermissions(Map.of("2", new HashMap<>()));
+        data.setTenants(Map.of("2", new DataImportTenantValueDTOV1()));
+        data.products(Map.of("2", new DataImportProductValueDTOV1()));
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isFalse();
 
-        data.setTenants(Map.of("2", new DataImportTenantWrapperDTOV1()));
-        data.setPermissions(null);
+        data.setTenants(Map.of("2", new DataImportTenantValueDTOV1()));
+        data.products(null);
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isFalse();
 
         data.setTenants(null);
-        data.setPermissions(Map.of("2", new HashMap<>()));
+        data.products(Map.of("2", new DataImportProductValueDTOV1()));
         assertThat(PermissionDataImportV1.checkIsEmpty(data)).isFalse();
     }
 
@@ -134,7 +133,7 @@ class PermissionDataImportServiceTest extends AbstractTest {
                 public byte[] getData() {
                     try {
                         var data = new DataImportDTOV1();
-                        data.setPermissions(null);
+                        data.setProducts(null);
                         data.setTenants(null);
                         return mapper.writeValueAsBytes(data);
                     } catch (Exception ex) {
@@ -153,7 +152,7 @@ class PermissionDataImportServiceTest extends AbstractTest {
                 public byte[] getData() {
                     try {
                         var data = new DataImportDTOV1();
-                        data.setPermissions(null);
+                        data.setProducts(null);
                         data.setTenants(Map.of());
                         return mapper.writeValueAsBytes(data);
                     } catch (Exception ex) {
@@ -178,4 +177,63 @@ class PermissionDataImportServiceTest extends AbstractTest {
         Assertions.assertThrows(PermissionDataImportV1.ImportException.class, () -> service.importData(config));
 
     }
+
+    @Test
+    void importEmptyProductsDataTest() {
+        Assertions.assertDoesNotThrow(() -> {
+            service.importData(new DataImportConfig() {
+                @Override
+                public Map<String, String> getMetadata() {
+                    return Map.of("operation", "CLEAN_INSERT");
+                }
+
+                @Override
+                public byte[] getData() {
+                    try {
+                        var data = new DataImportDTOV1();
+                        data.setProducts(new HashMap<>());
+                        data.setTenants(Map.of(
+                                "default", new DataImportTenantValueDTOV1(),
+                                "100", new DataImportTenantValueDTOV1()));
+                        return mapper.writeValueAsBytes(data);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        });
+    }
+
+    //    @Test
+    //    void importProductEmptyApplicationsDataTest() {
+    //        Assertions.assertDoesNotThrow(() -> {
+    //            service.importData(new DataImportConfig() {
+    //                @Override
+    //                public Map<String, String> getMetadata() {
+    //                    return Map.of("operation", "CLEAN_INSERT");
+    //                }
+    //
+    //                @Override
+    //                public byte[] getData() {
+    //                    try {
+    //                        var products = new HashMap<String, DataImportProductValueDTOV1>();
+    //                        products.put("p", new DataImportProductValueDTOV1().applications(
+    //                                Map.of("a", new DataImportApplicationValueDTOV1()
+    //                                        .permissions(Map.of(
+    //
+    //                                        )))
+    //                        ));
+    //                        var data = new DataImportDTOV1();
+    //                        data.setProducts(products);
+    //                        data.setTenants(Map.of(
+    //                                "default", new DataImportTenantValueDTOV1(),
+    //                                "100", new DataImportTenantValueDTOV1()));
+    //                        return mapper.writeValueAsBytes(data);
+    //                    } catch (Exception ex) {
+    //                        throw new RuntimeException(ex);
+    //                    }
+    //                }
+    //            });
+    //        });
+    //    }
 }
