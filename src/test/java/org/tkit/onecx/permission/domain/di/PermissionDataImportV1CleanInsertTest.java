@@ -11,10 +11,10 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithDBData(value = "data/test-di.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class PermissionDataImportV1CleanInsertTest extends AbstractPermissionDataImportV1Test {
+class PermissionDataImportV1CleanInsertTest extends AbstractPermissionDataImportV1Test {
 
     @Test
-    public void cleanInsertTest() {
+    void cleanInsertTest() {
 
         var dto = new DataImportDTOV1();
         dto.products(Map.of(

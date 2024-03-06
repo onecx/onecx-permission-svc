@@ -20,7 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportDTOV1;
 
-public class AbstractPermissionDataImportV1Test extends AbstractTest {
+@SuppressWarnings("java:S2187")
+public abstract class AbstractPermissionDataImportV1Test extends AbstractTest {
 
     @Inject
     PermissionDataImportV1 service;

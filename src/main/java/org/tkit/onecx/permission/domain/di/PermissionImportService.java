@@ -29,11 +29,13 @@ public class PermissionImportService {
     @Inject
     ApplicationDAO applicationDAO;
 
+    private static final String PRINCIPAL = "data-import";
+
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void deleteAllData(String tenantId) {
         try {
             var ctx = Context.builder()
-                    .principal("data-import")
+                    .principal(PRINCIPAL)
                     .tenantId(tenantId)
                     .build();
 
@@ -72,7 +74,7 @@ public class PermissionImportService {
     public void createTenantData(String tenantId, List<Role> roles, List<Assignment> assignments) {
         try {
             var ctx = Context.builder()
-                    .principal("data-import")
+                    .principal(PRINCIPAL)
                     .tenantId(tenantId)
                     .build();
 
@@ -94,7 +96,7 @@ public class PermissionImportService {
             List<Role> updateRoles) {
         try {
             var ctx = Context.builder()
-                    .principal("data-import")
+                    .principal(PRINCIPAL)
                     .tenantId(tenantId)
                     .build();
 

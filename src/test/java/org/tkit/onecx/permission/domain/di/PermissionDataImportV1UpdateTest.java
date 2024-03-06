@@ -13,13 +13,13 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithDBData(value = "data/test-di.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class PermissionDataImportV1UpdateTest extends AbstractPermissionDataImportV1Test {
+class PermissionDataImportV1UpdateTest extends AbstractPermissionDataImportV1Test {
 
     @Inject
     PermissionDataImportV1 service;
 
     @Test
-    public void updateNewDataTest() {
+    void updateNewDataTest() {
 
         var dto = new DataImportDTOV1();
         dto.products(Map.of(
@@ -52,7 +52,7 @@ public class PermissionDataImportV1UpdateTest extends AbstractPermissionDataImpo
     }
 
     @Test
-    public void updateExistingDataTest() {
+    void updateExistingDataTest() {
 
         var dto = new DataImportDTOV1();
         dto.products(Map.of(
