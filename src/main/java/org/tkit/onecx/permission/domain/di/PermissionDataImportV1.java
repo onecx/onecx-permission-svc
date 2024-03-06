@@ -1,16 +1,21 @@
 package org.tkit.onecx.permission.domain.di;
 
-import java.util.ArrayList;
-import java.util.Map;
+import static java.util.stream.Collectors.toMap;
+
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tkit.onecx.permission.domain.daos.ApplicationDAO;
+import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
+import org.tkit.onecx.permission.domain.daos.PermissionDAO;
+import org.tkit.onecx.permission.domain.daos.RoleDAO;
 import org.tkit.onecx.permission.domain.di.mappers.DataImportV1Mapper;
 import org.tkit.onecx.permission.domain.models.Application;
+import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.models.Permission;
 import org.tkit.onecx.permission.domain.models.Role;
 import org.tkit.quarkus.dataimport.DataImport;
@@ -28,6 +33,8 @@ public class PermissionDataImportV1 implements DataImportService {
 
     private static final Logger log = LoggerFactory.getLogger(PermissionDataImportV1.class);
 
+    public static final String METADATA_OPERATION = "operation";
+
     @Inject
     ObjectMapper objectMapper;
 
@@ -37,15 +44,28 @@ public class PermissionDataImportV1 implements DataImportService {
     @Inject
     DataImportV1Mapper mapper;
 
+    @Inject
+    ApplicationDAO applicationDAO;
+
+    @Inject
+    PermissionDAO permissionDAO;
+
+    @Inject
+    RoleDAO roleDAO;
+
+    @Inject
+    AssignmentDAO assignmentDAO;
+
     @Override
     public void importData(DataImportConfig config) {
         log.info("Import permissions from configuration {}", config);
         try {
-            var operation = config.getMetadata().getOrDefault("operation", "NONE");
+            var operation = config.getMetadata().get(METADATA_OPERATION);
+            var op = Operation.valueOfMetadata(operation);
 
-            Consumer<DataImportDTOV1> action = switch (operation) {
-                case "CLEAN_INSERT" -> this::cleanInsert;
-                case "UPDATE" -> this::update;
+            Consumer<DataImportDTOV1> action = switch (op) {
+                case CLEAN_INSERT -> this::cleanInsert;
+                case UPDATE -> this::update;
                 default -> null;
             };
 
@@ -87,21 +107,21 @@ public class PermissionDataImportV1 implements DataImportService {
         // create application and permissions
         var applications = new ArrayList<Application>();
         var permissions = new ArrayList<Permission>();
+        Map<String, Permission> permissionMap = new HashMap<>();
 
-        for (Map.Entry<String, DataImportProductValueDTOV1> p : data.getProducts().entrySet()) {
-            String productName = p.getKey();
+        for (Map.Entry<String, DataImportProductValueDTOV1> product : data.getProducts().entrySet()) {
+            String productName = product.getKey();
 
-            for (Map.Entry<String, DataImportApplicationValueDTOV1> a : p.getValue().getApplications().entrySet()) {
+            for (Map.Entry<String, DataImportApplicationValueDTOV1> a : product.getValue().getApplications().entrySet()) {
                 var appId = a.getKey();
-                var app = a.getValue();
-                applications.add(mapper.createApp(appId, app.getName(), app.getDescription(), productName));
+                applications.add(mapper.createApp(productName, appId, a.getValue().getName(), a.getValue().getDescription()));
 
-                for (Map.Entry<String, Map<String, String>> perm : app.getPermissions().entrySet()) {
+                for (Map.Entry<String, Map<String, String>> perm : a.getValue().getPermissions().entrySet()) {
                     var resource = perm.getKey();
                     for (Map.Entry<String, String> action : perm.getValue().entrySet()) {
-                        var permission = mapper.createPermission(appId, resource, action.getKey(), productName);
-                        permission.setDescription(action.getValue());
-                        permissions.add(permission);
+                        var p = mapper.createPermission(productName, appId, resource, action.getKey(), action.getValue());
+                        permissions.add(p);
+                        permissionMap.put(p.getProductName() + p.getAppId() + p.getResource() + p.getAction(), p);
                     }
                 }
 
@@ -109,7 +129,7 @@ public class PermissionDataImportV1 implements DataImportService {
         }
 
         // create all products, start Tx
-        Map<String, Permission> permissionMap = service.createAllProducts(applications, permissions);
+        service.createAllProducts(applications, permissions);
 
         // create tenant data
         data.getTenants().forEach((tenantId, dto) -> {
@@ -117,7 +137,7 @@ public class PermissionDataImportV1 implements DataImportService {
             // mapping
             var roles = mapper.createRoles(dto.getRoles());
 
-            var rolesMap = roles.stream().collect(Collectors.toMap(Role::getName, r -> r));
+            var rolesMap = roles.stream().collect(toMap(Role::getName, r -> r));
             var mapping = mapper.createMapping(dto.getRoles());
             var assignments = mapper.createAssignments(mapping, rolesMap, permissionMap);
 
@@ -135,10 +155,132 @@ public class PermissionDataImportV1 implements DataImportService {
     }
 
     public void update(DataImportDTOV1 data) {
-        // update applications
-        var permissionMap = service.updateApplicationsAndPermissions(data.getProducts());
 
-        //update tenant data
-        //        data.getTenants().forEach((tenantId, dto) -> service.createTenantData(tenantId, dto, permissionMap));
+        // find apps in DB
+        var appList = applicationDAO.findByProductNames(data.getProducts().keySet());
+        var appMap = appList.stream().collect(toMap(x -> x.getProductName() + x.getAppId(), x -> x));
+
+        // find permission in DB
+        var loadedProductPermissions = new HashSet<>(data.getProducts().keySet());
+        var permList = permissionDAO.findByProductNames(data.getProducts().keySet());
+        var permMap = permList.stream()
+                .collect(toMap(x -> x.getProductName() + x.getAppId() + x.getResource() + x.getAction(), x -> x));
+
+        // create or update apps
+        var createApplications = new ArrayList<Application>();
+        var updateApplications = new ArrayList<Application>();
+        // create or update permission
+        var createPermissions = new ArrayList<Permission>();
+        var updatePermissions = new ArrayList<Permission>();
+
+        for (Map.Entry<String, DataImportProductValueDTOV1> p : data.getProducts().entrySet()) {
+            String productName = p.getKey();
+
+            for (Map.Entry<String, DataImportApplicationValueDTOV1> a : p.getValue().getApplications().entrySet()) {
+                var appId = a.getKey();
+                var app = a.getValue();
+
+                var appDb = appMap.get(productName + appId);
+                if (appDb != null) {
+                    updateApplications.add(mapper.updateApp(app.getName(), app.getDescription(), appDb));
+                } else {
+                    createApplications.add(mapper.createApp(productName, appId, app.getName(), app.getDescription()));
+                }
+
+                for (Map.Entry<String, Map<String, String>> perm : app.getPermissions().entrySet()) {
+                    var resource = perm.getKey();
+                    for (Map.Entry<String, String> action : perm.getValue().entrySet()) {
+
+                        var id = productName + appId + resource + action.getKey();
+                        var permDb = permMap.get(id);
+                        if (permDb != null) {
+                            updatePermissions.add(mapper.updatePermission(action.getValue(), permDb));
+                        } else {
+                            var x = mapper.createPermission(productName, appId, resource, action.getKey(), action.getValue());
+                            createPermissions.add(x);
+                            permMap.put(x.getProductName() + x.getAppId() + x.getResource() + x.getAction(), x);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        // create or update all products, start Tx
+        service.createAndUpdateAllProducts(createApplications, createPermissions, updateApplications, updatePermissions);
+
+        // tenant data
+        data.getTenants().forEach((tenantId, dto) -> {
+            // check roles in DB
+            var roleList = roleDAO.findByNames(dto.getRoles().keySet());
+            var roleMap = roleList.stream().collect(toMap(Role::getName, x -> x));
+
+            var productNames = new HashSet<String>();
+            for (var dr : dto.getRoles().entrySet()) {
+                productNames.addAll(dr.getValue().getAssignments().keySet());
+            }
+
+            // check assignments in DB
+            var assignmentList = assignmentDAO.findPermissionActionForProducts(productNames);
+            var assignmentMap = assignmentList.stream().collect(
+                    toMap(x -> x.roleName() + x.productName() + x.applicationId() + x.resource() + x.action(), x -> x));
+
+            // check if we have all permission
+            productNames.removeAll(loadedProductPermissions);
+            if (!productNames.isEmpty()) {
+                var tmp = permissionDAO.findByProductNames(productNames);
+                tmp.forEach(x -> permMap.put(x.getProductName() + x.getAppId() + x.getResource() + x.getAction(), x));
+            }
+
+            // create or update roles
+            var createRoles = new ArrayList<Role>();
+            var updateRoles = new ArrayList<Role>();
+            var assignments = new ArrayList<Assignment>();
+
+            for (var dr : dto.getRoles().entrySet()) {
+                var role = roleMap.get(dr.getKey());
+                if (role != null) {
+                    updateRoles.add(mapper.updateRole(dr.getValue().getDescription(), role));
+                } else {
+                    role = mapper.createRole(dr.getKey(), dr.getValue().getDescription());
+                    createRoles.add(role);
+                    roleMap.put(role.getName(), role);
+                }
+
+                // check the assignments
+                for (var aProduct : dr.getValue().getAssignments().entrySet()) {
+                    for (var aApp : aProduct.getValue().entrySet()) {
+                        for (var aResource : aApp.getValue().entrySet()) {
+                            for (var action : aResource.getValue()) {
+                                var permId = aProduct.getKey() + aApp.getKey() + aResource.getKey() + action;
+                                if (!assignmentMap.containsKey(role.getName() + permId)) {
+                                    var p = permMap.get(permId);
+                                    assignments.add(mapper.createAssignment(role, p));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // create data, start tenant Tx
+            service.createAndUpdateTenantData(tenantId, createRoles, assignments, updateRoles);
+        });
+    }
+
+    public enum Operation {
+        NONE,
+        CLEAN_INSERT,
+
+        UPDATE;
+
+        public static Operation valueOfMetadata(String operation) {
+            for (Operation value : values()) {
+                if (value.name().equalsIgnoreCase(operation)) {
+                    return value;
+                }
+            }
+            return NONE;
+        }
     }
 }

@@ -2,7 +2,6 @@ package org.tkit.onecx.permission.rs.internal.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -13,6 +12,7 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
+import org.tkit.onecx.permission.domain.services.AssignmentService;
 import org.tkit.onecx.permission.rs.internal.mappers.AssignmentMapper;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -42,6 +42,9 @@ public class AssignmentRestController implements AssignmentInternalApi {
 
     @Inject
     PermissionDAO permissionDAO;
+
+    @Inject
+    AssignmentService service;
 
     @Override
     public Response getAssignment(String id) {
@@ -88,21 +91,20 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    @Transactional
     public Response createProductAssignment(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        var permissions = permissionDAO.loadByProductNames(createAssignmentRequestDTO.getProductNames());
+        var permissions = permissionDAO.findByProductNames(createAssignmentRequestDTO.getProductNames());
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         var data = mapper.createList(role, permissions);
 
-        dao.deleteByCriteria(role.getId(), createAssignmentRequestDTO.getProductNames(), null);
-        dao.create(data);
+        service.createProductAssignment(data, role.getId(), createAssignmentRequestDTO.getProductNames());
+
         return Response.status(Response.Status.CREATED).build();
 
     }

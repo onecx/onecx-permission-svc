@@ -1,24 +1,18 @@
 package org.tkit.onecx.permission.domain.di;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.permission.domain.daos.*;
-import org.tkit.onecx.permission.domain.di.mappers.DataImportV1Mapper;
 import org.tkit.onecx.permission.domain.models.Application;
 import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.models.Permission;
 import org.tkit.onecx.permission.domain.models.Role;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.context.Context;
-
-import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportProductValueDTOV1;
-import gen.org.tkit.onecx.permission.domain.di.v1.model.DataImportTenantValueDTOV1;
 
 @ApplicationScoped
 public class PermissionImportService {
@@ -54,20 +48,25 @@ public class PermissionImportService {
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public Map<String, Permission> createAllProducts(List<Application> applications, List<Permission> permissions) {
+    public void createAllProducts(List<Application> applications, List<Permission> permissions) {
 
         permissionDAO.deleteQueryAll();
         permissionDAO.create(permissions);
 
         applicationDAO.deleteQueryAll();
         applicationDAO.create(applications);
-
-        return permissions.stream()
-                .collect(Collectors.toMap(r -> r.getProductName() + r.getAppId() + r.getResource() + r.getAction(), r -> r));
     }
 
-    @Inject
-    DataImportV1Mapper mapper;
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void createAndUpdateAllProducts(List<Application> createApplications, List<Permission> createPermissions,
+            List<Application> updateApplications, List<Permission> updatePermissions) {
+
+        permissionDAO.create(createPermissions);
+        permissionDAO.update(updatePermissions);
+
+        applicationDAO.create(createApplications);
+        applicationDAO.update(updateApplications);
+    }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void createTenantData(String tenantId, List<Role> roles, List<Assignment> assignments) {
@@ -80,7 +79,6 @@ public class PermissionImportService {
             ApplicationContext.start(ctx);
 
             // create tenant roles
-            System.out.println("### " + tenantId + " roles " + roles);
             roleDAO.create(roles);
 
             // create tenant assignments
@@ -92,13 +90,26 @@ public class PermissionImportService {
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public Map<String, Permission> updateApplicationsAndPermissions(Map<String, DataImportProductValueDTOV1> products) {
-        return null;
-    }
+    public void createAndUpdateTenantData(String tenantId, List<Role> createRoles, List<Assignment> createAssignments,
+            List<Role> updateRoles) {
+        try {
+            var ctx = Context.builder()
+                    .principal("data-import")
+                    .tenantId(tenantId)
+                    .build();
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void updateTenantData(String tenantId, DataImportTenantValueDTOV1 dto, Map<String, Permission> permissionMap) {
+            ApplicationContext.start(ctx);
 
+            // create tenant roles
+            roleDAO.create(createRoles);
+            roleDAO.update(updateRoles);
+
+            // create tenant assignments
+            assignmentDAO.create(createAssignments);
+
+        } finally {
+            ApplicationContext.close();
+        }
     }
 
 }

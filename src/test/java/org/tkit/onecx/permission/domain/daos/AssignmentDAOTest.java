@@ -19,6 +19,8 @@ class AssignmentDAOTest extends AbstractDAOTest {
                 AssignmentDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);
+        methodExceptionTests(() -> dao.findPermissionActionForProducts(null),
+                AssignmentDAO.ErrorKeys.ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS);
     }
 
 }

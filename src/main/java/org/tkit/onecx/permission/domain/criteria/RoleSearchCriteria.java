@@ -9,6 +9,6 @@ public class RoleSearchCriteria {
 
     private String name;
     private String description;
-    private Integer pageNumber;
-    private Integer pageSize;
+    private Integer pageNumber = 0;
+    private Integer pageSize = 100;
 }
