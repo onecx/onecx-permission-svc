@@ -31,6 +31,11 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
             List<Predicate> predicates = new ArrayList<>();
             addSearchStringPredicate(predicates, cb, root.get(Permission_.appId), criteria.getAppId());
+
+            if (criteria.getProductNames() != null) {
+                predicates.add(root.get(Permission_.PRODUCT_NAME).in(criteria.getProductNames()));
+            }
+
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
