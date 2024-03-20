@@ -72,7 +72,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
-    public List<Permission> findPermissionForUser(String appId, List<String> roles) {
+    public List<Permission> findPermissionForUser(String productName, String appId, List<String> roles) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
@@ -83,7 +83,8 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             sq.select(subRoot.get(Assignment_.PERMISSION_ID));
             sq.where(
                     subRoot.get(Assignment_.role).get(Role_.name).in(roles),
-                    cb.equal(subRoot.get(Assignment_.permission).get(Permission_.appId), appId));
+                    cb.equal(subRoot.get(Assignment_.permission).get(Permission_.appId), appId),
+                    cb.equal(subRoot.get(Assignment_.permission).get(Permission_.productName), productName));
 
             cq.where(root.get(TraceableEntity_.id).in(sq));
 
