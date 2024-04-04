@@ -31,6 +31,7 @@ public class ApplicationDAO extends AbstractDAO<Application> {
             List<Predicate> predicates = new ArrayList<>();
             addSearchStringPredicate(predicates, cb, root.get(Application_.appId), criteria.getAppId());
             addSearchStringPredicate(predicates, cb, root.get(Application_.name), criteria.getName());
+            addSearchStringPredicate(predicates, cb, root.get(Application_.productName), criteria.getProductName());
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
