@@ -328,7 +328,7 @@ components:
     AssignmentSearchCriteria:
       type: object
       properties:
-        appId:
+        appIds:
           type: array
           items:
             type: string
@@ -342,6 +342,9 @@ components:
           description: The size of page
           default: 100
           type: integer
+        roleId:
+          type: string
+          description: The size of page
     AssignmentPageResult:
       type: object
       properties:
