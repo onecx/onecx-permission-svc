@@ -261,7 +261,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(3);
         assertThat(data.getStream()).isNotNull().hasSize(3);
 
-        criteria.setAppId(List.of("  "));
+        criteria.setAppIds(List.of("  "));
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -279,7 +279,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         var criteria2 = new AssignmentSearchCriteriaDTO();
 
-        criteria2.setAppId(List.of("app1"));
+        criteria2.setAppIds(List.of("app1"));
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -297,7 +297,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         //get by multiple appIds
         var multipleAppIdsCriteria = new AssignmentSearchCriteriaDTO();
-        multipleAppIdsCriteria.appId(List.of("app1", "app2", ""));
+        multipleAppIdsCriteria.appIds(List.of("app1", "app2", ""));
 
         var multipleAppIdsResult = given()
                 .contentType(APPLICATION_JSON)
