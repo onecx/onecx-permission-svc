@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.permission.domain.criteria.PermissionSearchCriteria;
 import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
@@ -59,7 +60,8 @@ public class AssignmentRestController implements AssignmentInternalApi {
     public Response revokeAssignments(RevokeAssignmentRequestDTO createRevokeAssignmentRequestDTO) {
         dao.deleteByCriteria(createRevokeAssignmentRequestDTO.getRoleId(),
                 createRevokeAssignmentRequestDTO.getProductNames(),
-                createRevokeAssignmentRequestDTO.getPermissionId());
+                createRevokeAssignmentRequestDTO.getPermissionId(),
+                createRevokeAssignmentRequestDTO.getAppId());
 
         return Response.status(Response.Status.NO_CONTENT).build();
     }
@@ -91,7 +93,7 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    public Response createProductAssignment(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
+    public Response grantAssignment(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -101,6 +103,19 @@ public class AssignmentRestController implements AssignmentInternalApi {
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+
+        if (createAssignmentRequestDTO.getAppId() != null) {
+            PermissionSearchCriteria permissionSearchCriteria = new PermissionSearchCriteria();
+            permissionSearchCriteria.setAppId(createAssignmentRequestDTO.getAppId());
+            var permissionsFromAppId = permissionDAO.findByAppId(permissionSearchCriteria.getAppId());
+            if (permissionsFromAppId.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            var data = mapper.createList(role, permissionsFromAppId);
+            service.createProductAssignment(data, role.getId(), createAssignmentRequestDTO.getProductNames());
+            return Response.status(Response.Status.CREATED).build();
+        }
+
         var data = mapper.createList(role, permissions);
 
         service.createProductAssignment(data, role.getId(), createAssignmentRequestDTO.getProductNames());

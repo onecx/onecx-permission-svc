@@ -122,7 +122,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(CREATED.getStatusCode());
 
@@ -133,7 +133,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(invalidRequestDTO)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -143,7 +143,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(invalidRequestDTO)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -157,7 +157,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }
