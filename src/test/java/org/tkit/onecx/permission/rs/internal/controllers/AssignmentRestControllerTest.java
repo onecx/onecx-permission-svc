@@ -187,8 +187,6 @@ class AssignmentRestControllerTest extends AbstractTest {
 
     }
 
-
-
     @Test
     void revokeAssignmentsByOnlyRoleIdTest() {
         var requestDTO = new RevokeAssignmentRequestDTO();
