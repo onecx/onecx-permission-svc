@@ -163,6 +163,33 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void grantAssignmentByAppId() {
+        // create Assignment
+        var requestDTO = new CreateProductAssignmentRequestDTO();
+        requestDTO.setRoleId("r11");
+        requestDTO.setAppId("app2");
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/grant")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/grant")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+    }
+
+
+
+    @Test
     void revokeAssignmentsByOnlyRoleIdTest() {
         var requestDTO = new RevokeAssignmentRequestDTO();
         requestDTO.roleId("r14");

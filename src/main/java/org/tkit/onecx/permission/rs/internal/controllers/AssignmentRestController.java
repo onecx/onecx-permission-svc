@@ -94,13 +94,14 @@ public class AssignmentRestController implements AssignmentInternalApi {
 
     @Override
     public Response grantAssignment(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
+        System.out.println("GRANT_CALLED______" + createAssignmentRequestDTO);
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         var permissions = permissionDAO.findByProductNames(createAssignmentRequestDTO.getProductNames());
-        if (permissions.isEmpty()) {
+        if (permissions.isEmpty() && createAssignmentRequestDTO.getAppId() == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
@@ -108,7 +109,7 @@ public class AssignmentRestController implements AssignmentInternalApi {
             PermissionSearchCriteria permissionSearchCriteria = new PermissionSearchCriteria();
             permissionSearchCriteria.setAppId(createAssignmentRequestDTO.getAppId());
             var permissionsFromAppId = permissionDAO.findByAppId(permissionSearchCriteria.getAppId());
-            if (permissionsFromAppId.isEmpty()) {
+            if (permissionsFromAppId == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             var data = mapper.createList(role, permissionsFromAppId);
