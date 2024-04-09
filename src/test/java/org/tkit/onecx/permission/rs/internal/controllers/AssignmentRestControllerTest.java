@@ -122,7 +122,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(CREATED.getStatusCode());
 
@@ -133,7 +133,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(invalidRequestDTO)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -143,7 +143,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(invalidRequestDTO)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -157,9 +157,34 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .post("/product")
+                .post("/grant")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void grantAssignmentByAppId() {
+        // create Assignment
+        var requestDTO = new CreateProductAssignmentRequestDTO();
+        requestDTO.setRoleId("r11");
+        requestDTO.setAppId("app2");
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/grant")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/grant")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
     }
 
     @Test

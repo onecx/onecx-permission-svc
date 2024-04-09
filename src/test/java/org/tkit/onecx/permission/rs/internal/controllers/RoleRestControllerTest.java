@@ -81,6 +81,18 @@ class RoleRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void deleteRoleWithAssignmentsTest() {
+
+        // delete Role in portal
+        given()
+                .contentType(APPLICATION_JSON)
+                .delete("r14")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+    }
+
+    @Test
     void deleteRoleTest() {
 
         // delete Role

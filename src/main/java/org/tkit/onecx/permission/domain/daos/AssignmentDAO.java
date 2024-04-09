@@ -67,7 +67,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
     }
 
     @Transactional
-    public void deleteByCriteria(String roleId, List<String> productNames, String permissionId) {
+    public void deleteByCriteria(String roleId, List<String> productNames, String permissionId, String appId) {
         var cb = getEntityManager().getCriteriaBuilder();
         var dq = this.deleteQuery();
         var root = dq.from(Assignment.class);
@@ -82,6 +82,9 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
         if (permissionId != null) {
             predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId));
+        }
+        if (appId != null) {
+            predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId));
         }
 
         dq.where(cb.and(predicates.toArray(new Predicate[0])));

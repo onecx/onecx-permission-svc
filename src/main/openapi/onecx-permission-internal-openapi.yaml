@@ -71,12 +71,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/assignments/product:
+  /internal/assignments/grant:
     post:
       tags:
         - assignmentInternal
       description: Create new assignment
-      operationId: createProductAssignment
+      operationId: grantAssignment
       requestBody:
         required: true
         content:
@@ -374,6 +374,8 @@ components:
           type: string
         permissionId:
           type: string
+        appId:
+          type: string
         productNames:
           type: array
           items:
@@ -395,6 +397,8 @@ components:
         - productNames
       properties:
         roleId:
+          type: string
+        appId:
           type: string
         productNames:
           type: array

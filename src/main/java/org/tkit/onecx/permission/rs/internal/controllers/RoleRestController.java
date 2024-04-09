@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.rs.internal.mappers.RoleMapper;
@@ -33,6 +34,9 @@ public class RoleRestController implements RoleInternalApi {
     RoleDAO dao;
 
     @Inject
+    AssignmentDAO assignmentDAO;
+
+    @Inject
     RoleMapper mapper;
 
     @Context
@@ -49,6 +53,7 @@ public class RoleRestController implements RoleInternalApi {
 
     @Override
     public Response deleteRole(String id) {
+        assignmentDAO.deleteByCriteria(id, null, null, null);
         dao.deleteQueryById(id);
         return Response.noContent().build();
     }
