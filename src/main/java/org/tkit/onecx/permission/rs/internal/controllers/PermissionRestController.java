@@ -3,18 +3,23 @@ package org.tkit.onecx.permission.rs.internal.controllers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.rs.internal.mappers.PermissionMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.permission.rs.internal.PermissionInternalApi;
+import gen.org.tkit.onecx.permission.rs.internal.model.CreatePermissionRequestDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.PermissionSearchCriteriaDTO;
 import gen.org.tkit.onecx.permission.rs.internal.model.ProblemDetailResponseDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.UpdatePermissionRequestDTO;
 
 @LogService
 @ApplicationScoped
@@ -29,11 +34,53 @@ public class PermissionRestController implements PermissionInternalApi {
     @Inject
     PermissionDAO dao;
 
+    @Inject
+    AssignmentDAO assignmentDAO;
+
+    @Context
+    UriInfo uriInfo;
+
+    @Override
+    public Response createPermission(CreatePermissionRequestDTO createPermissionRequestDTO) {
+        var permission = mapper.create(createPermissionRequestDTO);
+        permission = dao.create(permission);
+        return Response
+                .created(uriInfo.getAbsolutePathBuilder().path(permission.getId()).build())
+                .entity(mapper.map(permission)).build();
+    }
+
+    @Override
+    public Response deletePermission(String id) {
+        assignmentDAO.deleteByCriteria(null, null, id, null);
+        dao.deleteQueryById(id);
+        return Response.noContent().build();
+    }
+
+    @Override
+    public Response getPermission(String id) {
+        var data = dao.findById(id);
+        if (data == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(mapper.map(data)).build();
+    }
+
     @Override
     public Response searchPermissions(PermissionSearchCriteriaDTO permissionSearchCriteriaDTO) {
         var criteria = mapper.map(permissionSearchCriteriaDTO);
         var result = dao.findByCriteria(criteria);
         return Response.ok(mapper.map(result)).build();
+    }
+
+    @Override
+    public Response updatePermission(String id, UpdatePermissionRequestDTO updatePermissionRequestDTO) {
+        var permission = dao.findById(id);
+        if (permission == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        mapper.update(updatePermissionRequestDTO, permission);
+        dao.update(permission);
+        return Response.ok(mapper.map(permission)).build();
     }
 
     @ServerExceptionMapper

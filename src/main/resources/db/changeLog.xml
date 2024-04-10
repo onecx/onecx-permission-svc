@@ -5,5 +5,6 @@
 
     <include relativeToChangelogFile="true" file="v1/2024-01-04-create-tables.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-01-10-data-import-log.xml" />
+    <include relativeToChangelogFile="true" file="v1/2024-04-09-constraint-and-index-fix.xml" />
 
 </databaseChangeLog>
