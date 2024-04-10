@@ -10,7 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "APPLICATION")
+@Table(name = "APPLICATION", uniqueConstraints = {
+        @UniqueConstraint(name = "UC_APPLICATION_KEY", columnNames = { "APP_ID", "PRODUCT_NAME" })
+})
 @SuppressWarnings("squid:S2160")
 public class Application extends TraceableEntity {
 

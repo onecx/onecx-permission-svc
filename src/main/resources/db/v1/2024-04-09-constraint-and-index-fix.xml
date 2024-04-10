@@ -17,6 +17,12 @@
         </preConditions>
         <dropIndex indexName="application_app_id" tableName="application"/>
     </changeSet>
+    <changeSet author="dev (generated)" id="drop-index-change-3">
+        <preConditions onFail="MARK_RAN">
+            <indexExists indexName="assignment_tenant_id" tableName="assignment"/>
+        </preConditions>
+        <dropIndex indexName="assignment_tenant_id" tableName="assignment"/>
+    </changeSet>
 
     <changeSet author="dev (generated)" id="drop-uc-change-1">
         <preConditions onFail="MARK_RAN">
