@@ -12,9 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "ROLE", uniqueConstraints = {
-        @UniqueConstraint(name = "ROLE_NAME", columnNames = { "TENANT_ID", "NAME" })
-}, indexes = {
-        @Index(name = "ROLE_NAME", columnList = "NAME")
+        @UniqueConstraint(name = "UC_ROLE_NAME", columnNames = { "NAME", "TENANT_ID" })
 })
 @SuppressWarnings("java:S2160")
 public class Role extends TraceableEntity {

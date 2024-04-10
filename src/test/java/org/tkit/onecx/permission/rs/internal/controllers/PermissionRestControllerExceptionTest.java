@@ -38,14 +38,14 @@ class PermissionRestControllerExceptionTest extends AbstractTest {
         given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post()
+                .post("/search")
                 .then()
                 .statusCode(INTERNAL_SERVER_ERROR.getStatusCode());
 
         given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post()
+                .post("/search")
                 .then()
                 .statusCode(INTERNAL_SERVER_ERROR.getStatusCode());
 

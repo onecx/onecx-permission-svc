@@ -77,7 +77,7 @@ class RoleRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'role_name'  Detail: Key (tenant_id, name)=(default, n1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'uc_role_name'  Detail: Key (name, tenant_id)=(n1, default) already exists.]");
     }
 
     @Test
@@ -296,7 +296,7 @@ class RoleRestControllerTest extends AbstractTest {
         Assertions.assertNotNull(exception);
         Assertions.assertEquals("MERGE_ENTITY_FAILED", exception.getErrorCode());
         Assertions.assertEquals(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'role_name'  Detail: Key (tenant_id, name)=(default, n3) already exists.]",
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'uc_role_name'  Detail: Key (name, tenant_id)=(n3, default) already exists.]",
                 exception.getDetail());
         Assertions.assertNull(exception.getInvalidParams());
 

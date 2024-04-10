@@ -93,7 +93,7 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    public Response grantAssignment(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
+    public Response grantAssignments(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
