@@ -126,6 +126,6 @@ class OperatorRestControllerTest extends AbstractTest {
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'permission_key'  Detail: Key (product_name, app_id, resource, action)=(test1, app3, o1, a1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'uc_permission_key'  Detail: Key (app_id, product_name, resource, action)=(app3, test1, o1, a1) already exists.]");
     }
 }

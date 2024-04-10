@@ -80,7 +80,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'assignment_key'  Detail: Key (tenant_id, role_id, permission_id)=(default, r13, p13) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'uc_assignment_key'  Detail: Key (permission_id, role_id, tenant_id)=(p13, r13, default) already exists.]");
 
     }
 
