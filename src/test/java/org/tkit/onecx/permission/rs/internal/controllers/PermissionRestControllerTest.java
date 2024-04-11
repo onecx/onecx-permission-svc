@@ -185,6 +185,13 @@ class PermissionRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .as(ProblemDetailResponseDTO.class);
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .put("p_NOT_EXISTS")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -203,5 +210,11 @@ class PermissionRestControllerTest extends AbstractTest {
         Assertions.assertEquals("app1", output.getAppId());
         Assertions.assertEquals("a2", output.getAction());
         Assertions.assertEquals("test1", output.getProductName());
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .get("p_NOT_EXIST")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 }

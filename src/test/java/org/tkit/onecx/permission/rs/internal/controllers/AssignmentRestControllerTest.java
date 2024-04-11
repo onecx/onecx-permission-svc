@@ -188,6 +188,22 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void grantAssignmentAppIdNotExistsTest() {
+        // create Assignment
+        var requestDTONotFound = new CreateProductAssignmentRequestDTO();
+        requestDTONotFound.setRoleId("r11");
+        requestDTONotFound.setAppId("appID_NOT_EXIST");
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTONotFound)
+                .post("/grant")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
     void revokeAssignmentsByOnlyRoleIdTest() {
         var requestDTO = new RevokeAssignmentRequestDTO();
         requestDTO.roleId("r14");
@@ -255,6 +271,27 @@ class AssignmentRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .get("a12")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void revokeAssignmentsByAppIdTest() {
+        var requestDTO = new RevokeAssignmentRequestDTO();
+        requestDTO.roleId("r14");
+        requestDTO.appId("app2");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment is gone
+        given()
+                .when()
+                .get("a13")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }

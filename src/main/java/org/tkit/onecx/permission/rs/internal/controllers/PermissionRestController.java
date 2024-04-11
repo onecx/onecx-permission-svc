@@ -75,6 +75,7 @@ public class PermissionRestController implements PermissionInternalApi {
     @Override
     public Response updatePermission(String id, UpdatePermissionRequestDTO updatePermissionRequestDTO) {
         var permission = dao.findById(id);
+        System.out.println("PERMISSION________" + permission);
         if (permission == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
