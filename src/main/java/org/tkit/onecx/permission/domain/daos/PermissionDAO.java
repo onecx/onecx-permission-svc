@@ -17,6 +17,7 @@ import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
+import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
 @ApplicationScoped
@@ -39,6 +40,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.modificationDate)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
@@ -72,12 +74,13 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
-    public List<Permission> findByAppId(String appId) {
+    public List<Permission> findByAppId(PermissionSearchCriteria permissionSearchCriteria) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
             var root = cq.from(Permission.class);
-            cq.where(cb.equal(root.get(Permission_.APP_ID), appId));
+
+            cq.where(cb.equal(root.get(Permission_.APP_ID), permissionSearchCriteria.getAppId()));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_BY_APP_ID, ex);
