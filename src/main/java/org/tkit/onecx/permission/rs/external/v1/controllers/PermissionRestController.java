@@ -46,4 +46,9 @@ public class PermissionRestController implements PermissionApiV1 {
     public RestResponse<ProblemDetailResponseDTOV1> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
     }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTOV1> constraint(TokenService.TokenException ex) {
+        return exceptionMapper.tokenException(ex);
+    }
 }

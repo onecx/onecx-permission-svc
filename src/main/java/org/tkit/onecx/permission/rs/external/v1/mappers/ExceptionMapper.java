@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.tkit.onecx.permission.common.services.TokenService;
 
 import gen.org.tkit.onecx.permission.rs.external.v1.model.ProblemDetailInvalidParamDTOV1;
 import gen.org.tkit.onecx.permission.rs.external.v1.model.ProblemDetailParamDTOV1;
@@ -32,6 +33,11 @@ public abstract class ExceptionMapper {
         return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
 
+    public RestResponse<ProblemDetailResponseDTOV1> tokenException(TokenService.TokenException ex) {
+        var dto = exception(ErrorKeys.TOKEN_EXCEPTION.name(), ex.getMessage());
+        return RestResponse.status(Response.Status.BAD_REQUEST, dto);
+    }
+
     public abstract List<ProblemDetailInvalidParamDTOV1> createErrorValidationResponse(
             Set<ConstraintViolation<?>> constraintViolation);
 
@@ -44,7 +50,8 @@ public abstract class ExceptionMapper {
     }
 
     public enum ErrorKeys {
-        CONSTRAINT_VIOLATIONS;
+        CONSTRAINT_VIOLATIONS,
+        TOKEN_EXCEPTION;
     }
 
     public List<ProblemDetailParamDTOV1> map(Map<String, Object> params) {
