@@ -101,7 +101,7 @@ class PermissionRestControllerTest extends AbstractTest {
                 .pathParam("appId", "app1")
                 .post()
                 .then()
-                .statusCode(INTERNAL_SERVER_ERROR.getStatusCode());
+                .statusCode(BAD_REQUEST.getStatusCode());
     }
 
 }
