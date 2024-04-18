@@ -33,7 +33,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             List<Predicate> predicates = new ArrayList<>();
             addSearchStringPredicate(predicates, cb, root.get(Permission_.appId), criteria.getAppId());
 
-            if (criteria.getProductNames() != null) {
+            if (criteria.getProductNames() != null && !criteria.getProductNames().isEmpty()) {
                 predicates.add(root.get(Permission_.PRODUCT_NAME).in(criteria.getProductNames()));
             }
 
@@ -74,13 +74,13 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
-    public List<Permission> findByAppId(PermissionSearchCriteria permissionSearchCriteria) {
+    public List<Permission> findByAppId(String appId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
             var root = cq.from(Permission.class);
 
-            cq.where(cb.equal(root.get(Permission_.APP_ID), permissionSearchCriteria.getAppId()));
+            cq.where(cb.equal(root.get(Permission_.APP_ID), appId));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_BY_APP_ID, ex);

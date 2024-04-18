@@ -16,8 +16,8 @@ public class AssignmentService {
     AssignmentDAO dao;
 
     @Transactional
-    public void createProductAssignment(List<Assignment> assignments, String roleId, List<String> productName) {
-        dao.deleteByCriteria(roleId, productName, null, null);
+    public void createProductAssignment(List<Assignment> assignments, String roleId, List<String> productNames) {
+        dao.deleteByCriteria(roleId, productNames, null, null);
         dao.create(assignments);
     }
 }

@@ -1,0 +1,8 @@
+include::onecx-permission-svc-attributes.adoc[opts=optional]
+
+== onecx-permission-svc
+
+include::docs.adoc[opts=optional]
+
+
+include::onecx-permission-svc-docs.adoc[opts=optional]

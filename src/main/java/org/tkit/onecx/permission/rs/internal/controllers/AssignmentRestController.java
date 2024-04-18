@@ -1,8 +1,5 @@
 package org.tkit.onecx.permission.rs.internal.controllers;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolationException;
@@ -12,7 +9,6 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.onecx.permission.domain.criteria.PermissionSearchCriteria;
 import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
@@ -108,11 +104,7 @@ public class AssignmentRestController implements AssignmentInternalApi {
         }
 
         if (createAssignmentRequestDTO.getAppId() != null) {
-            PermissionSearchCriteria permissionSearchCriteria = new PermissionSearchCriteria();
-            permissionSearchCriteria.setAppId(createAssignmentRequestDTO.getAppId());
-            Set<String> productNames = new HashSet<>(createAssignmentRequestDTO.getProductNames());
-            permissionSearchCriteria.setProductNames(productNames);
-            var permissionsFromAppId = permissionDAO.findByAppId(permissionSearchCriteria);
+            var permissionsFromAppId = permissionDAO.findByAppId(createAssignmentRequestDTO.getAppId());
             if (permissionsFromAppId.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }

@@ -76,7 +76,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
         predicates.add(cb.equal(root.get(Assignment_.ROLE).get(TraceableEntity_.ID), roleId));
 
-        if (productNames != null) {
+        if (productNames != null && !productNames.isEmpty()) {
             predicates.add(root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME).in(productNames));
         }
 
