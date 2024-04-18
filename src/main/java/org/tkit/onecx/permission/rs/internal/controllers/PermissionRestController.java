@@ -9,8 +9,8 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
+import org.tkit.onecx.permission.domain.services.PermissionService;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.rs.internal.mappers.PermissionMapper;
 import org.tkit.quarkus.log.cdi.LogService;
@@ -34,11 +34,11 @@ public class PermissionRestController implements PermissionInternalApi {
     @Inject
     PermissionDAO dao;
 
-    @Inject
-    AssignmentDAO assignmentDAO;
-
     @Context
     UriInfo uriInfo;
+
+    @Inject
+    PermissionService service;
 
     @Override
     public Response createPermission(CreatePermissionRequestDTO createPermissionRequestDTO) {
@@ -51,8 +51,7 @@ public class PermissionRestController implements PermissionInternalApi {
 
     @Override
     public Response deletePermission(String id) {
-        assignmentDAO.deleteByPermissionId(id);
-        dao.deleteQueryById(id);
+        service.deletePermission(id);
         return Response.noContent().build();
     }
 
