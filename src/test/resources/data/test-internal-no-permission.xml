@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+
+    <APPLICATION guid="a1" optlock="0" app_id="app1" name="app1" description="app1" product_name="test1"/>
+    <APPLICATION guid="a2" optlock="0" app_id="app2" name="app2" description="app2" product_name="test1"/>
+
+    <ROLE guid="r11" optlock="0" name="n1" description="d1" tenant_id="default"/>
+    <ROLE guid="r12" optlock="0" name="n2" description="d1" tenant_id="default"/>
+    <ROLE guid="r13" optlock="0" name="n3" description="d1" tenant_id="default"/>
+    <ROLE guid="r14" optlock="0" name="n4" description="d1" tenant_id="default"/>
+
+    <ROLE guid="r21" optlock="0" name="n1" description="d1" tenant_id="100"/>
+    <ROLE guid="r22" optlock="0" name="n2" description="d1" tenant_id="100"/>
+    <ROLE guid="r23" optlock="0" name="n3" description="d1" tenant_id="100"/>
+    <ROLE guid="r24" optlock="0" name="n4" description="d1" tenant_id="100"/>
+
+</dataset>

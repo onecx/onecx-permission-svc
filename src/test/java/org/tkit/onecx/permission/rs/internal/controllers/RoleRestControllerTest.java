@@ -298,7 +298,8 @@ class RoleRestControllerTest extends AbstractTest {
         Assertions.assertEquals(
                 "could not execute statement [ERROR: duplicate key value violates unique constraint 'uc_role_name'  Detail: Key (name, tenant_id)=(n3, default) already exists.]",
                 exception.getDetail());
-        Assertions.assertNull(exception.getInvalidParams());
+        Assertions.assertNotNull(exception.getInvalidParams());
+        Assertions.assertTrue(exception.getInvalidParams().isEmpty());
 
     }
 

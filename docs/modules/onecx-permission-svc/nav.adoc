@@ -1,0 +1,1 @@
+* xref:onecx-permission-svc:index.adoc[Permission Service]

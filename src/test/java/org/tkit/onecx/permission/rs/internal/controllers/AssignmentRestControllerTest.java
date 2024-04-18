@@ -112,98 +112,6 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void batchCreateAssignmentsTest() {
-        // create Assignment
-        var requestDTO = new CreateProductAssignmentRequestDTO();
-        requestDTO.setRoleId("r14");
-        requestDTO.setProductNames(List.of("test1"));
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/grant")
-                .then()
-                .statusCode(CREATED.getStatusCode());
-
-        //should return not-found when no productNames are set
-        var invalidRequestDTO = new CreateProductAssignmentRequestDTO();
-        invalidRequestDTO.setRoleId("r12");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(invalidRequestDTO)
-                .post("/grant")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        //should return not-found when role not existing
-        invalidRequestDTO.setRoleId("not-existing");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(invalidRequestDTO)
-                .post("/grant")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        //should return not-found when no permissions with given productNames exists
-
-        var request = new CreateProductAssignmentRequestDTO();
-        request.setRoleId("r12");
-        request.setProductNames(List.of("randomProductName"));
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .post("/grant")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-    }
-
-    @Test
-    void grantAssignmentByAppId() {
-        // create Assignment
-        var requestDTO = new CreateProductAssignmentRequestDTO();
-        requestDTO.setRoleId("r11");
-        requestDTO.setAppId("app2");
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/grant")
-                .then()
-                .statusCode(CREATED.getStatusCode());
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/grant")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode());
-
-    }
-
-    @Test
-    void grantAssignmentAppIdNotExistsTest() {
-        // create Assignment
-        var requestDTONotFound = new CreateProductAssignmentRequestDTO();
-        requestDTONotFound.setRoleId("r11");
-        requestDTONotFound.setAppId("appID_NOT_EXIST");
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTONotFound)
-                .post("/grant")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-    }
-
-    @Test
     void revokeAssignmentsByOnlyRoleIdTest() {
         var requestDTO = new RevokeAssignmentRequestDTO();
         requestDTO.roleId("r14");
@@ -407,6 +315,172 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .get("a11")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
+
+    }
+
+    @Test
+    void grantAssignmentByRole() {
+        // create role assignment
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/grant/role1")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/grant/r14")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+        var idToken = createToken("org1", List.of("n3-100"));
+        given()
+                .when()
+                .header(APM_HEADER_PARAM, idToken)
+                .contentType(APPLICATION_JSON)
+                .post("/grant/r14")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void grantAssignmentByRoleProduct() {
+
+        // create role assignment
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/grant/role1/product")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductAssignmentRequestDTO())
+                .post("/grant/role1/product")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductAssignmentRequestDTO().productName(null).appId(null))
+                .post("/grant/role1/product")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductAssignmentRequestDTO()
+                        .productName("does-not-exists").appId("app1"))
+                .post("/grant/r14/product")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductAssignmentRequestDTO()
+                        .productName("test1").appId("app1"))
+                .post("/grant/does-not-exists/product")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductAssignmentRequestDTO()
+                        .productName("test1").appId("app1"))
+                .post("/grant/r14/product")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductAssignmentRequestDTO()
+                        .productName("test1").appId("app1"))
+                .post("/grant/r14/product")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+    }
+
+    @Test
+    void grantAssignmentByRoleProducts() {
+
+        // create role assignment
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/grant/role1/products")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductsAssignmentRequestDTO())
+                .post("/grant/role1/products")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductsAssignmentRequestDTO().productNames(List.of()))
+                .post("/grant/role1/products")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("does-not-exists")))
+                .post("/grant/r14/products")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1")))
+                .post("/grant/does-not-exists/products")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1")))
+                .post("/grant/r14/products")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1")))
+                .post("/grant/r14/products")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new CreateRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1", "does-not-exists")))
+                .post("/grant/r14/products")
+                .then()
+                .statusCode(CREATED.getStatusCode());
 
     }
 }
