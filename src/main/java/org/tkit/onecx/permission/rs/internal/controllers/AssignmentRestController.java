@@ -91,6 +91,7 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
+    @Deprecated
     public Response grantAssignments(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {
@@ -118,6 +119,56 @@ public class AssignmentRestController implements AssignmentInternalApi {
 
         return Response.status(Response.Status.CREATED).build();
 
+    }
+
+    @Override
+    public Response grantRoleAssignments(String roleId) {
+        var role = roleDAO.findById(roleId);
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var permissions = permissionDAO.findAll().toList();
+        if (permissions.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var data = mapper.createList(role, permissions);
+        service.createAssignments(role, data);
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @Override
+    public Response grantRoleProductAssignments(String roleId,
+            CreateRoleProductAssignmentRequestDTO createRoleProductAssignmentRequestDTO) {
+        var role = roleDAO.findById(roleId);
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        var permissions = permissionDAO.findByProductAndAppId(createRoleProductAssignmentRequestDTO.getProductName(),
+                createRoleProductAssignmentRequestDTO.getAppId());
+        if (permissions.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var data = mapper.createList(role, permissions);
+        service.createRoleProductAssignments(role, createRoleProductAssignmentRequestDTO.getProductName(),
+                createRoleProductAssignmentRequestDTO.getAppId(), data);
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @Override
+    public Response grantRoleProductsAssignments(String roleId,
+            CreateRoleProductsAssignmentRequestDTO createRoleProductsAssignmentRequestDTO) {
+        var role = roleDAO.findById(roleId);
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var permissions = permissionDAO.findByProductNames(createRoleProductsAssignmentRequestDTO.getProductNames());
+        if (permissions.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var data = mapper.createList(role, permissions);
+        service.createRoleProductsAssignments(role, createRoleProductsAssignmentRequestDTO.getProductNames(), data);
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @Override

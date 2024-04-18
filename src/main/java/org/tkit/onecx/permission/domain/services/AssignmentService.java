@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.models.Assignment;
+import org.tkit.onecx.permission.domain.models.Role;
 
 @ApplicationScoped
 public class AssignmentService {
@@ -20,6 +21,24 @@ public class AssignmentService {
         if (productNames != null && !productNames.isEmpty()) {
             dao.deleteByCriteria(roleId, productNames, null, null);
         }
+        dao.create(assignments);
+    }
+
+    @Transactional
+    public void createAssignments(Role role, List<Assignment> assignments) {
+        dao.deleteByRoleId(role.getId());
+        dao.create(assignments);
+    }
+
+    @Transactional
+    public void createRoleProductAssignments(Role role, String productName, String appId, List<Assignment> assignments) {
+        dao.deleteByProductNameAppId(role.getId(), productName, appId);
+        dao.create(assignments);
+    }
+
+    @Transactional
+    public void createRoleProductsAssignments(Role role, List<String> productNames, List<Assignment> assignments) {
+        dao.deleteByProducts(role.getId(), productNames);
         dao.create(assignments);
     }
 }

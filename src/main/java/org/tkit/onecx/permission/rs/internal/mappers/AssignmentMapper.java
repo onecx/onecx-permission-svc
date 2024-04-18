@@ -1,6 +1,5 @@
 package org.tkit.onecx.permission.rs.internal.mappers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -41,9 +40,6 @@ public interface AssignmentMapper {
     AssignmentDTO map(Assignment data);
 
     default List<Assignment> createList(Role role, List<Permission> permissions) {
-
-        List<Assignment> assignments = new ArrayList<>();
-        permissions.forEach(permission -> assignments.add(create(role, permission)));
-        return assignments;
+        return permissions.stream().map(permission -> create(role, permission)).toList();
     }
 }

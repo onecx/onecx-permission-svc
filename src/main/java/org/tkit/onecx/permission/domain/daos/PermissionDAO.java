@@ -33,7 +33,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             List<Predicate> predicates = new ArrayList<>();
             addSearchStringPredicate(predicates, cb, root.get(Permission_.appId), criteria.getAppId());
 
-            if (criteria.getProductNames() != null && !criteria.getProductNames().isEmpty()) {
+            if (!criteria.getProductNames().isEmpty()) {
                 predicates.add(root.get(Permission_.PRODUCT_NAME).in(criteria.getProductNames()));
             }
 
@@ -74,6 +74,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
+    @Deprecated
     public List<Permission> findByAppId(String appId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();

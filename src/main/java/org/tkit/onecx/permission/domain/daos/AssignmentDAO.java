@@ -3,7 +3,6 @@ package org.tkit.onecx.permission.domain.daos;
 import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -48,8 +47,8 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var root = cq.from(Assignment.class);
 
             List<Predicate> predicates = new ArrayList<>();
-            if (criteria.getAppIds() != null) {
-                List<String> filteredAppIds = Arrays.stream(criteria.getAppIds()).filter(s -> !s.isBlank()).toList();
+            if (!criteria.getAppIds().isEmpty()) {
+                List<String> filteredAppIds = criteria.getAppIds().stream().filter(s -> !s.isBlank()).toList();
                 if (!filteredAppIds.isEmpty()) {
                     predicates.add(root.get(Assignment_.permission).get(Permission_.APP_ID).in(filteredAppIds));
                 }
@@ -72,10 +71,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cb = getEntityManager().getCriteriaBuilder();
             var dq = this.deleteQuery();
             var root = dq.from(Assignment.class);
-
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(cb.equal(root.get(Assignment_.ROLE).get(TraceableEntity_.ID), roleId));
-            dq.where(cb.and(predicates.toArray(new Predicate[0])));
+            dq.where(cb.equal(root.get(Assignment_.ROLE_ID), roleId));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_BY_ROLE_ID, ex);
@@ -88,10 +84,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cb = getEntityManager().getCriteriaBuilder();
             var dq = this.deleteQuery();
             var root = dq.from(Assignment.class);
-
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId));
-            dq.where(cb.and(predicates.toArray(new Predicate[0])));
+            dq.where(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PERMISSION_ID, ex);
@@ -99,29 +92,66 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
     }
 
     @Transactional
+    public void deleteByProductNameAppId(String roleId, String productName, String appId) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var dq = this.deleteQuery();
+            var root = dq.from(Assignment.class);
+
+            dq.where(cb.and(
+                    cb.equal(root.get(Assignment_.ROLE_ID), roleId),
+                    cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME), productName),
+                    cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId)));
+            this.getEntityManager().createQuery(dq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PRODUCT_NAME_APP_ID, ex);
+        }
+    }
+
+    @Transactional
+    public void deleteByProducts(String roleId, List<String> productNames) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var dq = this.deleteQuery();
+            var root = dq.from(Assignment.class);
+
+            dq.where(cb.and(
+                    cb.equal(root.get(Assignment_.ROLE_ID), roleId),
+                    root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME).in(productNames)));
+            this.getEntityManager().createQuery(dq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PRODUCTS, ex);
+        }
+    }
+
+    @Transactional
     public void deleteByCriteria(String roleId, List<String> productNames, String permissionId, String appId) {
-        var cb = getEntityManager().getCriteriaBuilder();
-        var dq = this.deleteQuery();
-        var root = dq.from(Assignment.class);
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var dq = this.deleteQuery();
+            var root = dq.from(Assignment.class);
 
-        List<Predicate> predicates = new ArrayList<>();
+            List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(cb.equal(root.get(Assignment_.ROLE).get(TraceableEntity_.ID), roleId));
+            predicates.add(cb.equal(root.get(Assignment_.ROLE).get(TraceableEntity_.ID), roleId));
 
-        if (productNames != null && !productNames.isEmpty()) {
-            predicates.add(root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME).in(productNames));
+            if (!productNames.isEmpty()) {
+                predicates.add(root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME).in(productNames));
+            }
+
+            if (permissionId != null) {
+                predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId));
+            }
+            if (appId != null) {
+                predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId));
+            }
+
+            dq.where(cb.and(predicates.toArray(new Predicate[0])));
+
+            this.getEntityManager().createQuery(dq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_CRITERIA, ex);
         }
-
-        if (permissionId != null) {
-            predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId));
-        }
-        if (appId != null) {
-            predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId));
-        }
-
-        dq.where(cb.and(predicates.toArray(new Predicate[0])));
-
-        this.getEntityManager().createQuery(dq).executeUpdate();
     }
 
     public List<PermissionAction> findPermissionActionForProducts(Set<String> productNames) {
@@ -146,6 +176,9 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
     public enum ErrorKeys {
 
+        ERROR_DELETE_BY_PRODUCTS,
+        ERROR_DELETE_BY_PRODUCT_NAME_APP_ID,
+        ERROR_DELETE_BY_CRITERIA,
         ERROR_DELETE_BY_PERMISSION_ID,
         ERROR_DELETE_BY_ROLE_ID,
         ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS,
