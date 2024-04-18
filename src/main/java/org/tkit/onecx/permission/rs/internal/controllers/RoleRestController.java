@@ -53,7 +53,7 @@ public class RoleRestController implements RoleInternalApi {
 
     @Override
     public Response deleteRole(String id) {
-        assignmentDAO.deleteByCriteria(id, null, null, null);
+        assignmentDAO.deleteByRoleId(id);
         dao.deleteQueryById(id);
         return Response.noContent().build();
     }

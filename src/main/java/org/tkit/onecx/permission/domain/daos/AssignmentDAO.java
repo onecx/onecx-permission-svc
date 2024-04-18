@@ -67,6 +67,38 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
     }
 
     @Transactional
+    public void deleteByRoleId(String roleId) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var dq = this.deleteQuery();
+            var root = dq.from(Assignment.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get(Assignment_.ROLE).get(TraceableEntity_.ID), roleId));
+            dq.where(cb.and(predicates.toArray(new Predicate[0])));
+            this.getEntityManager().createQuery(dq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_ROLE_ID, ex);
+        }
+    }
+
+    @Transactional
+    public void deleteByPermissionId(String permissionId) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var dq = this.deleteQuery();
+            var root = dq.from(Assignment.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId));
+            dq.where(cb.and(predicates.toArray(new Predicate[0])));
+            this.getEntityManager().createQuery(dq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PERMISSION_ID, ex);
+        }
+    }
+
+    @Transactional
     public void deleteByCriteria(String roleId, List<String> productNames, String permissionId, String appId) {
         var cb = getEntityManager().getCriteriaBuilder();
         var dq = this.deleteQuery();
@@ -114,6 +146,8 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
     public enum ErrorKeys {
 
+        ERROR_DELETE_BY_PERMISSION_ID,
+        ERROR_DELETE_BY_ROLE_ID,
         ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS,
 
         FIND_ENTITY_BY_ID_FAILED,

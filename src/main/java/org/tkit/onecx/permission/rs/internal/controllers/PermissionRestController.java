@@ -51,7 +51,7 @@ public class PermissionRestController implements PermissionInternalApi {
 
     @Override
     public Response deletePermission(String id) {
-        assignmentDAO.deleteByCriteria(null, null, id, null);
+        assignmentDAO.deleteByPermissionId(id);
         dao.deleteQueryById(id);
         return Response.noContent().build();
     }

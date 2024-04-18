@@ -61,7 +61,6 @@ public class AssignmentRestController implements AssignmentInternalApi {
                 createRevokeAssignmentRequestDTO.getProductNames(),
                 createRevokeAssignmentRequestDTO.getPermissionId(),
                 createRevokeAssignmentRequestDTO.getAppId());
-
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
