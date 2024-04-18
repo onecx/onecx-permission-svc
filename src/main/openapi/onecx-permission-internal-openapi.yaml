@@ -71,30 +71,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/assignments/grant:
-    post:
-      tags:
-        - assignmentInternal
-      description: Create new assignments
-      operationId: grantAssignments
-      deprecated: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProductAssignmentRequest'
-      responses:
-        201:
-          description: New assignment created
-        404:
-          description: Data not found
-        400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments/grant/{roleId}:
     post:
       tags:
@@ -584,20 +560,6 @@ components:
           type: string
         productName:
           type: string
-    CreateProductAssignmentRequest:
-      type: object
-      required:
-        - roleId
-        - productNames
-      properties:
-        roleId:
-          type: string
-        appId:
-          type: string
-        productNames:
-          type: array
-          items:
-            type: string
     Assignment:
       type: object
       properties:

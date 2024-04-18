@@ -91,37 +91,6 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    @Deprecated
-    public Response grantAssignments(CreateProductAssignmentRequestDTO createAssignmentRequestDTO) {
-        var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
-        if (role == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        var permissions = permissionDAO.findByProductNames(createAssignmentRequestDTO.getProductNames());
-        if (permissions.isEmpty() && createAssignmentRequestDTO.getAppId() == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        if (createAssignmentRequestDTO.getAppId() != null) {
-            var permissionsFromAppId = permissionDAO.findByAppId(createAssignmentRequestDTO.getAppId());
-            if (permissionsFromAppId.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            var data = mapper.createList(role, permissionsFromAppId);
-            service.createProductAssignment(data, role.getId(), createAssignmentRequestDTO.getProductNames());
-            return Response.status(Response.Status.CREATED).build();
-        }
-
-        var data = mapper.createList(role, permissions);
-
-        service.createProductAssignment(data, role.getId(), createAssignmentRequestDTO.getProductNames());
-
-        return Response.status(Response.Status.CREATED).build();
-
-    }
-
-    @Override
     public Response grantRoleAssignments(String roleId) {
         var role = roleDAO.findById(roleId);
         if (role == null) {
