@@ -22,10 +22,9 @@ onecx.permission.token.issuer.public-key-location.suffix=/protocol/openid-connec
 onecx.permission.token.issuer.public-key-location.enabled=false
 onecx.permission.token.claim.path=realm_access/roles
 tkit.dataimport.enabled=false
-tkit.dataimport.configurations.permission.file=dev-data.import.json
-tkit.dataimport.configurations.permission.metadata.operation=UPDATE
-tkit.dataimport.configurations.permission.enabled=false
-tkit.dataimport.configurations.permission.stop-at-error=true
+tkit.dataimport.configurations.template.file=template-import.json
+tkit.dataimport.configurations.template.enabled=false
+tkit.dataimport.configurations.template.stop-at-error=true
 %prod.quarkus.datasource.jdbc.url=${DB_URL:jdbc:postgresql://postgresdb:5432/onecx-permission?sslmode=disable}
 %prod.quarkus.datasource.username=${DB_USER:onecx-permission}
 %prod.quarkus.datasource.password=${DB_PWD:onecx-permission}
@@ -152,6 +151,14 @@ app:
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+
+----
+
+             }
               }
             }
           }

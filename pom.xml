@@ -184,15 +184,15 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>di-v1</id>
+                        <id>template</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-permission-di-v1.yaml</inputSpec>
-                            <apiPackage>gen.org.tkit.onecx.permission.domain.di.v1</apiPackage>
-                            <modelPackage>gen.org.tkit.onecx.permission.domain.di.v1.model</modelPackage>
-                            <modelNameSuffix>DTOV1</modelNameSuffix>
+                            <inputSpec>src/main/openapi/onecx-permission-di-template.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.permission.domain.template</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.permission.domain.template.model</modelPackage>
+                            <modelNameSuffix>DTO</modelNameSuffix>
                             <generateApis>false</generateApis>
                         </configuration>
                     </execution>
