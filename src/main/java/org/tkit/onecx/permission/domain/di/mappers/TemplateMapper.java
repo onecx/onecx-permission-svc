@@ -1,7 +1,5 @@
 package org.tkit.onecx.permission.domain.di.mappers;
 
-import java.util.*;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.permission.domain.models.Application;

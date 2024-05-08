@@ -26,7 +26,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithDBData(value = "data/test-template.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class TemplateImportTest extends AbstractTest {
+class TemplateImportTest extends AbstractTest {
 
     @Inject
     TemplateDataImportService service;
