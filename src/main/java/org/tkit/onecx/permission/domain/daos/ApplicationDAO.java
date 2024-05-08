@@ -61,12 +61,13 @@ public class ApplicationDAO extends AbstractDAO<Application> {
         }
     }
 
-    public List<Application> findByProductNames(Set<String> productNames) {
+    public List<ApplicationRef> findByProductNames(Set<String> productNames) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(Application.class);
+            var cq = cb.createQuery(ApplicationRef.class);
             var root = cq.from(Application.class);
-            cq.where(root.get(Permission_.PRODUCT_NAME).in(productNames));
+            cq.select(cb.construct(ApplicationRef.class, root.get(Application_.PRODUCT_NAME), root.get(Application_.APP_ID)));
+            cq.where(root.get(Application_.PRODUCT_NAME).in(productNames));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_APPLICATIONS_BY_PRODUCT_NAMES, ex);

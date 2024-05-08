@@ -28,7 +28,7 @@
     <ROLE guid="r23" optlock="0" name="n3" description="d1" tenant_id="100"/>
     <ROLE guid="r24" optlock="0" name="n4" description="d1" tenant_id="100"/>
 
-    <ASSIGNMENT guid="a11" optlock="0" permission_id="p13" role_id="r13" tenant_id="default"/>
+    <ASSIGNMENT guid="a11" optlock="0" permission_id="p11" role_id="r11" tenant_id="default"/>
     <ASSIGNMENT guid="a12" optlock="0" permission_id="p13" role_id="r14" tenant_id="default"/>
 
     <ASSIGNMENT guid="a13" optlock="0" permission_id="p21" role_id="r14" tenant_id="default"/>

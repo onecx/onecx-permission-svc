@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-permission permission import from file during the start of the application
+  title: onecx-permission permission template import
   version: 1.0.0
 servers:
   - url: "http://localhost"
@@ -13,20 +13,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DataImport'
+              $ref: '#/components/schemas/TemplateImport'
       responses:
         200:
           description: ok
 components:
   schemas:
-    DataImport:
+    TemplateImport:
       type: object
       properties:
-        tenants:
-          $ref: '#/components/schemas/DataImportTenant'
+        roles:
+          $ref: '#/components/schemas/TemplateRole'
         products:
-          $ref: '#/components/schemas/DataImportProduct'
-    DataImportProduct:
+          $ref: '#/components/schemas/TemplateProduct'
+    TemplateProduct:
       type: object
       nullable: false
       description: product name
@@ -34,8 +34,8 @@ components:
         type: object
         properties:
           applications:
-             $ref: '#/components/schemas/DataImportApplication'
-    DataImportApplication:
+            $ref: '#/components/schemas/TemplateApplication'
+    TemplateApplication:
       type: object
       nullable: false
       description: application id
@@ -47,29 +47,20 @@ components:
           description:
             type: string
           permissions:
-            $ref: '#/components/schemas/DataImportApplicationPermission'
-    DataImportApplicationPermission:
+            $ref: '#/components/schemas/TemplatePermission'
+    TemplatePermission:
       type: object
       nullable: false
       description: resource id
       additionalProperties:
-        $ref: '#/components/schemas/DataImportPermissionAction'
-    DataImportPermissionAction:
+        $ref: '#/components/schemas/TemplateAction'
+    TemplateAction:
       type: object
       nullable: false
       description: action id, description
       additionalProperties:
         type: string
-    DataImportTenant:
-      type: object
-      nullable: false
-      description: tenant id
-      additionalProperties:
-        type: object
-        properties:
-          roles:
-            $ref: '#/components/schemas/DataImportTenantRole'
-    DataImportTenantRole:
+    TemplateRole:
       type: object
       nullable: false
       description: role name
@@ -78,20 +69,20 @@ components:
           description:
             type: string
           assignments:
-            $ref: '#/components/schemas/DataImportTenantProductAssignment'
-    DataImportTenantProductAssignment:
+            $ref: '#/components/schemas/TemplateProductAssignment'
+    TemplateProductAssignment:
       type: object
       nullable: false
       description: product name
       additionalProperties:
-        $ref: '#/components/schemas/DataImportTenantProductApplicationAssignment'
-    DataImportTenantProductApplicationAssignment:
+        $ref: '#/components/schemas/TemplateAppAssignment'
+    TemplateAppAssignment:
       type: object
       nullable: false
       description: application id
       additionalProperties:
-        $ref: '#/components/schemas/DataImportTenantAssignment'
-    DataImportTenantAssignment:
+        $ref: '#/components/schemas/TemplateAssignment'
+    TemplateAssignment:
       type: object
       nullable: false
       description: action
