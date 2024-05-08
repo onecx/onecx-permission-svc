@@ -78,6 +78,7 @@ public class PermissionTemplateService {
     }
 
     public TemplateCommonData getCommonData(Set<String> productNames) {
+
         // find apps in DB
         var a = applicationDAO.findByProductNames(productNames);
         // find permission in DB

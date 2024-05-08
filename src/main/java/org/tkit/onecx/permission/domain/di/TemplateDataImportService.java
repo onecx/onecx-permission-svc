@@ -84,8 +84,8 @@ public class TemplateDataImportService implements DataImportService {
                 var app = entry.getValue();
 
                 // check the application of the product
-                var appDb = data.getApplication(productName, appId);
-                if (appDb == null) {
+                var exists = data.getApplication(productName, appId);
+                if (!exists) {
                     var a = mapper.createApplication(productName, appId, app.getName(), app.getDescription());
                     applications.add(a);
                 }
@@ -138,8 +138,9 @@ public class TemplateDataImportService implements DataImportService {
                     for (var action : aResource.getValue()) {
                         if (!data.hasPermissionAction(role.getName(), aProduct.getKey(), aApp.getKey(), aResource.getKey(),
                                 action)) {
-                            var p = commonData.getPermission(aProduct.getKey(), aApp.getKey(), aResource.getKey(), action);
-                            assignments.add(mapper.createAssignment(role, p));
+                            var permission = commonData.getPermission(aProduct.getKey(), aApp.getKey(), aResource.getKey(),
+                                    action);
+                            assignments.add(mapper.createAssignment(role, permission));
                         }
                     }
                 }

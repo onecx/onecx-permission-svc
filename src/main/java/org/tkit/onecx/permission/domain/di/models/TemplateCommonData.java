@@ -1,27 +1,29 @@
 package org.tkit.onecx.permission.domain.di.models;
 
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.tkit.onecx.permission.domain.models.Application;
+import org.tkit.onecx.permission.domain.models.ApplicationRef;
 import org.tkit.onecx.permission.domain.models.Permission;
 
 public class TemplateCommonData {
 
-    Map<String, Application> applications;
+    Set<String> applications;
 
     Map<String, Permission> permissions;
 
-    public TemplateCommonData(List<Application> applications, List<Permission> permissions) {
+    public TemplateCommonData(List<ApplicationRef> applications, List<Permission> permissions) {
         this.permissions = permissions.stream()
                 .collect(toMap(x -> permId(x.getProductName(), x.getAppId(), x.getResource(), x.getAction()), x -> x));
-        this.applications = applications.stream().collect(toMap(x -> appId(x.getProductName(), x.getAppId()), x -> x));
+        this.applications = applications.stream().map(x -> appId(x.productName(), x.appId())).collect(toSet());
     }
 
-    public Application getApplication(String productName, String appId) {
-        return applications.get(appId(productName, appId));
+    public boolean getApplication(String productName, String appId) {
+        return applications.contains(appId(productName, appId));
     }
 
     public Permission getPermission(String productName, String appId, String resource, String action) {
