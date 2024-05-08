@@ -89,7 +89,16 @@ public class PermissionTemplateService {
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void createApplicationsAndPermissions(List<Application> applications, List<Permission> permissions) {
-        permissionDAO.create(permissions);
-        applicationDAO.create(applications);
+        try {
+            var ctx = Context.builder()
+                    .principal(PRINCIPAL)
+                    .build();
+            ApplicationContext.start(ctx);
+
+            permissionDAO.create(permissions);
+            applicationDAO.create(applications);
+        } finally {
+            ApplicationContext.close();
+        }
     }
 }

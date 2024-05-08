@@ -20,7 +20,7 @@ public interface TemplateMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
-    Application createApplication(String appId, String productName, String name, String description);
+    Application createApplication(String productName, String appId, String name, String description);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
