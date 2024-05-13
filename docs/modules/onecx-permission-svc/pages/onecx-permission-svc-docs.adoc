@@ -11,6 +11,7 @@ include::onecx-permission-svc-attributes.adoc[opts=optional]
 quarkus.datasource.db-kind=postgresql
 quarkus.datasource.jdbc.max-size=30
 quarkus.datasource.jdbc.min-size=10
+quarkus.native.resources.includes=import/template.json
 quarkus.hibernate-orm.database.generation=validate
 quarkus.hibernate-orm.multitenant=DISCRIMINATOR
 quarkus.hibernate-orm.jdbc.timezone=UTC
@@ -22,7 +23,7 @@ onecx.permission.token.issuer.public-key-location.suffix=/protocol/openid-connec
 onecx.permission.token.issuer.public-key-location.enabled=false
 onecx.permission.token.claim.path=realm_access/roles
 tkit.dataimport.enabled=false
-tkit.dataimport.configurations.template.file=/import/template.json
+tkit.dataimport.configurations.template.file=import/template.json
 tkit.dataimport.configurations.template.metadata.tenants=default
 tkit.dataimport.configurations.template.class-path=true
 tkit.dataimport.configurations.template.enabled=false
@@ -57,10 +58,6 @@ app:
     repository: "onecx/onecx-permission-svc"
   db:
     enabled: true
-
-----
-
-
 
 ----
 
