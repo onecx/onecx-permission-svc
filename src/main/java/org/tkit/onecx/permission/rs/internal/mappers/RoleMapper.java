@@ -18,6 +18,7 @@ public interface RoleMapper {
 
     RoleSearchCriteria map(RoleSearchCriteriaDTO dto);
 
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
@@ -31,6 +32,7 @@ public interface RoleMapper {
 
     RoleDTO map(Role data);
 
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)

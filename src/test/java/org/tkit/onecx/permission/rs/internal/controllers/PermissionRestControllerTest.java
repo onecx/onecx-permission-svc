@@ -154,6 +154,20 @@ class PermissionRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
+        //try to delete mandatory permission
+        given()
+                .contentType(APPLICATION_JSON)
+                .delete("p13")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        // should still exist
+        given()
+                .contentType(APPLICATION_JSON)
+                .get("p13")
+                .then()
+                .statusCode(OK.getStatusCode());
+
     }
 
     @Test

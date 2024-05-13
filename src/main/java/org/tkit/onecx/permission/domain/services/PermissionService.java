@@ -18,6 +18,10 @@ public class PermissionService {
 
     @Transactional
     public void deletePermission(String id) {
+        var permission = dao.findById(id);
+        if (permission != null && Boolean.TRUE.equals(permission.getMandatory())) {
+            return;
+        }
         assignmentDAO.deleteByPermissionId(id);
         dao.deleteQueryById(id);
     }

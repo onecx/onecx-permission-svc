@@ -130,6 +130,13 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
+        //check if assignment with mandatory flag is still there
+        given()
+                .when()
+                .get("a13")
+                .then()
+                .statusCode(OK.getStatusCode());
+
         //not-exiting role id
         requestDTO.setRoleId("not-existing");
         given()
@@ -186,8 +193,8 @@ class AssignmentRestControllerTest extends AbstractTest {
     @Test
     void revokeAssignmentsByAppIdTest() {
         var requestDTO = new RevokeAssignmentRequestDTO();
-        requestDTO.roleId("r14");
-        requestDTO.appId("app2");
+        requestDTO.roleId("r13");
+        requestDTO.appId("app1");
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
@@ -199,9 +206,26 @@ class AssignmentRestControllerTest extends AbstractTest {
         //check if assignment is gone
         given()
                 .when()
-                .get("a13")
+                .get("a11")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
+
+        requestDTO.roleId("r14");
+        requestDTO.appId("app2");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTO)
+                .post("/revoke")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if assignment with mandatory flag is still there
+        given()
+                .when()
+                .get("a13")
+                .then()
+                .statusCode(OK.getStatusCode());
     }
 
     @Test
@@ -316,6 +340,19 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
+        // try to delete mandatory assignment
+        given()
+                .contentType(APPLICATION_JSON)
+                .delete("a13")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        // check Assignment
+        given()
+                .contentType(APPLICATION_JSON)
+                .get("a13")
+                .then()
+                .statusCode(OK.getStatusCode());
     }
 
     @Test

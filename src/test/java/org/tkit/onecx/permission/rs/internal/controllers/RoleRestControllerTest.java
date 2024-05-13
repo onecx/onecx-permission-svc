@@ -114,6 +114,19 @@ class RoleRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
+        // delete mandatory Role
+        given()
+                .contentType(APPLICATION_JSON)
+                .delete("r13")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        //check if role still exists
+        given()
+                .contentType(APPLICATION_JSON)
+                .get("r13")
+                .then().statusCode(OK.getStatusCode());
+
     }
 
     @Test

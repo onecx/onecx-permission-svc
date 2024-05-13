@@ -18,6 +18,10 @@ public class RoleService {
 
     @Transactional
     public void deleteRole(String id) {
+        var role = dao.findById(id);
+        if (role != null && Boolean.TRUE.equals(role.getMandatory())) {
+            return;
+        }
         assignmentDAO.deleteByRoleId(id);
         dao.deleteQueryById(id);
     }

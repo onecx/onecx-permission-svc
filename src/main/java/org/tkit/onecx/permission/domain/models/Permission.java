@@ -40,4 +40,10 @@ public class Permission extends TraceableEntity {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    /**
+     * Flag to protect mandatory data
+     */
+    @Column(name = "MANDATORY")
+    private Boolean mandatory;
+
 }

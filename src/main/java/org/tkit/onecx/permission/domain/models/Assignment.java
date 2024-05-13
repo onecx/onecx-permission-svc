@@ -35,6 +35,12 @@ public class Assignment extends TraceableEntity {
     @JoinColumn(name = "PERMISSION_ID")
     private Permission permission;
 
+    /**
+     * Flag to protect mandatory data
+     */
+    @Column(name = "MANDATORY")
+    private Boolean mandatory;
+
     @PostPersist
     void postPersist() {
         roleId = role.getId();
