@@ -20,6 +20,7 @@ public interface TemplateMapper {
     @Mapping(target = "persisted", ignore = true)
     Application createApplication(String productName, String appId, String name, String description);
 
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
@@ -30,6 +31,7 @@ public interface TemplateMapper {
     @Mapping(target = "persisted", ignore = true)
     Permission createPermission(String productName, String appId, String resource, String action, String description);
 
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
@@ -41,6 +43,7 @@ public interface TemplateMapper {
     @Mapping(target = "tenantId", ignore = true)
     Role createRole(String name, String description);
 
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)

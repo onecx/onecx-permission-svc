@@ -142,7 +142,10 @@ public class AssignmentRestController implements AssignmentInternalApi {
 
     @Override
     public Response deleteAssignment(String id) {
-        dao.deleteQueryById(id);
+        var assignment = dao.findById(id);
+        if (assignment != null && !Boolean.TRUE.equals(assignment.getMandatory())) {
+            dao.deleteQueryById(id);
+        }
         return Response.noContent().build();
     }
 

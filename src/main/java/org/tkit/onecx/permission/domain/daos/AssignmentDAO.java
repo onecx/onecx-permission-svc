@@ -146,7 +146,8 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
                 predicates.add(cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId));
             }
 
-            dq.where(cb.and(predicates.toArray(new Predicate[0])));
+            dq.where(cb.and(cb.and(predicates.toArray(new Predicate[0])),
+                    cb.notEqual(root.get(Assignment_.MANDATORY), Boolean.TRUE)));
 
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
