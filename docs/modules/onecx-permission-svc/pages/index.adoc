@@ -4,5 +4,7 @@ include::onecx-permission-svc-attributes.adoc[opts=optional]
 
 include::docs.adoc[opts=optional]
 
+=== Configuration
+include::onecx-permission-svc.adoc[opts=optional]
 
 include::onecx-permission-svc-docs.adoc[opts=optional]

@@ -24,7 +24,6 @@ onecx.permission.token.issuer.public-key-location.enabled=false
 onecx.permission.token.claim.path=realm_access/roles
 tkit.dataimport.enabled=false
 tkit.dataimport.configurations.template.file=import/template.json
-tkit.dataimport.configurations.template.metadata.tenants=default
 tkit.dataimport.configurations.template.class-path=true
 tkit.dataimport.configurations.template.enabled=false
 tkit.dataimport.configurations.template.stop-at-error=true

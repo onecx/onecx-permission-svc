@@ -38,6 +38,9 @@ public class TemplateDataImportService implements DataImportService {
     @Inject
     TemplateMapper mapper;
 
+    @Inject
+    TemplateConfig templateConfig;
+
     @Override
     public void importData(DataImportConfig config) {
         log.info("Import permissions from configuration {}", config);
@@ -47,17 +50,7 @@ public class TemplateDataImportService implements DataImportService {
 
             var existingData = importProducts(data.getProducts());
 
-            List<String> tenants = List.of();
-            var tmp = config.getMetadata().get("tenants");
-            if (tmp != null) {
-                tenants = List.of(tmp.split(","));
-            }
-
-            if (tenants.isEmpty()) {
-                log.warn("No tenants defined for the templates");
-                return;
-            }
-
+            List<String> tenants = templateConfig.tenants();
             importRoles(tenants, data.getRoles(), existingData);
 
         } catch (Exception ex) {
@@ -117,7 +110,8 @@ public class TemplateDataImportService implements DataImportService {
             for (var dr : dto.entrySet()) {
                 var role = data.getRole(dr.getKey());
                 if (role == null) {
-                    role = mapper.createRole(dr.getKey(), dr.getValue().getDescription());
+                    role = mapper.createRole(templateConfig.roleMapping().getOrDefault(dr.getKey(), dr.getKey()),
+                            dr.getValue().getDescription());
                     roles.add(role);
                 }
 
