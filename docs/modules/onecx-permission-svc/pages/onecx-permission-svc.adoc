@@ -1,0 +1,131 @@
+
+:summaryTableId: onecx-permission-svc
+[.configuration-legend]
+icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
+[.configuration-reference.searchable, cols="80,.^10,.^10"]
+|===
+
+h|[[onecx-permission-svc_configuration]]link:#onecx-permission-svc_configuration[Configuration property]
+
+h|Type
+h|Default
+
+a| [[onecx-permission-svc_onecx-permission-template-tenants]]`link:#onecx-permission-svc_onecx-permission-template-tenants[onecx.permission.template.tenants]`
+
+
+[.description]
+--
+Template import tenants
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TEMPLATE_TENANTS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_TEMPLATE_TENANTS+++`
+endif::add-copy-button-to-env-var[]
+--|list of string 
+|`default`
+
+
+a| [[onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping]]`link:#onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping[onecx.permission.template.role-mapping]`
+
+
+[.description]
+--
+Role mapping for the template import
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TEMPLATE_ROLE_MAPPING+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_TEMPLATE_ROLE_MAPPING+++`
+endif::add-copy-button-to-env-var[]
+--|`Map<String,String>` 
+|
+
+
+a| [[onecx-permission-svc_onecx-permission-token-verified]]`link:#onecx-permission-svc_onecx-permission-token-verified[onecx.permission.token.verified]`
+
+
+[.description]
+--
+Verified permission token
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TOKEN_VERIFIED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_TOKEN_VERIFIED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
+a| [[onecx-permission-svc_onecx-permission-token-issuer-public-key-location-suffix]]`link:#onecx-permission-svc_onecx-permission-token-issuer-public-key-location-suffix[onecx.permission.token.issuer.public-key-location.suffix]`
+
+
+[.description]
+--
+Issuer public key location suffix.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFIX+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFIX+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`/protocol/openid-connect/certs`
+
+
+a| [[onecx-permission-svc_onecx-permission-token-issuer-public-key-location-enabled]]`link:#onecx-permission-svc_onecx-permission-token-issuer-public-key-location-enabled[onecx.permission.token.issuer.public-key-location.enabled]`
+
+
+[.description]
+--
+Issuer public key location enabled
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
+a| [[onecx-permission-svc_onecx-permission-token-claim-separator]]`link:#onecx-permission-svc_onecx-permission-token-claim-separator[onecx.permission.token.claim.separator]`
+
+
+[.description]
+--
+Claim separator
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TOKEN_CLAIM_SEPARATOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_TOKEN_CLAIM_SEPARATOR+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[onecx-permission-svc_onecx-permission-token-claim-path]]`link:#onecx-permission-svc_onecx-permission-token-claim-path[onecx.permission.token.claim.path]`
+
+
+[.description]
+--
+Claim path
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TOKEN_CLAIM_PATH+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_TOKEN_CLAIM_PATH+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`realm_access/roles`
+
+|===

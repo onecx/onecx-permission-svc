@@ -3,7 +3,6 @@ package org.tkit.onecx.permission.domain.di;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,12 +39,10 @@ class TemplateImportTest extends AbstractTest {
     @Test
     void importDataNoDataTest() {
 
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("tenants", null);
         DataImportConfig config = new DataImportConfig() {
             @Override
             public Map<String, String> getMetadata() {
-                return metadata;
+                return Map.of();
             }
         };
 
@@ -59,12 +56,10 @@ class TemplateImportTest extends AbstractTest {
     @Test
     void importDataNoTenantsTest() {
 
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("tenants", null);
         DataImportConfig config = new DataImportConfig() {
             @Override
             public Map<String, String> getMetadata() {
-                return metadata;
+                return Map.of();
             }
 
             @Override
@@ -97,7 +92,7 @@ class TemplateImportTest extends AbstractTest {
         DataImportConfig config = new DataImportConfig() {
             @Override
             public Map<String, String> getMetadata() {
-                return Map.of("tenants", "default");
+                return Map.of();
             }
 
             @Override
