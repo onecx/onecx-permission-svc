@@ -20,6 +20,7 @@ public interface TemplateMapper {
     @Mapping(target = "persisted", ignore = true)
     Application createApplication(String productName, String appId, String name, String description);
 
+    @Mapping(target = "operator", constant = "false")
     @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)

@@ -796,6 +796,9 @@ components:
         mandatory:
           type: boolean
           default: false
+        operator:
+          type: boolean
+          default: false
     CreatePermissionRequest:
       type: object
       properties:

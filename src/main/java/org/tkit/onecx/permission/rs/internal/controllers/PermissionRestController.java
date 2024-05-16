@@ -13,6 +13,7 @@ import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.services.PermissionService;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.rs.internal.mappers.PermissionMapper;
+import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.permission.rs.internal.PermissionInternalApi;
@@ -85,5 +86,10 @@ public class PermissionRestController implements PermissionInternalApi {
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintException ex) {
+        return exceptionMapper.exception(ex);
     }
 }

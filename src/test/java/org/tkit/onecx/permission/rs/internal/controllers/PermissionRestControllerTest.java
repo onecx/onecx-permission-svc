@@ -38,8 +38,8 @@ class PermissionRestControllerTest extends AbstractTest {
                 .as(PermissionPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(7);
-        assertThat(data.getStream()).isNotNull().hasSize(7);
+        assertThat(data.getTotalElements()).isEqualTo(8);
+        assertThat(data.getStream()).isNotNull().hasSize(8);
 
         criteria.setAppId(" ");
 
@@ -54,8 +54,8 @@ class PermissionRestControllerTest extends AbstractTest {
                 .as(PermissionPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(7);
-        assertThat(data.getStream()).isNotNull().hasSize(7);
+        assertThat(data.getTotalElements()).isEqualTo(8);
+        assertThat(data.getStream()).isNotNull().hasSize(8);
     }
 
     @Test
@@ -90,8 +90,8 @@ class PermissionRestControllerTest extends AbstractTest {
                 .as(PermissionPageResultDTO.class);
 
         assertThat(output).isNotNull();
-        assertThat(output.getTotalElements()).isEqualTo(7);
-        assertThat(output.getStream()).isNotNull().hasSize(7);
+        assertThat(output.getTotalElements()).isEqualTo(8);
+        assertThat(output.getStream()).isNotNull().hasSize(8);
 
     }
 
@@ -168,6 +168,16 @@ class PermissionRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(OK.getStatusCode());
 
+    }
+
+    @Test
+    void deletePermissionWithAssignmentByDifferentTenantTest() {
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .delete("p23")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
