@@ -14,6 +14,7 @@
 
     <PERMISSION guid="p21" optlock="0" app_id="app2" resource="o1" action="a1" product_name="test1" mandatory="false"/>
     <PERMISSION guid="p22" optlock="0" app_id="app2" resource="o1" action="a2" product_name="test1" mandatory="false"/>
+    <PERMISSION guid="p23" optlock="0" app_id="app2" resource="o1" action="a3" product_name="test1" mandatory="false"/>
 
     <ROLE guid="r11" optlock="0" name="n1" description="d1" tenant_id="default" mandatory="false"/>
     <ROLE guid="r12" optlock="0" name="n2" description="d1" tenant_id="default" mandatory=""/>
@@ -29,6 +30,7 @@
     <ASSIGNMENT guid="a12" optlock="0" permission_id="p13" role_id="r14" tenant_id="default" mandatory="false"/>
 
     <ASSIGNMENT guid="a13" optlock="0" permission_id="p21" role_id="r14" tenant_id="default" mandatory="true"/>
+    <ASSIGNMENT guid="a14" optlock="0" permission_id="p23" role_id="r24" tenant_id="100" mandatory="false"/>
 
 
 </dataset>

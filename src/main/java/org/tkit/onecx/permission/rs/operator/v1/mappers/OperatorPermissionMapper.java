@@ -52,6 +52,7 @@ public interface OperatorPermissionMapper {
         return data;
     }
 
+    @Mapping(target = "operator", constant = "true")
     @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)

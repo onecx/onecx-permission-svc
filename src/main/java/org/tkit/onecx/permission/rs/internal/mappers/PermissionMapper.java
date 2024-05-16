@@ -20,7 +20,8 @@ public interface PermissionMapper {
 
     PermissionDTO map(Permission data);
 
-    @Mapping(target = "mandatory", ignore = true)
+    @Mapping(target = "mandatory", constant = "false")
+    @Mapping(target = "operator", constant = "false")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
@@ -31,6 +32,7 @@ public interface PermissionMapper {
     @Mapping(target = "persisted", ignore = true)
     Permission create(CreatePermissionRequestDTO dto);
 
+    @Mapping(target = "operator", ignore = true)
     @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)

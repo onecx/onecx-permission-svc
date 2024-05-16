@@ -46,4 +46,10 @@ public class Permission extends TraceableEntity {
     @Column(name = "MANDATORY")
     private Boolean mandatory;
 
+    /**
+     * Flag to identify permissions created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
+
 }
