@@ -112,123 +112,6 @@ class AssignmentRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void revokeAssignmentsByOnlyRoleIdTest() {
-        var requestDTO = new RevokeAssignmentRequestDTO();
-        requestDTO.roleId("r14");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        //check if assignment is gone
-        given()
-                .when()
-                .get("a12")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        //check if assignment with mandatory flag is still there
-        given()
-                .when()
-                .get("a13")
-                .then()
-                .statusCode(OK.getStatusCode());
-
-        //not-exiting role id
-        requestDTO.setRoleId("not-existing");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-    }
-
-    @Test
-    void revokeAssignmentsByRoleIdAndPermissionIdTest() {
-        var requestDTO = new RevokeAssignmentRequestDTO();
-        requestDTO.roleId("r14");
-        requestDTO.permissionId("p13");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        //check if assignment is gone
-        given()
-                .when()
-                .get("a12")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-    }
-
-    @Test
-    void revokeAssignmentsByRoleIdAndAppIdsTest() {
-        var requestDTO = new RevokeAssignmentRequestDTO();
-        requestDTO.roleId("r14");
-        requestDTO.setProductNames(List.of("test1"));
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        //check if assignment is gone
-        given()
-                .when()
-                .get("a12")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-    }
-
-    @Test
-    void revokeAssignmentsByAppIdTest() {
-        var requestDTO = new RevokeAssignmentRequestDTO();
-        requestDTO.roleId("r13");
-        requestDTO.appId("app1");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        //check if assignment is gone
-        given()
-                .when()
-                .get("a11")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-
-        requestDTO.roleId("r14");
-        requestDTO.appId("app2");
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(requestDTO)
-                .post("/revoke")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        //check if assignment with mandatory flag is still there
-        given()
-                .when()
-                .get("a13")
-                .then()
-                .statusCode(OK.getStatusCode());
-    }
-
-    @Test
     void getNotFoundAssignment() {
         given()
                 .contentType(APPLICATION_JSON)
@@ -518,6 +401,172 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .post("/grant/r14/products")
                 .then()
                 .statusCode(CREATED.getStatusCode());
+
+    }
+
+    @Test
+    void revokeAssignmentByRole() {
+        // revoke role assignment
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/revoke/role1")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/revoke/r14")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        var idToken = createToken("org1", List.of("n3-100"));
+        given()
+                .when()
+                .header(APM_HEADER_PARAM, idToken)
+                .contentType(APPLICATION_JSON)
+                .post("/revoke/r14")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void revokeAssignmentByRoleProduct() {
+
+        // revoke role assignment
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/revoke/role1/product")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductAssignmentRequestDTO())
+                .post("/revoke/role1/product")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductAssignmentRequestDTO().productName(null).appId(null))
+                .post("/revoke/role1/product")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductAssignmentRequestDTO()
+                        .productName("does-not-exists").appId("app1"))
+                .post("/revoke/r14/product")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductAssignmentRequestDTO()
+                        .productName("test1").appId("app1"))
+                .post("/revoke/does-not-exists/product")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductAssignmentRequestDTO()
+                        .productName("test1").appId("app1"))
+                .post("/revoke/r14/product")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductAssignmentRequestDTO()
+                        .productName("test1").appId("app1"))
+                .post("/revoke/r14/product")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+    }
+
+    @Test
+    void revokeAssignmentByRoleProducts() {
+
+        // create role assignment
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/revoke/role1/products")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductsAssignmentRequestDTO())
+                .post("/revoke/role1/products")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductsAssignmentRequestDTO().productNames(List.of()))
+                .post("/revoke/role1/products")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("does-not-exists")))
+                .post("/revoke/r14/products")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1")))
+                .post("/revoke/does-not-exists/products")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1")))
+                .post("/revoke/r14/products")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1")))
+                .post("/revoke/r14/products")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new RevokeRoleProductsAssignmentRequestDTO()
+                        .productNames(List.of("test1", "does-not-exists")))
+                .post("/revoke/r14/products")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
 
     }
 }

@@ -56,15 +56,6 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    public Response revokeAssignments(RevokeAssignmentRequestDTO createRevokeAssignmentRequestDTO) {
-        dao.deleteByCriteria(createRevokeAssignmentRequestDTO.getRoleId(),
-                createRevokeAssignmentRequestDTO.getProductNames(),
-                createRevokeAssignmentRequestDTO.getPermissionId(),
-                createRevokeAssignmentRequestDTO.getAppId());
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
-    @Override
     public Response searchAssignments(AssignmentSearchCriteriaDTO assignmentSearchCriteriaDTO) {
         var criteria = mapper.map(assignmentSearchCriteriaDTO);
         var result = dao.findByCriteria(criteria);
@@ -106,7 +97,7 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
-    public Response grantRoleProductAssignments(String roleId,
+    public Response grantRoleApplicationAssignments(String roleId,
             CreateRoleProductAssignmentRequestDTO createRoleProductAssignmentRequestDTO) {
         var role = roleDAO.findById(roleId);
         if (role == null) {
@@ -138,6 +129,50 @@ public class AssignmentRestController implements AssignmentInternalApi {
         var data = mapper.createList(role, permissions);
         service.createRoleProductsAssignments(role, createRoleProductsAssignmentRequestDTO.getProductNames(), data);
         return Response.status(Response.Status.CREATED).build();
+    }
+
+    @Override
+    public Response revokeRoleAssignments(String roleId) {
+        var role = roleDAO.findById(roleId);
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        dao.deleteByRoleId(roleId);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @Override
+    public Response revokeRoleApplicationAssignments(String roleId,
+            RevokeRoleProductAssignmentRequestDTO revokeRoleProductAssignmentRequestDTO) {
+        var role = roleDAO.findById(roleId);
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        var permissions = permissionDAO.findByProductAndAppId(revokeRoleProductAssignmentRequestDTO.getProductName(),
+                revokeRoleProductAssignmentRequestDTO.getAppId());
+        if (permissions.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        dao.deleteByProductNameAppId(role.getId(),
+                revokeRoleProductAssignmentRequestDTO.getProductName(), revokeRoleProductAssignmentRequestDTO.getAppId());
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @Override
+    public Response revokeRoleProductsAssignments(String roleId,
+            RevokeRoleProductsAssignmentRequestDTO revokeRoleProductsAssignmentRequestDTO) {
+        var role = roleDAO.findById(roleId);
+        if (role == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var permissions = permissionDAO.findByProductNames(revokeRoleProductsAssignmentRequestDTO.getProductNames());
+        if (permissions.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        dao.deleteByProducts(role.getId(), revokeRoleProductsAssignmentRequestDTO.getProductNames());
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @Override
