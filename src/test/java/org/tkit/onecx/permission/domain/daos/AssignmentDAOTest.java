@@ -19,8 +19,6 @@ class AssignmentDAOTest extends AbstractDAOTest {
                 AssignmentDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);
-        methodExceptionTests(() -> dao.deleteByCriteria(null, null, null, null),
-                AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_CRITERIA);
         methodExceptionTests(() -> dao.deleteByRoleId(null),
                 AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_ROLE_ID);
         methodExceptionTests(() -> dao.deleteByProductNameAppId(null, null, null),

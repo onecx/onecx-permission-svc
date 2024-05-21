@@ -93,7 +93,7 @@ paths:
       tags:
         - assignmentInternal
       description: Create new assignments for role and product
-      operationId: grantRoleProductAssignments
+      operationId: grantRoleApplicationAssignments
       parameters:
         - name: roleId
           in: path
@@ -146,21 +146,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/assignments/revoke:
+  /internal/assignments/revoke/{roleId}:
     post:
       tags:
         - assignmentInternal
-      description: delete assignments by criteria
-      operationId: revokeAssignments
+      description: Revoke assignments by roleId
+      operationId: revokeRoleAssignments
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: assignment revoked
+        404:
+          description: Data not found
+  /internal/assignments/revoke/{roleId}/product:
+    post:
+      tags:
+        - assignmentInternal
+      description: Revoke assignments for role and product
+      operationId: revokeRoleApplicationAssignments
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RevokeAssignmentRequest'
+              $ref: '#/components/schemas/RevokeRoleProductAssignmentRequest'
       responses:
         204:
-          description: New assignment created
+          description: assignment revoked
+        404:
+          description: Data not found
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments/revoke/{roleId}/products:
+    post:
+      tags:
+        - assignmentInternal
+      description: Revoke assignments for role and products
+      operationId: revokeRoleProductsAssignments
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevokeRoleProductsAssignmentRequest'
+      responses:
+        204:
+          description: Assignment revoked
+        404:
+          description: Data not found
         400:
           description: Bad request
           content:
@@ -515,21 +569,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Assignment'
-    RevokeAssignmentRequest:
-      type: object
-      required:
-        - roleId
-      properties:
-        roleId:
-          type: string
-        permissionId:
-          type: string
-        appId:
-          type: string
-        productNames:
-          type: array
-          items:
-            type: string
     CreateAssignmentRequest:
       type: object
       required:
@@ -551,6 +590,26 @@ components:
           items:
             type: string
     CreateRoleProductAssignmentRequest:
+      type: object
+      required:
+        - productName
+        - appId
+      properties:
+        appId:
+          type: string
+        productName:
+          type: string
+    RevokeRoleProductsAssignmentRequest:
+      type: object
+      required:
+        - productNames
+      properties:
+        productNames:
+          type: array
+          minItems: 1
+          items:
+            type: string
+    RevokeRoleProductAssignmentRequest:
       type: object
       required:
         - productName
