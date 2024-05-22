@@ -19,6 +19,8 @@ public class AssignmentService {
     @Transactional
     public void createAssignments(Role role, List<Assignment> assignments) {
         dao.deleteByRoleId(role.getId());
+        // dao.selectByCriteria(role.id)
+        // reduce assignments by result
         dao.create(assignments);
     }
 

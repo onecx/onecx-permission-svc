@@ -1,5 +1,6 @@
 package org.tkit.onecx.permission.rs.operator.v1.controllers;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -56,7 +57,7 @@ public class OperatorRestController implements PermissionOperatorApi {
         if (data.isEmpty()) {
             return Response.ok().build();
         }
-        var permissions = dao.findByProductAndAppId(productName, appId);
+        var permissions = dao.findByProductAndAppIdAndExcludePermissionsById(productName, appId, new ArrayList<>());
         var map = permissions.stream().collect(Collectors.toMap(x -> x.getResource() + x.getAction(), x -> x));
 
         for (Permission item : data) {

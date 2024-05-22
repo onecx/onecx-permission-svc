@@ -48,29 +48,45 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
-    public List<Permission> findByProductAndAppId(String productName, String appId) {
+    public List<Permission> findByProductAndAppIdAndExcludePermissionsById(String productName, String appId,
+            List<String> permissionIds) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
             var root = cq.from(Permission.class);
             cq.where(cb.and(
                     cb.equal(root.get(Permission_.PRODUCT_NAME), productName),
-                    cb.equal(root.get(Permission_.APP_ID), appId)));
+                    cb.equal(root.get(Permission_.APP_ID), appId),
+                    root.get(Permission_.ID).in(permissionIds).not()));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_BY_PRODUCT_AND_APP_ID, ex);
         }
     }
 
-    public List<Permission> findByProductNames(Collection<String> productNames) {
+    public List<Permission> findByProductNamesAndExcludePermissionsById(Collection<String> productNames,
+            List<String> permissionIds) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Permission.class);
             var root = cq.from(Permission.class);
-            cq.where(root.get(Permission_.PRODUCT_NAME).in(productNames));
+            cq.where(cb.and(root.get(Permission_.PRODUCT_NAME).in(productNames),
+                    root.get(Permission_.ID).in(permissionIds).not()));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_BY_PRODUCT_NAMES, ex);
+        }
+    }
+
+    public List<Permission> findAllExcludingGivenIds(Collection<String> permissionGuids) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+            cq.where(root.get(Permission_.ID).in(permissionGuids).not());
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_NOT_BY_IDS, ex);
         }
     }
 
@@ -101,6 +117,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         ERROR_FIND_PERMISSION_FOR_USER,
         ERROR_FIND_BY_PRODUCT_AND_APP_ID,
         ERROR_FIND_PERMISSION_BY_CRITERIA,
-        ERROR_FIND_BY_PRODUCT_NAMES;
+        ERROR_FIND_BY_PRODUCT_NAMES,
+        ERROR_FIND_NOT_BY_IDS;
     }
 }

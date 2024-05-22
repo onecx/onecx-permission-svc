@@ -29,6 +29,9 @@ class AssignmentDAOTest extends AbstractDAOTest {
                 AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_PERMISSION_ID);
         methodExceptionTests(() -> dao.findPermissionActionForProducts(null),
                 AssignmentDAO.ErrorKeys.ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS);
+        methodExceptionTests(() -> dao.selectMandatoryByRoleId(null),
+                AssignmentDAO.ErrorKeys.ERROR_SELECT_MANDATORY_BY_ROLE_ID);
+
     }
 
 }

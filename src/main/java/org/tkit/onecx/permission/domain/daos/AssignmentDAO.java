@@ -71,10 +71,24 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cb = getEntityManager().getCriteriaBuilder();
             var dq = this.deleteQuery();
             var root = dq.from(Assignment.class);
-            dq.where(cb.equal(root.get(Assignment_.ROLE_ID), roleId));
+            dq.where(cb.and(cb.equal(root.get(Assignment_.ROLE_ID), roleId),
+                    cb.notEqual(root.get(Assignment_.MANDATORY), true)));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_BY_ROLE_ID, ex);
+        }
+    }
+
+    public List<String> selectMandatoryByRoleId(String roleId) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(String.class);
+            var root = cq.from(Assignment.class);
+            cq.select(root.get(Assignment_.PERMISSION_ID)).where(cb.and(cb.equal(root.get(Assignment_.ROLE_ID), roleId),
+                    cb.equal(root.get(Assignment_.MANDATORY), true)));
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_SELECT_MANDATORY_BY_ROLE_ID, ex);
         }
     }
 
@@ -84,7 +98,8 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cb = getEntityManager().getCriteriaBuilder();
             var dq = this.deleteQuery();
             var root = dq.from(Assignment.class);
-            dq.where(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId));
+            dq.where(cb.and(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId),
+                    cb.notEqual(root.get(Assignment_.MANDATORY), true)));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PERMISSION_ID, ex);
@@ -154,6 +169,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS,
 
         FIND_ENTITY_BY_ID_FAILED,
-        ERROR_FIND_ASSIGNMENT_BY_CRITERIA;
+        ERROR_FIND_ASSIGNMENT_BY_CRITERIA,
+        ERROR_SELECT_MANDATORY_BY_ROLE_ID;
     }
 }
