@@ -87,7 +87,9 @@ public class AssignmentRestController implements AssignmentInternalApi {
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        var permissions = permissionDAO.findAll().toList();
+        var guids = dao.selectMandatoryByRoleId(roleId);
+        var permissions = permissionDAO.findAllExcludingGivenIds(guids);
+
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -103,9 +105,10 @@ public class AssignmentRestController implements AssignmentInternalApi {
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
-        var permissions = permissionDAO.findByProductAndAppId(createRoleProductAssignmentRequestDTO.getProductName(),
-                createRoleProductAssignmentRequestDTO.getAppId());
+        var guids = dao.selectMandatoryByRoleId(roleId);
+        var permissions = permissionDAO.findByProductAndAppIdAndExcludePermissionsById(
+                createRoleProductAssignmentRequestDTO.getProductName(),
+                createRoleProductAssignmentRequestDTO.getAppId(), guids);
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -122,7 +125,10 @@ public class AssignmentRestController implements AssignmentInternalApi {
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        var permissions = permissionDAO.findByProductNames(createRoleProductsAssignmentRequestDTO.getProductNames());
+        var guids = dao.selectMandatoryByRoleId(roleId);
+
+        var permissions = permissionDAO.findByProductNamesAndExcludePermissionsById(
+                createRoleProductsAssignmentRequestDTO.getProductNames(), guids);
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -148,9 +154,11 @@ public class AssignmentRestController implements AssignmentInternalApi {
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        var guids = dao.selectMandatoryByRoleId(roleId);
 
-        var permissions = permissionDAO.findByProductAndAppId(revokeRoleProductAssignmentRequestDTO.getProductName(),
-                revokeRoleProductAssignmentRequestDTO.getAppId());
+        var permissions = permissionDAO.findByProductAndAppIdAndExcludePermissionsById(
+                revokeRoleProductAssignmentRequestDTO.getProductName(),
+                revokeRoleProductAssignmentRequestDTO.getAppId(), guids);
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -167,7 +175,9 @@ public class AssignmentRestController implements AssignmentInternalApi {
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        var permissions = permissionDAO.findByProductNames(revokeRoleProductsAssignmentRequestDTO.getProductNames());
+        var guids = dao.selectMandatoryByRoleId(roleId);
+        var permissions = permissionDAO.findByProductNamesAndExcludePermissionsById(
+                revokeRoleProductsAssignmentRequestDTO.getProductNames(), guids);
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
