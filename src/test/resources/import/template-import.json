@@ -76,7 +76,7 @@
           "onecx-permission-ui": {
             "APP": [ "EDIT", "SAVE", "SEARCH", "VIEW" ],
             "PERMISSION": [ "GRANT", "CREATE", "DELETE", "EDIT", "SAVE" ],
-            "ROLE": [ "CREATE", "DELETE", "EDIT", "SAVE" ]
+            "ROLE": [ "CREATE", "DELETE", "EDIT", "SAVE", "DOES_NOT_EXISTS" ]
           }
         }
       }

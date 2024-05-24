@@ -134,7 +134,13 @@ public class TemplateDataImportService implements DataImportService {
                                 action)) {
                             var permission = commonData.getPermission(aProduct.getKey(), aApp.getKey(), aResource.getKey(),
                                     action);
-                            assignments.add(mapper.createAssignment(role, permission));
+                            if (permission != null) {
+                                assignments.add(mapper.createAssignment(role, permission));
+                            } else {
+                                log.error("Template import role '{}' missing permission [{},{},{},{}]", role.getName(),
+                                        aProduct.getKey(), aApp.getKey(),
+                                        aResource.getKey(), action);
+                            }
                         }
                     }
                 }
