@@ -74,6 +74,18 @@ public class PermissionDAO extends AbstractDAO<Permission> {
                     root.get(TraceableEntity_.ID).in(permissionIds).not()));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_BY_PRODUCT_NAMES_NOT_PERMISSIONS, ex);
+        }
+    }
+
+    public List<Permission> findByProductNames(Collection<String> productNames) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+            cq.where(root.get(Permission_.PRODUCT_NAME).in(productNames));
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_BY_PRODUCT_NAMES, ex);
         }
     }
@@ -114,6 +126,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
 
     public enum ErrorKeys {
 
+        ERROR_FIND_BY_PRODUCT_NAMES_NOT_PERMISSIONS,
         ERROR_FIND_PERMISSION_FOR_USER,
         ERROR_FIND_BY_PRODUCT_AND_APP_ID,
         ERROR_FIND_PERMISSION_BY_CRITERIA,

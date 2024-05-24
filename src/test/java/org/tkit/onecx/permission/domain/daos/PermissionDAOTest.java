@@ -20,6 +20,8 @@ class PermissionDAOTest extends AbstractDAOTest {
         methodExceptionTests(() -> dao.findByProductAndAppIdAndExcludePermissionsById(null, null, null),
                 PermissionDAO.ErrorKeys.ERROR_FIND_BY_PRODUCT_AND_APP_ID);
         methodExceptionTests(() -> dao.findByProductNamesAndExcludePermissionsById(null, null),
+                PermissionDAO.ErrorKeys.ERROR_FIND_BY_PRODUCT_NAMES_NOT_PERMISSIONS);
+        methodExceptionTests(() -> dao.findByProductNames(null),
                 PermissionDAO.ErrorKeys.ERROR_FIND_BY_PRODUCT_NAMES);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 PermissionDAO.ErrorKeys.ERROR_FIND_PERMISSION_BY_CRITERIA);

@@ -1,6 +1,5 @@
 package org.tkit.onecx.permission.domain.di;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -83,7 +82,7 @@ public class PermissionTemplateService {
         // find apps in DB
         var a = applicationDAO.findByProductNames(productNames);
         // find permission in DB
-        var p = permissionDAO.findByProductNamesAndExcludePermissionsById(productNames, new ArrayList<>());
+        var p = permissionDAO.findByProductNames(productNames);
 
         return new TemplateCommonData(a, p);
     }
