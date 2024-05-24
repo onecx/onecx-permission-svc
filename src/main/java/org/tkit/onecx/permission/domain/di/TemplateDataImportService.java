@@ -129,21 +129,27 @@ public class TemplateDataImportService implements DataImportService {
         for (var aProduct : dto.getAssignments().entrySet()) {
             for (var aApp : aProduct.getValue().entrySet()) {
                 for (var aResource : aApp.getValue().entrySet()) {
-                    for (var action : aResource.getValue()) {
-                        if (!data.hasPermissionAction(role.getName(), aProduct.getKey(), aApp.getKey(), aResource.getKey(),
-                                action)) {
-                            var permission = commonData.getPermission(aProduct.getKey(), aApp.getKey(), aResource.getKey(),
-                                    action);
-                            if (permission != null) {
-                                assignments.add(mapper.createAssignment(role, permission));
-                            } else {
-                                log.error("Template import role '{}' missing permission [{},{},{},{}]", role.getName(),
-                                        aProduct.getKey(), aApp.getKey(),
-                                        aResource.getKey(), action);
-                            }
-                        }
-                    }
+                    assignments.addAll(createAssignmentActions(data, role, aResource.getValue(), commonData, aProduct.getKey(),
+                            aApp.getKey(), aResource.getKey()));
                 }
+            }
+        }
+        return assignments;
+    }
+
+    private List<Assignment> createAssignmentActions(TemplateTenantData data, Role role, List<String> actions,
+            TemplateCommonData commonData, String productName, String appId, String resource) {
+        List<Assignment> assignments = new ArrayList<>();
+        for (var action : actions) {
+            if (data.hasPermissionAction(role.getName(), productName, appId, resource, action)) {
+                continue;
+            }
+            var permission = commonData.getPermission(productName, appId, resource, action);
+            if (permission != null) {
+                assignments.add(mapper.createAssignment(role, permission));
+            } else {
+                log.error("Template import role '{}' missing permission [{},{},{},{}]", role.getName(),
+                        productName, appId, resource, action);
             }
         }
         return assignments;
