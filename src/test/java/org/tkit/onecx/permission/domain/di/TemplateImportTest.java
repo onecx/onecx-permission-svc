@@ -100,7 +100,6 @@ class TemplateImportTest extends AbstractTest {
                 try {
                     return mapper.writeValueAsBytes(request);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     return null;
                 }
             }
@@ -110,6 +109,41 @@ class TemplateImportTest extends AbstractTest {
 
         List<Permission> data = permissionDAO.findAll().toList();
         assertThat(data).isNotNull().hasSize(8);
+
+    }
+
+    @Test
+    void importDataExistSpecialCaseTest() {
+
+        TemplateImportDTO request = new TemplateImportDTO()
+                .putRolesItem("n_x", new TemplateRoleValueDTO().assignments(null))
+                .putRolesItem("n1", new TemplateRoleValueDTO().description("d1")
+                        .putAssignmentsItem("test1", Map.of("app1", Map.of("o1", List.of("a1", "a2", "x1")))))
+                .putProductsItem("test_a", null)
+                .putProductsItem("test_x", new TemplateProductValueDTO()
+                        .putApplicationsItem("app_x", new TemplateApplicationValueDTO()
+                                .putPermissionsItem("o1", Map.of("a1", "d1", "x1", "xx1"))));
+
+        DataImportConfig config = new DataImportConfig() {
+            @Override
+            public Map<String, String> getMetadata() {
+                return Map.of();
+            }
+
+            @Override
+            public byte[] getData() {
+                try {
+                    return mapper.writeValueAsBytes(request);
+                } catch (Exception ex) {
+                    return null;
+                }
+            }
+        };
+
+        service.importData(config);
+
+        List<Permission> data = permissionDAO.findAll().toList();
+        assertThat(data).isNotNull().hasSize(10);
 
     }
 }

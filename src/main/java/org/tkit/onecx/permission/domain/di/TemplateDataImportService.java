@@ -48,7 +48,7 @@ public class TemplateDataImportService implements DataImportService {
 
             TemplateImportDTO data = objectMapper.readValue(config.getData(), TemplateImportDTO.class);
 
-            var existingData = importProducts(data.getProducts());
+            var existingData = importProducts(data);
 
             List<String> tenants = templateConfig.tenants();
             importRoles(tenants, data.getRoles(), existingData);
@@ -58,9 +58,17 @@ public class TemplateDataImportService implements DataImportService {
         }
     }
 
-    private TemplateCommonData importProducts(Map<String, TemplateProductValueDTO> products) {
+    private TemplateCommonData importProducts(TemplateImportDTO dto) {
 
-        var data = service.getCommonData(products.keySet());
+        Map<String, TemplateProductValueDTO> products = dto.getProducts();
+        Set<String> productNames = new HashSet<>(products.keySet());
+
+        dto.getRoles().forEach((k, v) -> {
+            if (v.getAssignments() != null) {
+                productNames.addAll(v.getAssignments().keySet());
+            }
+        });
+        var data = service.getCommonData(productNames);
 
         // create or update apps
         var applications = new ArrayList<Application>();
@@ -71,7 +79,9 @@ public class TemplateDataImportService implements DataImportService {
         // loop over products and create applications and permissions create/update request
         for (Map.Entry<String, TemplateProductValueDTO> item : products.entrySet()) {
             String productName = item.getKey();
-
+            if (item.getValue() == null) {
+                continue;
+            }
             for (Map.Entry<String, TemplateApplicationValueDTO> entry : item.getValue().getApplications().entrySet()) {
                 var appId = entry.getKey();
                 var app = entry.getValue();
@@ -97,8 +107,12 @@ public class TemplateDataImportService implements DataImportService {
     private void importRoles(List<String> tenants, Map<String, TemplateRoleValueDTO> dto, TemplateCommonData commonData) {
 
         var roleNames = dto.keySet();
-        var productNames = dto.values().stream()
-                .map(x -> x.getAssignments().keySet()).collect(HashSet::new, Set<String>::addAll, Set<String>::addAll);
+        Set<String> productNames = new HashSet<>();
+        dto.forEach((k, v) -> {
+            if (v.getAssignments() != null) {
+                productNames.addAll(v.getAssignments().keySet());
+            }
+        });
 
         for (String tenant : tenants) {
 
@@ -114,7 +128,6 @@ public class TemplateDataImportService implements DataImportService {
                             dr.getValue().getDescription());
                     roles.add(role);
                 }
-
                 assignments.addAll(createAssignments(role, dr.getValue(), data, commonData));
             }
 
@@ -126,6 +139,9 @@ public class TemplateDataImportService implements DataImportService {
     private List<Assignment> createAssignments(Role role, TemplateRoleValueDTO dto, TemplateTenantData data,
             TemplateCommonData commonData) {
         List<Assignment> assignments = new ArrayList<>();
+        if (dto.getAssignments() == null) {
+            return assignments;
+        }
         for (var aProduct : dto.getAssignments().entrySet()) {
             for (var aApp : aProduct.getValue().entrySet()) {
                 for (var aResource : aApp.getValue().entrySet()) {
