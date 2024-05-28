@@ -23,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public abstract class EximExceptionMapperV1 {
 
-    public abstract EximProblemDetailInvalidParamDTOV1 createProblem(String name, String message);
-
     public Response importError(List<EximProblemDetailInvalidParamDTOV1> invalidParamDTOV1s) {
         var dto = exception(ErrorCode.INVALID_IMPORT_REQUEST.name(),
                 "The request could not be fully completed due to a conflict with the current state of the roles and permissions");

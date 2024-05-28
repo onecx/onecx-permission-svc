@@ -37,13 +37,7 @@ public class AssignmentService {
 
     @Transactional
     public void importOperator(List<Assignment> assignments, Map<String, List<String>> productNames) {
-
-        productNames.forEach((productName, apps) -> {
-            apps.forEach(appId -> {
-                dao.deleteByProductNameAppId(productName, appId);
-            });
-        });
-
+        productNames.forEach((productName, apps) -> dao.deleteByProductNameAppIds(productName, apps));
         dao.create(assignments);
 
     }

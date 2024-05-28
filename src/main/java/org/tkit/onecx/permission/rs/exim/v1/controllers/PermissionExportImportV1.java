@@ -12,7 +12,6 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
-import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.models.Role;
 import org.tkit.onecx.permission.domain.services.AssignmentService;
 import org.tkit.onecx.permission.rs.exim.v1.mappers.EximExceptionMapperV1;
@@ -46,65 +45,22 @@ public class PermissionExportImportV1 implements PermissionExportImportApi {
     @Override
     public Response operatorImportAssignments(AssignmentSnapshotDTOV1 assignmentSnapshotDTO) {
 
-        Map<String, List<String>> productNames = new HashMap<>();
-        Set<String> roleNames = new HashSet<>();
-
-        assignmentSnapshotDTO.getAssignments().forEach((productName, product) -> {
-            if (product != null) {
-                productNames.computeIfAbsent(productName, k -> new ArrayList<>()).addAll(product.keySet());
-                product.forEach((appId, app) -> {
-                    if (app != null) {
-                        roleNames.addAll(app.keySet());
-                    }
-                });
-            }
-        });
+        var request = mapper.createRequestData(assignmentSnapshotDTO);
 
         // map of roles for assignments
-        var roles = roleDAO.findByNames(roleNames);
+        var roles = roleDAO.findByNames(request.roles());
         var roleMap = roles.stream().collect(Collectors.toMap(Role::getName, x -> x));
 
         // map of permissions for products
-        var permissions = permissionDAO.findByProductNames(productNames.keySet());
+        var permissions = permissionDAO.findByProductNames(request.product().keySet());
         var permissionMap = permissions.stream().collect(Collectors.toMap(EximMapperV1::permId, x -> x));
 
-        List<EximProblemDetailInvalidParamDTOV1> problems = new ArrayList<>();
-
         // create assignments
-        List<Assignment> assignments = new ArrayList<>();
-        assignmentSnapshotDTO.getAssignments().forEach((productName, product) -> {
-            if (product != null) {
-                product.forEach((appId, app) -> {
-                    if (app != null) {
-                        for (var e : app.entrySet()) {
-                            var roleName = e.getKey();
-
-                            var role = roleMap.get(roleName);
-                            if (role == null) {
-                                problems.add(exceptionMapper.createProblem("Role not found", "Role name: " + roleName));
-                                continue;
-                            }
-
-                            e.getValue().forEach((resource, actions) -> actions.forEach(action -> {
-                                var permId = EximMapperV1.permId(productName, appId, resource, action);
-                                var permission = permissionMap.get(permId);
-                                if (permission == null) {
-                                    problems.add(exceptionMapper
-                                            .createProblem("Permission not found", "Permission ID: " + permId));
-                                } else {
-                                    var assignment = mapper.create(role, permission);
-                                    assignment.setOperator(true);
-                                    assignments.add(assignment);
-                                }
-                            }));
-                        }
-                    }
-                });
-            }
-        });
+        List<EximProblemDetailInvalidParamDTOV1> problems = new ArrayList<>();
+        var assignments = mapper.createAssignments(problems, assignmentSnapshotDTO, roleMap, permissionMap);
 
         // delete old and create new assignments
-        service.importOperator(assignments, productNames);
+        service.importOperator(assignments, request.product());
 
         // check problems
         if (!problems.isEmpty()) {

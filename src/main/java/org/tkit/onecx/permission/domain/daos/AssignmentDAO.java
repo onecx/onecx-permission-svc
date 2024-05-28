@@ -3,6 +3,7 @@ package org.tkit.onecx.permission.domain.daos;
 import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -124,7 +125,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
     }
 
     @Transactional
-    public void deleteByProductNameAppId(String productName, String appId) {
+    public void deleteByProductNameAppIds(String productName, Collection<String> appId) {
         try {
             var cb = getEntityManager().getCriteriaBuilder();
             var dq = this.deleteQuery();
@@ -132,10 +133,10 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
             dq.where(cb.and(
                     cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME), productName),
-                    cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId)));
+                    root.get(Assignment_.PERMISSION).get(Permission_.APP_ID).in(appId)));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PRODUCT_NAME_APP_ID, ex);
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PRODUCT_NAME_APP_IDS, ex);
         }
     }
 
@@ -177,7 +178,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
     public enum ErrorKeys {
 
-        ERROR_DELETE_BY_PRODUCT_NAME_APP_ID,
+        ERROR_DELETE_BY_PRODUCT_NAME_APP_IDS,
         ERROR_DELETE_BY_PRODUCTS,
         ERROR_DELETE_BY_ROLE_PRODUCT_NAME_APP_ID,
         ERROR_DELETE_BY_PERMISSION_ID,
