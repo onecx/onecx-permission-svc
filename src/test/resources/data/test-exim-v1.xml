@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+
+    <!-- APP1 -->
+    <APPLICATION guid="a1" optlock="0" app_id="app1" name="app1" description="app1" product_name="test1" />
+
+    <PERMISSION guid="p11" optlock="0" app_id="app1" resource="o1" action="a1" product_name="test1"/>
+    <PERMISSION guid="p12" optlock="0" app_id="app1" resource="o1" action="a2" product_name="test1"/>
+    <PERMISSION guid="p13" optlock="0" app_id="app1" resource="o1" action="a3" product_name="test1"/>
+    <PERMISSION guid="p14" optlock="0" app_id="app1" resource="o2" action="a2" product_name="test1"/>
+    <PERMISSION guid="p15" optlock="0" app_id="app1" resource="o2" action="a3" product_name="test1"/>
+
+    <!-- APP2 -->
+    <APPLICATION guid="a2" optlock="0" app_id="app2" name="app2" description="app2" product_name="test1" />
+
+    <PERMISSION guid="p21" optlock="0" app_id="app2" resource="o1" action="a1" product_name="test1"/>
+    <PERMISSION guid="p22" optlock="0" app_id="app2" resource="o1" action="a2" product_name="test1"/>
+
+
+    <!-- ROLES -->
+    <ROLE guid="r11" optlock="0" name="n1" description="d1" tenant_id="default"/>
+    <ROLE guid="r12" optlock="0" name="n2" description="d1" tenant_id="default"/>
+    <ROLE guid="r13" optlock="0" name="n3" description="d1" tenant_id="default"/>
+    <ROLE guid="r14" optlock="0" name="n4" description="d1" tenant_id="default"/>
+
+
+    <!-- ASSIGNMENTS -->
+    <ASSIGNMENT guid="a11" optlock="0" permission_id="p13" role_id="r13" tenant_id="default"/>
+    <ASSIGNMENT guid="a12" optlock="0" permission_id="p13" role_id="r14" tenant_id="default"/>
+
+</dataset>

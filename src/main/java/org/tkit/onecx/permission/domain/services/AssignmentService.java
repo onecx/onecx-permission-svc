@@ -1,6 +1,7 @@
 package org.tkit.onecx.permission.domain.services;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -24,7 +25,7 @@ public class AssignmentService {
 
     @Transactional
     public void createRoleProductAssignments(Role role, String productName, String appId, List<Assignment> assignments) {
-        dao.deleteByProductNameAppId(role.getId(), productName, appId);
+        dao.deleteByRoleProductNameAppId(role.getId(), productName, appId);
         dao.create(assignments);
     }
 
@@ -32,5 +33,18 @@ public class AssignmentService {
     public void createRoleProductsAssignments(Role role, List<String> productNames, List<Assignment> assignments) {
         dao.deleteByProducts(role.getId(), productNames);
         dao.create(assignments);
+    }
+
+    @Transactional
+    public void importOperator(List<Assignment> assignments, Map<String, List<String>> productNames) {
+
+        productNames.forEach((productName, apps) -> {
+            apps.forEach(appId -> {
+                dao.deleteByProductNameAppId(productName, appId);
+            });
+        });
+
+        dao.create(assignments);
+
     }
 }

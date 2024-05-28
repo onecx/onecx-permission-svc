@@ -162,7 +162,7 @@ public class AssignmentRestController implements AssignmentInternalApi {
         if (permissions.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        dao.deleteByProductNameAppId(role.getId(),
+        dao.deleteByRoleProductNameAppId(role.getId(),
                 revokeRoleProductAssignmentRequestDTO.getProductName(), revokeRoleProductAssignmentRequestDTO.getAppId());
 
         return Response.status(Response.Status.NO_CONTENT).build();

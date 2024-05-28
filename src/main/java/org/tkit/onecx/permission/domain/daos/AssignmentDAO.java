@@ -107,7 +107,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
     }
 
     @Transactional
-    public void deleteByProductNameAppId(String roleId, String productName, String appId) {
+    public void deleteByRoleProductNameAppId(String roleId, String productName, String appId) {
         try {
             var cb = getEntityManager().getCriteriaBuilder();
             var dq = this.deleteQuery();
@@ -115,6 +115,22 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
             dq.where(cb.and(
                     cb.equal(root.get(Assignment_.ROLE_ID), roleId),
+                    cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME), productName),
+                    cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId)));
+            this.getEntityManager().createQuery(dq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_ROLE_PRODUCT_NAME_APP_ID, ex);
+        }
+    }
+
+    @Transactional
+    public void deleteByProductNameAppId(String productName, String appId) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var dq = this.deleteQuery();
+            var root = dq.from(Assignment.class);
+
+            dq.where(cb.and(
                     cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.PRODUCT_NAME), productName),
                     cb.equal(root.get(Assignment_.PERMISSION).get(Permission_.APP_ID), appId)));
             this.getEntityManager().createQuery(dq).executeUpdate();
@@ -161,9 +177,9 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
     public enum ErrorKeys {
 
-        ERROR_DELETE_BY_PRODUCTS,
         ERROR_DELETE_BY_PRODUCT_NAME_APP_ID,
-        ERROR_DELETE_BY_CRITERIA,
+        ERROR_DELETE_BY_PRODUCTS,
+        ERROR_DELETE_BY_ROLE_PRODUCT_NAME_APP_ID,
         ERROR_DELETE_BY_PERMISSION_ID,
         ERROR_DELETE_BY_ROLE_ID,
         ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS,
