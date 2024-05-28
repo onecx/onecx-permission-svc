@@ -93,6 +93,7 @@ public class PermissionExportImportV1 implements PermissionExportImportApi {
                                             .createProblem("Permission not found", "Permission ID: " + permId));
                                 } else {
                                     var assignment = mapper.create(role, permission);
+                                    assignment.setOperator(true);
                                     assignments.add(assignment);
                                 }
                             }));

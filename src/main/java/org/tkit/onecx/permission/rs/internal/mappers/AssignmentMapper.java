@@ -35,6 +35,7 @@ public interface AssignmentMapper {
     @Mapping(target = "roleId", ignore = true)
     @Mapping(target = "permissionId", ignore = true)
     @Mapping(target = "mandatory", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     Assignment create(Role role, Permission permission);
 
     @Mapping(target = "appId", source = "permission.appId")

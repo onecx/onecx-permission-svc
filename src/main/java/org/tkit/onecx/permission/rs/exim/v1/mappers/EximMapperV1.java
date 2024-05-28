@@ -21,6 +21,7 @@ public interface EximMapperV1 {
     @Mapping(target = "roleId", ignore = true)
     @Mapping(target = "permissionId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     Assignment create(Role role, Permission permission);
 
     static String permId(Permission p) {

@@ -36,6 +36,12 @@ public class Assignment extends TraceableEntity {
     private Permission permission;
 
     /**
+     * Flag to identify permissions created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
+
+    /**
      * Flag to protect mandatory data
      */
     @Column(name = "MANDATORY")

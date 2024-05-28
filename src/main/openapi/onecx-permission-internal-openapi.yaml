@@ -644,6 +644,9 @@ components:
         mandatory:
           type: boolean
           default: false
+        operator:
+          type: boolean
+          default: false
     UpdateRoleRequest:
       type: object
       required:
