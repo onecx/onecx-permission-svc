@@ -21,8 +21,10 @@ class AssignmentDAOTest extends AbstractDAOTest {
                 AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);
         methodExceptionTests(() -> dao.deleteByRoleId(null),
                 AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_ROLE_ID);
-        methodExceptionTests(() -> dao.deleteByProductNameAppId(null, null, null),
-                AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_PRODUCT_NAME_APP_ID);
+        methodExceptionTests(() -> dao.deleteByRoleProductNameAppId(null, null, null),
+                AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_ROLE_PRODUCT_NAME_APP_ID);
+        methodExceptionTests(() -> dao.deleteByProductNameAppIds(null, null),
+                AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_PRODUCT_NAME_APP_IDS);
         methodExceptionTests(() -> dao.deleteByProducts(null, null),
                 AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_PRODUCTS);
         methodExceptionTests(() -> dao.deleteByPermissionId(null),

@@ -1,0 +1,107 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-permission export and import v1
+  version: 1.0.0
+servers:
+  - url: "http://onecx-permission-svc:8080"
+tags:
+  - name: permissionExportImport
+paths:
+  /exim/v1/assignments/operator:
+    post:
+      tags:
+        - permissionExportImport
+      description: Operator import assignments
+      operationId: operatorImportAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentSnapshot'
+      responses:
+        "200":
+          description: Import successful
+        "409":
+          description: The request could not be fully completed due to a conflict with the current state of the roles and permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EximProblemDetailResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EximProblemDetailResponse'
+components:
+  schemas:
+    AssignmentSnapshot:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        created:
+          $ref: '#/components/schemas/OffsetDateTime'
+        assignments:
+          type: object
+          nullable: false
+          description: product name
+          additionalProperties:
+            $ref: '#/components/schemas/EximProductAssignment'
+    EximProductAssignment:
+      type: object
+      nullable: false
+      description: application ID
+      additionalProperties:
+        $ref: '#/components/schemas/EximAppAssignment'
+    EximAppAssignment:
+      type: object
+      nullable: false
+      description: role name
+      additionalProperties:
+        $ref: '#/components/schemas/EximRoleAssignment'
+    EximRoleAssignment:
+      type: object
+      nullable: false
+      description: resource name
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    EximProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximProblemDetailInvalidParam'
+    EximProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    EximProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00

@@ -56,5 +56,6 @@ public interface TemplateMapper {
     @Mapping(target = "roleId", ignore = true)
     @Mapping(target = "permissionId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    public abstract Assignment createAssignment(Role role, Permission permission);
+    @Mapping(target = "operator", ignore = true)
+    Assignment createAssignment(Role role, Permission permission);
 }
