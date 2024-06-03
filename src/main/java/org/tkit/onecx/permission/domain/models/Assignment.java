@@ -44,7 +44,7 @@ public class Assignment extends TraceableEntity {
     /**
      * Flag to protect mandatory data
      */
-    @Column(name = "MANDATORY")
+    @Column(name = "MANDATORY", columnDefinition = "boolean default false")
     private Boolean mandatory;
 
     @PostPersist
