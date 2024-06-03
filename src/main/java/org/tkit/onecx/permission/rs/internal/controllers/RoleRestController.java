@@ -10,18 +10,17 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.permission.common.services.TokenService;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
 import org.tkit.onecx.permission.domain.services.RoleService;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.rs.internal.mappers.RoleMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
+import org.tkit.quarkus.log.cdi.LogExclude;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.permission.rs.internal.RoleInternalApi;
-import gen.org.tkit.onecx.permission.rs.internal.model.CreateRoleRequestDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.ProblemDetailResponseDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.RoleSearchCriteriaDTO;
-import gen.org.tkit.onecx.permission.rs.internal.model.UpdateRoleRequestDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped
@@ -41,6 +40,9 @@ public class RoleRestController implements RoleInternalApi {
 
     @Inject
     RoleService service;
+
+    @Inject
+    TokenService tokenService;
 
     @Override
     public Response createRole(CreateRoleRequestDTO createRoleRequestDTO) {
@@ -83,6 +85,14 @@ public class RoleRestController implements RoleInternalApi {
         mapper.update(updateRoleRequestDTO, role);
         dao.update(role);
         return Response.ok(mapper.map(role)).build();
+    }
+
+    @Override
+    public Response getUserRoles(
+            @LogExclude RoleRequestDTO roleRequestDTO) {
+        var roles = tokenService.getTokenRoles(roleRequestDTO.getToken());
+        var userRoles = dao.findUsersRoles(roles, roleRequestDTO.getPageNumber(), roleRequestDTO.getPageSize());
+        return Response.ok(mapper.mapPage(userRoles)).build();
     }
 
     @ServerExceptionMapper

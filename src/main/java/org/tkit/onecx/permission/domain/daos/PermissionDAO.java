@@ -124,6 +124,25 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
+    public PageResult<Permission> findUsersPermissions(List<String> roles, int pageNumber, int pageSize) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Permission.class);
+            var root = cq.from(Permission.class);
+
+            Subquery<String> sq = cq.subquery(String.class);
+            var subRoot = sq.from(Assignment.class);
+            sq.select(subRoot.get(Assignment_.PERMISSION_ID));
+            sq.where(
+                    subRoot.get(Assignment_.role).get(Role_.name).in(roles));
+            cq.where(root.get(TraceableEntity_.id).in(sq));
+
+            return createPageQuery(cq, Page.of(pageNumber, pageSize)).getPageResult();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_PERMISSION_FOR_USER, ex);
+        }
+    }
+
     public enum ErrorKeys {
 
         ERROR_FIND_BY_PRODUCT_NAMES_NOT_PERMISSIONS,

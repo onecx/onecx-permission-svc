@@ -347,4 +347,22 @@ class RoleRestControllerTest extends AbstractTest {
         Assertions.assertNotNull(exception.getInvalidParams());
         Assertions.assertEquals(1, exception.getInvalidParams().size());
     }
+
+    @Test
+    void getUserRolesTest() {
+
+        // bearer prefix
+        var accessToken = createAccessTokenBearer(USER_ALICE);
+
+        var dto = given()
+                .contentType(APPLICATION_JSON)
+                .body(new RoleRequestDTO().token(accessToken).pageNumber(0).pageSize(10))
+                .post("/me")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .body().as(RolePageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+    }
 }

@@ -255,6 +255,13 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(CREATED.getStatusCode());
 
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/grant/r14")
+                .then()
+                .statusCode(CREATED.getStatusCode());
+
         var idToken = createToken("org1", List.of("n3-100"));
         given()
                 .when()
