@@ -73,7 +73,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var dq = this.deleteQuery();
             var root = dq.from(Assignment.class);
             dq.where(cb.and(cb.equal(root.get(Assignment_.ROLE_ID), roleId),
-                    cb.notEqual(root.get(Assignment_.MANDATORY), true)));
+                    cb.or(cb.equal(root.get(Assignment_.MANDATORY), false), root.get(Assignment_.MANDATORY).isNull())));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_BY_ROLE_ID, ex);
@@ -100,7 +100,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var dq = this.deleteQuery();
             var root = dq.from(Assignment.class);
             dq.where(cb.and(cb.equal(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID), permissionId),
-                    cb.notEqual(root.get(Assignment_.MANDATORY), true)));
+                    cb.or(cb.equal(root.get(Assignment_.MANDATORY), false), root.get(Assignment_.MANDATORY).isNull())));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PERMISSION_ID, ex);

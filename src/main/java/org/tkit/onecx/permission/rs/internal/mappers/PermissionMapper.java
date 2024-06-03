@@ -42,4 +42,5 @@ public interface PermissionMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     void update(UpdatePermissionRequestDTO dto, @MappingTarget Permission permission);
+
 }

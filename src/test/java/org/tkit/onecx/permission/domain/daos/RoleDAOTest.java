@@ -21,6 +21,8 @@ class RoleDAOTest extends AbstractDAOTest {
                 RoleDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 RoleDAO.ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA);
+        methodExceptionTests(() -> dao.findUsersRoles(null, 0, 0),
+                RoleDAO.ErrorKeys.ERROR_FIND_USER_ROLES);
     }
 
 }

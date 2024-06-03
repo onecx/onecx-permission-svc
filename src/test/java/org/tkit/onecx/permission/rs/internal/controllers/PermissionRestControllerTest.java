@@ -241,4 +241,22 @@ class PermissionRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }
+
+    @Test
+    void getUsersPermissionsTest() {
+
+        // bearer prefix
+        var accessToken = createAccessTokenBearer(USER_ALICE);
+
+        var dto = given()
+                .contentType(APPLICATION_JSON)
+                .body(new PermissionRequestDTO().token(accessToken).pageNumber(0).pageSize(10))
+                .post("/me")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .body().as(PermissionPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+    }
 }
