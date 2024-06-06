@@ -256,6 +256,30 @@ paths:
       responses:
         204:
           description: Assignment deleted
+  /internal/assignments/me:
+    post:
+      tags:
+        - assignmentInternal
+      operationId: getUserAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAssignmentPageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/roles:
     post:
       tags:
@@ -611,6 +635,23 @@ components:
           description: The size of page
           default: 100
           type: integer
+    AssignmentRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
     AssignmentSearchCriteria:
       type: object
       properties:
@@ -771,6 +812,39 @@ components:
         mandatory:
           type: boolean
           default: false
+    UserAssignmentPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAssignment'
+    UserAssignment:
+      type: object
+      properties:
+        roleName:
+          type: string
+        productName:
+          type: string
+        applicationId:
+          type: string
+        resource:
+          type: string
+        action:
+          type: string
     RolePageResult:
       type: object
       properties:

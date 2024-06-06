@@ -176,6 +176,33 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         }
     }
 
+    public PageResult<Assignment> findUserAssignments(List<String> roles, int pageNumber, int pageSize) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Assignment.class);
+            var root = cq.from(Assignment.class);
+
+            cq.where(root.get(Assignment_.ROLE).get(Role_.NAME).in(roles));
+            return createPageQueryCustom(cq, Page.of(pageNumber, pageSize)).getPageResult();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_USER_ASSIGNMENTS, ex);
+        }
+    }
+
+    public List<Assignment> loadAssignments(List<String> assignmentIds) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Assignment.class);
+            var root = cq.from(Assignment.class);
+            cq.where(root.get(TraceableEntity_.ID).in(assignmentIds));
+
+            return this.getEntityManager().createQuery(cq).setHint(HINT_LOAD_GRAPH,
+                    this.getEntityManager().getEntityGraph(Assignment.ASSIGNMENT_FULL)).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_LOAD_ASSIGNMENTS, ex);
+        }
+    }
+
     public enum ErrorKeys {
 
         ERROR_DELETE_BY_PRODUCT_NAME_APP_IDS,
@@ -184,7 +211,8 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         ERROR_DELETE_BY_PERMISSION_ID,
         ERROR_DELETE_BY_ROLE_ID,
         ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS,
-
+        ERROR_FIND_USER_ASSIGNMENTS,
+        ERROR_LOAD_ASSIGNMENTS,
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_FIND_ASSIGNMENT_BY_CRITERIA,
         ERROR_SELECT_MANDATORY_BY_ROLE_ID;
