@@ -812,6 +812,9 @@ components:
         mandatory:
           type: boolean
           default: false
+        operator:
+          type: boolean
+          default: false
     UserAssignmentPageResult:
       type: object
       properties:

@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
+import org.tkit.onecx.permission.domain.daos.RoleDAO;
 import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.models.Role;
 
@@ -16,6 +17,9 @@ public class AssignmentService {
 
     @Inject
     AssignmentDAO dao;
+
+    @Inject
+    RoleDAO roleDAO;
 
     @Transactional
     public void createAssignments(Role role, List<Assignment> assignments) {
@@ -36,8 +40,9 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void importOperator(List<Assignment> assignments, Map<String, List<String>> productNames) {
+    public void importOperator(List<Assignment> assignments, Map<String, List<String>> productNames, List<Role> createRoles) {
         productNames.forEach((productName, apps) -> dao.deleteByProductNameAppIds(productName, apps));
+        roleDAO.create(createRoles);
         dao.create(assignments);
 
     }

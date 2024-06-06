@@ -39,4 +39,10 @@ public class Role extends TraceableEntity {
     @Column(name = "MANDATORY")
     private Boolean mandatory;
 
+    /**
+     * Flag to identify role created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
+
 }

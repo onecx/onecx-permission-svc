@@ -17,7 +17,6 @@ quarkus.hibernate-orm.multitenant=DISCRIMINATOR
 quarkus.hibernate-orm.jdbc.timezone=UTC
 quarkus.liquibase.migrate-at-start=true
 quarkus.liquibase.validate-on-migrate=true
-quarkus.hibernate-orm.log.sql=true
 tkit.rs.context.tenant-id.enabled=true
 onecx.permission.token.verified=true
 onecx.permission.token.issuer.public-key-location.suffix=/protocol/openid-connect/certs
@@ -56,6 +55,12 @@ app:
   name: svc
   image:
     repository: "onecx/onecx-permission-svc"
+  db:
+    enabled: true
+
+----
+
+vc"
   db:
     enabled: true
 
