@@ -30,14 +30,15 @@ public interface EximMapperV1 {
     Assignment create(Role role, Permission permission);
 
     default List<Assignment> createAssignments(List<EximProblemDetailInvalidParamDTOV1> problems, AssignmentSnapshotDTOV1 dto,
-            Map<String, Role> roleMap, Map<String, Permission> permissionMap) {
+            Map<String, Role> roleMap, Map<String, Permission> permissionMap, List<Role> createRoles) {
         List<Assignment> assignments = new ArrayList<>();
         dto.getAssignments().forEach((productName, product) -> {
             if (product != null) {
                 product.forEach((appId, app) -> {
                     if (app != null) {
                         assignments
-                                .addAll(createProductAppAssignments(productName, appId, app, problems, roleMap, permissionMap));
+                                .addAll(createProductAppAssignments(productName, appId, app, problems, roleMap, permissionMap,
+                                        createRoles));
                     }
                 });
             }
@@ -47,7 +48,7 @@ public interface EximMapperV1 {
 
     default List<Assignment> createProductAppAssignments(String productName, String appId,
             Map<String, Map<String, List<String>>> dto, List<EximProblemDetailInvalidParamDTOV1> problems,
-            Map<String, Role> roleMap, Map<String, Permission> permissionMap) {
+            Map<String, Role> roleMap, Map<String, Permission> permissionMap, List<Role> createRoles) {
         List<Assignment> assignments = new ArrayList<>();
 
         // application role - resource - actions
@@ -56,25 +57,43 @@ public interface EximMapperV1 {
 
             var role = roleMap.get(roleName);
             if (role == null) {
-                problems.add(createProblem("Role not found", "Role name: " + roleName));
-                continue;
+                role = createRole(roleName);
+                roleMap.put(roleName, role);
             }
 
-            e.getValue().forEach((resource, actions) -> actions.forEach(action -> {
-                var permId = permId(productName, appId, resource, action);
-                var permission = permissionMap.get(permId);
-                if (permission == null) {
-                    problems.add(createProblem("Permission not found", "Permission ID: " + permId));
-                } else {
-                    var assignment = create(role, permission);
-                    assignment.setOperator(true);
-                    assignments.add(assignment);
+            for (Map.Entry<String, List<String>> me : e.getValue().entrySet()) {
+                var resource = me.getKey();
+
+                for (String action : me.getValue()) {
+                    var permId = permId(productName, appId, resource, action);
+                    var permission = permissionMap.get(permId);
+                    if (permission == null) {
+                        problems.add(createProblem("Permission not found", "Permission ID: " + permId));
+                    } else {
+                        var assignment = create(role, permission);
+                        assignment.setOperator(true);
+                        assignments.add(assignment);
+                    }
                 }
-            }));
+            }
         }
 
         return assignments;
     }
+
+    @Mapping(target = "mandatory", ignore = true)
+    @Mapping(target = "description", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", constant = "true")
+    Role createRole(String name);
 
     EximProblemDetailInvalidParamDTOV1 createProblem(String name, String message);
 

@@ -42,6 +42,7 @@ public interface TemplateMapper {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     Role createRole(String name, String description);
 
     @Mapping(target = "mandatory", ignore = true)

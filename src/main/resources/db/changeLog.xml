@@ -9,5 +9,6 @@
     <include relativeToChangelogFile="true" file="v1/2024-05-13-mandatory-flags.xml" />
     <include relativeToChangelogFile="true" file="v1/2024-05-16-operator-flag.xml" />
     <include relativeToChangelogFile="true" file="v1/2024-05-28-assignment-operator.xml" />
+    <include relativeToChangelogFile="true" file="v1/2024-06-06-role-operator.xml" />
 
 </databaseChangeLog>

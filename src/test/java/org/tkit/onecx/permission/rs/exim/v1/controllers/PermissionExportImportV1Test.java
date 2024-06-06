@@ -89,7 +89,7 @@ class PermissionExportImportV1Test extends AbstractTest {
         assertThat(dto.getErrorCode()).isEqualTo(EximExceptionMapperV1.ErrorCode.INVALID_IMPORT_REQUEST.name());
         assertThat(dto.getDetail()).isEqualTo(
                 "The request could not be fully completed due to a conflict with the current state of the roles and permissions");
-        assertThat(dto.getInvalidParams()).isNotNull().hasSize(3);
+        assertThat(dto.getInvalidParams()).isNotNull().hasSize(4);
     }
 
     @Test

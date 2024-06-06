@@ -28,6 +28,7 @@ public interface RoleMapper {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     Role create(CreateRoleRequestDTO dto);
 
     RoleDTO map(Role data);
@@ -41,5 +42,6 @@ public interface RoleMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     void update(UpdateRoleRequestDTO dto, @MappingTarget Role role);
 }

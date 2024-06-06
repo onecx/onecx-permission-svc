@@ -57,10 +57,11 @@ public class PermissionExportImportV1 implements PermissionExportImportApi {
 
         // create assignments
         List<EximProblemDetailInvalidParamDTOV1> problems = new ArrayList<>();
-        var assignments = mapper.createAssignments(problems, assignmentSnapshotDTO, roleMap, permissionMap);
+        List<Role> createRoles = new ArrayList<>();
+        var assignments = mapper.createAssignments(problems, assignmentSnapshotDTO, roleMap, permissionMap, createRoles);
 
         // delete old and create new assignments
-        service.importOperator(assignments, request.product());
+        service.importOperator(assignments, request.product(), createRoles);
 
         // check problems
         if (!problems.isEmpty()) {
