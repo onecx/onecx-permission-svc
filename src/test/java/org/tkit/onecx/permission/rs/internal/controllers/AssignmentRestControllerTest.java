@@ -576,4 +576,23 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
     }
+
+    @Test
+    void getUsersAssignmentsTest() {
+
+        // bearer prefix
+        var accessToken = createAccessTokenBearer(USER_ALICE);
+
+        var dto = given()
+                .contentType(APPLICATION_JSON)
+                .body(new AssignmentRequestDTO().token(accessToken).pageNumber(0).pageSize(10))
+                .post("/me")
+                .then()
+                .log().all()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .body().as(UserAssignmentPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+    }
 }

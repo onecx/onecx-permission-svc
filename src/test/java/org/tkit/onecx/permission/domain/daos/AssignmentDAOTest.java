@@ -33,6 +33,10 @@ class AssignmentDAOTest extends AbstractDAOTest {
                 AssignmentDAO.ErrorKeys.ERROR_FIND_PERMISSION_ACTION_FOR_PRODUCTS);
         methodExceptionTests(() -> dao.selectMandatoryByRoleId(null),
                 AssignmentDAO.ErrorKeys.ERROR_SELECT_MANDATORY_BY_ROLE_ID);
+        methodExceptionTests(() -> dao.findUserAssignments(null, 0, 0),
+                AssignmentDAO.ErrorKeys.ERROR_FIND_USER_ASSIGNMENTS);
+        methodExceptionTests(() -> dao.loadAssignments(null),
+                AssignmentDAO.ErrorKeys.ERROR_LOAD_ASSIGNMENTS);
 
     }
 

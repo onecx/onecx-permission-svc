@@ -11,11 +11,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@NamedEntityGraph(name = Assignment.ASSIGNMENT_FULL, includeAllAttributes = true)
 @Table(name = "ASSIGNMENT", uniqueConstraints = {
         @UniqueConstraint(name = "UC_ASSIGNMENT_KEY", columnNames = { "PERMISSION_ID", "ROLE_ID", "TENANT_ID" })
 })
 @SuppressWarnings("java:S2160")
 public class Assignment extends TraceableEntity {
+
+    public static final String ASSIGNMENT_FULL = "assignment_full";
 
     @TenantId
     @Column(name = "TENANT_ID")

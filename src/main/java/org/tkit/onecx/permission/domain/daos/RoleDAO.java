@@ -63,6 +63,18 @@ public class RoleDAO extends AbstractDAO<Role> {
         }
     }
 
+    public List<Role> findByNames(Set<String> names) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Role.class);
+            var root = cq.from(Role.class);
+            cq.where(root.get(Role_.name).in(names));
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA, ex);
+        }
+    }
+
     public PageResult<Role> findUsersRoles(List<String> tokenRoles, int pageNumber, int pageSize) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
@@ -73,18 +85,6 @@ public class RoleDAO extends AbstractDAO<Role> {
             return createPageQuery(cq, Page.of(pageNumber, pageSize)).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_USER_ROLES, ex);
-        }
-    }
-
-    public List<Role> findByNames(Set<String> names) {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(Role.class);
-            var root = cq.from(Role.class);
-            cq.where(root.get(Role_.name).in(names));
-            return this.getEntityManager().createQuery(cq).getResultList();
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA, ex);
         }
     }
 

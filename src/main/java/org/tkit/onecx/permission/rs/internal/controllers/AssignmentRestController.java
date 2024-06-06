@@ -9,13 +9,18 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.permission.common.services.TokenService;
 import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
+import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.services.AssignmentService;
 import org.tkit.onecx.permission.rs.internal.mappers.AssignmentMapper;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
+import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
+import org.tkit.quarkus.jpa.models.TraceableEntity;
+import org.tkit.quarkus.log.cdi.LogExclude;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.permission.rs.internal.AssignmentInternalApi;
@@ -46,6 +51,9 @@ public class AssignmentRestController implements AssignmentInternalApi {
     @Inject
     AssignmentService service;
 
+    @Inject
+    TokenService tokenService;
+
     @Override
     public Response getAssignment(String id) {
         var data = dao.findById(id);
@@ -53,6 +61,17 @@ public class AssignmentRestController implements AssignmentInternalApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(mapper.map(data)).build();
+    }
+
+    @Override
+    public Response getUserAssignments(@LogExclude AssignmentRequestDTO assignmentRequestDTO) {
+        var roles = tokenService.getTokenRoles(assignmentRequestDTO.getToken());
+        var page = dao.findUserAssignments(roles, assignmentRequestDTO.getPageNumber(),
+                assignmentRequestDTO.getPageSize());
+        var assignments = dao.loadAssignments(page.getStream().map(TraceableEntity::getId).toList());
+        PageResult<Assignment> pageResult = new PageResult<>(page.getTotalElements(), assignments.stream(),
+                page.getNumber(), page.getSize());
+        return Response.ok().entity(mapper.mapUserAssignments(pageResult)).build();
     }
 
     @Override
