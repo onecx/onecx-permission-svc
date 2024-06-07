@@ -58,6 +58,7 @@ public interface EximMapperV1 {
             var role = roleMap.get(roleName);
             if (role == null) {
                 role = createRole(roleName);
+                createRoles.add(role);
                 roleMap.put(roleName, role);
             }
 
