@@ -59,7 +59,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                 .putAssignmentsItem("test1", Map.of("app1",
                         Map.of(
                                 "n1", Map.of("o1", List.of("a1", "a2", "a3"), "o2", List.of("a3", "a2")),
-                                "n2", Map.of("o2", List.of("a3", "a2")))));
+                                "k2", Map.of("o2", List.of("a3", "a2")))));
 
         given()
                 .contentType(APPLICATION_JSON)
