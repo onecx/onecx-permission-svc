@@ -37,8 +37,7 @@ public class ApplicationDAO extends AbstractDAO<Application> {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
 
-            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.modificationDate)));
-
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_APPLICATIONS_BY_CRITERIA, ex);

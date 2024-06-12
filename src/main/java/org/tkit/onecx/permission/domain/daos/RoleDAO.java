@@ -81,7 +81,7 @@ public class RoleDAO extends AbstractDAO<Role> {
             var cq = cb.createQuery(Role.class);
             var root = cq.from(Role.class);
             cq.where(root.get(Role_.name).in(tokenRoles));
-
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
             return createPageQuery(cq, Page.of(pageNumber, pageSize)).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_USER_ROLES, ex);

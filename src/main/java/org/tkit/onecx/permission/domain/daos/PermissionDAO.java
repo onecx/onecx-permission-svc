@@ -40,8 +40,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
-            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.modificationDate)));
-
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_PERMISSION_BY_CRITERIA, ex);
@@ -136,7 +135,7 @@ public class PermissionDAO extends AbstractDAO<Permission> {
             sq.where(
                     subRoot.get(Assignment_.role).get(Role_.name).in(roles));
             cq.where(root.get(TraceableEntity_.id).in(sq));
-
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
             return createPageQuery(cq, Page.of(pageNumber, pageSize)).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_PERMISSION_FOR_USER, ex);

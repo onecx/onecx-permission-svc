@@ -668,6 +668,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
         roleId:
           type: string
@@ -884,6 +885,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     PermissionSearchCriteria:
       type: object
@@ -904,6 +906,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     ApplicationSearchCriteria:
       type: object
@@ -923,6 +926,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     ApplicationPageResult:
       type: object

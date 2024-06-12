@@ -27,7 +27,7 @@ endif::add-copy-button-to-env-var[]
 |`default`
 
 
-a| [[onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping]]`link:#onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping[onecx.permission.template.role-mapping]`
+a| [[onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping]]`link:#onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping[onecx.permission.template.role-mapping."role-mapping"]`
 
 
 [.description]
@@ -35,12 +35,13 @@ a| [[onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping]]`
 Role mapping for the template import
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TEMPLATE_ROLE_MAPPING+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_TEMPLATE_ROLE_MAPPING__ROLE_MAPPING_+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_PERMISSION_TEMPLATE_ROLE_MAPPING+++`
+Environment variable: `+++ONECX_PERMISSION_TEMPLATE_ROLE_MAPPING__ROLE_MAPPING_+++`
 endif::add-copy-button-to-env-var[]
---|`Map<String,String>` 
+--|link:https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]
+ 
 |
 
 

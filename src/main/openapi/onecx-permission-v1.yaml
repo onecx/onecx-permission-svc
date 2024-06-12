@@ -55,13 +55,6 @@ components:
       properties:
         token:
           type: string
-    ApplicationsPermissions:
-      type: object
-      properties:
-        applications:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApplicationPermissions'
     ApplicationPermissions:
       type: object
       properties:
