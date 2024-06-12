@@ -58,8 +58,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
-            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.modificationDate)));
-
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA, ex);
@@ -183,6 +182,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var root = cq.from(Assignment.class);
 
             cq.where(root.get(Assignment_.ROLE).get(Role_.NAME).in(roles));
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
             return createPageQueryCustom(cq, Page.of(pageNumber, pageSize)).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_USER_ASSIGNMENTS, ex);
