@@ -5,12 +5,14 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
 import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.rs.operator.v1.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.permission.rs.operator.v1.model.PermissionDTOV1;
@@ -22,11 +24,13 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(OperatorRestController.class)
 @WithDBData(value = "data/test-operator-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:write" })
 class OperatorRestControllerTest extends AbstractTest {
 
     @Test
     void requestNoBodyTest() {
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("productName", "test1")
                 .pathParam("appId", "app1")
@@ -48,6 +52,7 @@ class OperatorRestControllerTest extends AbstractTest {
         request.setPermissions(List.of());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("productName", "test1")
@@ -67,6 +72,7 @@ class OperatorRestControllerTest extends AbstractTest {
         request.setPermissions(List.of(per));
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("productName", "test1")
@@ -93,6 +99,7 @@ class OperatorRestControllerTest extends AbstractTest {
         request.setPermissions(List.of(per1, per2));
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("productName", "test1")
@@ -112,6 +119,7 @@ class OperatorRestControllerTest extends AbstractTest {
         request.setPermissions(List.of(per1, per2));
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("productName", "test1")

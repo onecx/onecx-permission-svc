@@ -13,6 +13,8 @@ tags:
 paths:
   /internal/assignments/search:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - assignmentInternal
       description: Search for assignments
@@ -40,6 +42,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
       description: Create new assignment
@@ -73,6 +77,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments/grant/{roleId}:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
       description: Create new assignments for role
@@ -90,6 +96,8 @@ paths:
           description: Data not found
   /internal/assignments/grant/{roleId}/product:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
       description: Create new assignments for role and product
@@ -119,6 +127,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments/grant/{roleId}/products:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
       description: Create new assignments for role and products
@@ -148,6 +158,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments/revoke/{roleId}:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
       description: Revoke assignments by roleId
@@ -165,6 +177,8 @@ paths:
           description: Data not found
   /internal/assignments/revoke/{roleId}/product:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
       description: Revoke assignments for role and product
@@ -194,6 +208,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments/revoke/{roleId}/products:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
       description: Revoke assignments for role and products
@@ -223,6 +239,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments/{id}:
     get:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - assignmentInternal
       description: Get assignment
@@ -243,6 +261,8 @@ paths:
         404:
           description: Assignment not found
     delete:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:delete ]
       tags:
         - assignmentInternal
       description: Delete assignment
@@ -258,6 +278,8 @@ paths:
           description: Assignment deleted
   /internal/assignments/me:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - assignmentInternal
       operationId: getUserAssignments
@@ -282,6 +304,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/roles:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - roleInternal
       description: Create new role
@@ -313,6 +337,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/roles/{id}:
     get:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - roleInternal
       description: Return role by ID
@@ -333,6 +359,8 @@ paths:
         404:
           description: Role not found
     put:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - roleInternal
       description: Update role by ID
@@ -365,6 +393,8 @@ paths:
         404:
           description: Role not found
     delete:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:delete ]
       tags:
         - roleInternal
       description: Delete role by ID
@@ -380,6 +410,8 @@ paths:
           description: Role deleted
   /internal/roles/search:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - roleInternal
       description: Search for roles
@@ -405,6 +437,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/roles/me:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - roleInternal
       operationId: getUserRoles
@@ -429,6 +463,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/permissions:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - permissionInternal
       description: Create permission
@@ -460,6 +496,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/permissions/{id}:
     get:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - permissionInternal
       description: Get permission
@@ -480,6 +518,8 @@ paths:
         404:
           description: Permission not found
     delete:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:delete ]
       tags:
         - permissionInternal
       description: Delete permission
@@ -494,6 +534,8 @@ paths:
         204:
           description: Permission deleted
     put:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - permissionInternal
       description: Update permission by ID
@@ -527,6 +569,8 @@ paths:
           description: Permission not found
   /internal/permissions/search:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - permissionInternal
       description: Search for permissions
@@ -552,6 +596,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/permissions/me:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - permissionInternal
       operationId: getUsersPermissions
@@ -576,6 +622,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/applications/search:
     post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - applicationInternal
       description: Search for applications
@@ -600,6 +648,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-pm:all: Grants access to all operations
+            ocx-pm:read: Grants read access
+            ocx-pm:write: Grants write access
+            ocx-pm:delete: Grants access to delete operations
   schemas:
     PermissionRequest:
       type: object

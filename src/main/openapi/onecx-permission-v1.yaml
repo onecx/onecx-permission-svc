@@ -10,6 +10,8 @@ tags:
 paths:
   /v1/permissions/user/{productName}/{appId}:
     post:
+      security:
+        - oauth2: [ ocx-pm:read ]
       tags:
         - permission
       description: Get permissions of the product application for the user
@@ -47,6 +49,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-pm:read: Grants read access
   schemas:
     PermissionRequest:
       type: object

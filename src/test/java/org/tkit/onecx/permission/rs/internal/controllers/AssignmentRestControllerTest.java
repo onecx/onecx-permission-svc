@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.permission.rs.internal.model.*;
@@ -23,6 +25,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(AssignmentRestController.class)
 @WithDBData(value = "data/test-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read", "ocx-pm:write", "ocx-pm:delete", "ocx-pm:all" })
 class AssignmentRestControllerTest extends AbstractTest {
 
     @Test
@@ -33,6 +36,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         requestDTO.setRoleId("r11");
 
         var uri = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -42,6 +46,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .extract().header(HttpHeaders.LOCATION);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get(uri)
                 .then()
@@ -55,6 +60,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // create Role without body
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post()
@@ -70,7 +76,8 @@ class AssignmentRestControllerTest extends AbstractTest {
         requestDTO.setPermissionId("p13");
         requestDTO.setRoleId("r13");
 
-        exception = given().when()
+        exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
@@ -92,6 +99,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         requestDTO.setRoleId("r11");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -103,6 +111,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         requestDTO.setRoleId("does-not-exists");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -114,6 +123,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     @Test
     void getNotFoundAssignment() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("does-not-exists")
                 .then()
@@ -125,6 +135,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         var criteria = new AssignmentSearchCriteriaDTO();
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -141,6 +152,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         criteria.setAppIds(List.of("  "));
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -159,6 +171,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         criteria2.setAppIds(List.of("app1"));
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria2)
                 .post("/search")
@@ -177,6 +190,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         multipleAppIdsCriteria.appIds(List.of("app1", "app2", ""));
 
         var multipleAppIdsResult = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(multipleAppIdsCriteria)
                 .post("/search")
@@ -197,6 +211,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // delete Assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("DELETE_1")
                 .then()
@@ -204,6 +219,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // check Assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("a11")
                 .then()
@@ -211,6 +227,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // check if Assignment does not exist
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("a11")
                 .then()
@@ -218,6 +235,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // check Assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("a11")
                 .then()
@@ -225,6 +243,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // try to delete mandatory assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("a13")
                 .then()
@@ -232,6 +251,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // check Assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("a13")
                 .then()
@@ -242,6 +262,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     void grantAssignmentByRole() {
         // create role assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/grant/role1")
@@ -249,6 +270,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/grant/r14")
@@ -256,6 +278,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/grant/r14")
@@ -264,6 +287,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         var idToken = createToken("org1", List.of("n3-100"));
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, idToken)
                 .contentType(APPLICATION_JSON)
@@ -277,6 +301,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // create role assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/grant/role1/product")
@@ -284,6 +309,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductAssignmentRequestDTO())
@@ -292,6 +318,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductAssignmentRequestDTO().productName(null).appId(null))
@@ -300,6 +327,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductAssignmentRequestDTO()
@@ -309,6 +337,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductAssignmentRequestDTO()
@@ -318,6 +347,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductAssignmentRequestDTO()
@@ -327,6 +357,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductAssignmentRequestDTO()
@@ -342,6 +373,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // create role assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/grant/role1/products")
@@ -349,6 +381,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductsAssignmentRequestDTO())
@@ -357,6 +390,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductsAssignmentRequestDTO().productNames(List.of()))
@@ -365,6 +399,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductsAssignmentRequestDTO()
@@ -374,6 +409,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductsAssignmentRequestDTO()
@@ -383,6 +419,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductsAssignmentRequestDTO()
@@ -392,6 +429,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductsAssignmentRequestDTO()
@@ -401,6 +439,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new CreateRoleProductsAssignmentRequestDTO()
@@ -415,6 +454,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     void revokeAssignmentByRole() {
         // revoke role assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/revoke/role1")
@@ -422,6 +462,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/revoke/r14")
@@ -430,6 +471,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         var idToken = createToken("org1", List.of("n3-100"));
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .header(APM_HEADER_PARAM, idToken)
                 .contentType(APPLICATION_JSON)
@@ -443,6 +485,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // revoke role assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/revoke/role1/product")
@@ -450,6 +493,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductAssignmentRequestDTO())
@@ -458,6 +502,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductAssignmentRequestDTO().productName(null).appId(null))
@@ -466,6 +511,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductAssignmentRequestDTO()
@@ -475,6 +521,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductAssignmentRequestDTO()
@@ -484,6 +531,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductAssignmentRequestDTO()
@@ -493,6 +541,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductAssignmentRequestDTO()
@@ -508,6 +557,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // create role assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/revoke/role1/products")
@@ -515,6 +565,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductsAssignmentRequestDTO())
@@ -523,6 +574,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductsAssignmentRequestDTO().productNames(List.of()))
@@ -531,6 +583,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductsAssignmentRequestDTO()
@@ -540,6 +593,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductsAssignmentRequestDTO()
@@ -549,6 +603,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductsAssignmentRequestDTO()
@@ -558,6 +613,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductsAssignmentRequestDTO()
@@ -567,6 +623,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new RevokeRoleProductsAssignmentRequestDTO()
@@ -584,6 +641,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         var accessToken = createAccessTokenBearer(USER_ALICE);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new AssignmentRequestDTO().token(accessToken).pageNumber(0).pageSize(10))
                 .post("/me")

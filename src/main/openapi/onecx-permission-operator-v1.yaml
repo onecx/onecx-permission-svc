@@ -10,6 +10,8 @@ tags:
 paths:
   /operator/v1/{productName}/{appId}:
     put:
+      security:
+        - oauth2: [ ocx-pm:write ]
       tags:
         - permissionOperator
       description: Creates or updates permission for application.
@@ -43,6 +45,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-pm:write: Grants write access
   schemas:
     PermissionRequest:
       type: object
