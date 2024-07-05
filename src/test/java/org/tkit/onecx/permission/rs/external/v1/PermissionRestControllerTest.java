@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.stream.Stream;
 
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.permission.rs.external.v1.controllers.PermissionRestController;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.permission.rs.external.v1.model.*;
@@ -23,6 +25,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(PermissionRestController.class)
 @WithDBData(value = "data/test-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read" })
 class PermissionRestControllerTest extends AbstractTest {
 
     @Test
@@ -32,6 +35,7 @@ class PermissionRestControllerTest extends AbstractTest {
         var accessToken = createAccessTokenBearer(USER_ALICE);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTOV1().token(accessToken))
                 .pathParam("productName", "test1")
@@ -50,6 +54,7 @@ class PermissionRestControllerTest extends AbstractTest {
         accessToken = createAccessToken(USER_ALICE);
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTOV1().token(accessToken))
                 .pathParam("productName", "test1")
@@ -76,6 +81,7 @@ class PermissionRestControllerTest extends AbstractTest {
     void getApplicationPermissionsNoBodyTest(String productName, String appId, String check) {
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("productName", productName)
                 .pathParam("appId", appId)
@@ -95,6 +101,7 @@ class PermissionRestControllerTest extends AbstractTest {
     void getApplicationPermissionsWrongTongTest() {
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTOV1().token("this-is-not-token"))
                 .pathParam("productName", "test1")

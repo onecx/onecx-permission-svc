@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.domain.models.Permission;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.permission.rs.internal.model.*;
@@ -21,6 +23,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(PermissionRestController.class)
 @WithDBData(value = "data/test-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read", "ocx-pm:write", "ocx-pm:delete", "ocx-pm:all" })
 class PermissionRestControllerTest extends AbstractTest {
 
     @Test
@@ -28,6 +31,7 @@ class PermissionRestControllerTest extends AbstractTest {
         var criteria = new PermissionSearchCriteriaDTO();
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -44,6 +48,7 @@ class PermissionRestControllerTest extends AbstractTest {
         criteria.setAppId(" ");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -64,6 +69,7 @@ class PermissionRestControllerTest extends AbstractTest {
         criteria.setAppId("app1");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -80,6 +86,7 @@ class PermissionRestControllerTest extends AbstractTest {
         var productNamesCriteria = new PermissionSearchCriteriaDTO();
         productNamesCriteria.setProductNames(List.of("test1"));
         var output = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(productNamesCriteria)
                 .post("/search")
@@ -98,6 +105,7 @@ class PermissionRestControllerTest extends AbstractTest {
     @Test
     void searchNoBodyTest() {
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .post("/search")
                 .then()
@@ -119,6 +127,7 @@ class PermissionRestControllerTest extends AbstractTest {
         criteria.setAction("SEARCH");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post()
@@ -128,6 +137,7 @@ class PermissionRestControllerTest extends AbstractTest {
         assertThat(data).isNotNull();
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .post()
                 .then()
@@ -143,12 +153,14 @@ class PermissionRestControllerTest extends AbstractTest {
     void deletePermissionTest() {
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("p14")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("p_Not_Exist")
                 .then()
@@ -156,6 +168,7 @@ class PermissionRestControllerTest extends AbstractTest {
 
         //try to delete mandatory permission
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("p13")
                 .then()
@@ -163,6 +176,7 @@ class PermissionRestControllerTest extends AbstractTest {
 
         // should still exist
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("p13")
                 .then()
@@ -174,6 +188,7 @@ class PermissionRestControllerTest extends AbstractTest {
     void deletePermissionWithAssignmentByDifferentTenantTest() {
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("p23")
                 .then()
@@ -189,6 +204,7 @@ class PermissionRestControllerTest extends AbstractTest {
         criteria.setModificationCount(0);
 
         var output = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .put("p14")
@@ -202,6 +218,7 @@ class PermissionRestControllerTest extends AbstractTest {
         Assertions.assertEquals(criteria.getAction(), output.getAction());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .put("p14")
                 .then()
@@ -211,6 +228,7 @@ class PermissionRestControllerTest extends AbstractTest {
                 .as(ProblemDetailResponseDTO.class);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .put("p_NOT_EXISTS")
@@ -222,6 +240,7 @@ class PermissionRestControllerTest extends AbstractTest {
     void getPermissionTest() {
 
         var output = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("p14")
                 .then()
@@ -236,6 +255,7 @@ class PermissionRestControllerTest extends AbstractTest {
         Assertions.assertEquals("test1", output.getProductName());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("p_NOT_EXIST")
                 .then()
@@ -249,6 +269,7 @@ class PermissionRestControllerTest extends AbstractTest {
         var accessToken = createAccessTokenBearer(USER_ALICE);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new PermissionRequestDTO().token(accessToken).pageNumber(0).pageSize(10))
                 .post("/me")

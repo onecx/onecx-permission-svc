@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.rs.exim.v1.mappers.EximExceptionMapperV1;
 import org.tkit.onecx.permission.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.permission.rs.exim.v1.model.AssignmentSnapshotDTOV1;
@@ -22,6 +24,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(PermissionExportImportV1.class)
 @WithDBData(value = "data/test-exim-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read", "ocx-pm:write" })
 class PermissionExportImportV1Test extends AbstractTest {
 
     @Test
@@ -30,6 +33,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                 .putAssignmentsItem("test1", null);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -45,6 +49,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                 .putAssignmentsItem("test1", map);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -62,6 +67,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                                 "k2", Map.of("o2", List.of("a3", "a2")))));
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -77,6 +83,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                         Map.of("rr1", Map.of("r", List.of("a1", "a2")), "n1", Map.of("r", List.of("a1", "a2")))));
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -96,6 +103,7 @@ class PermissionExportImportV1Test extends AbstractTest {
     void operatorImportEmptyBodyTest() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .post()
                 .then().log().all()

@@ -10,6 +10,8 @@ tags:
 paths:
   /exim/v1/assignments/operator:
     post:
+      security:
+        - oauth2: [ ocx-pm:write ]
       tags:
         - permissionExportImport
       description: Operator import assignments
@@ -36,6 +38,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/EximProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-pm:read: Grants read access
+            ocx-pm:write: Grants write access
   schemas:
     AssignmentSnapshot:
       type: object

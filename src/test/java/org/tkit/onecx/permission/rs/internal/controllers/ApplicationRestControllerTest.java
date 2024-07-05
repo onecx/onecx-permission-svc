@@ -5,10 +5,12 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
 import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.permission.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.permission.rs.internal.model.*;
@@ -18,6 +20,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(ApplicationRestController.class)
 @WithDBData(value = "data/test-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read", "ocx-pm:write", "ocx-pm:delete", "ocx-pm:all" })
 class ApplicationRestControllerTest extends AbstractTest {
 
     @Test
@@ -25,6 +28,7 @@ class ApplicationRestControllerTest extends AbstractTest {
         var criteria = new ApplicationSearchCriteriaDTO();
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post()
@@ -41,6 +45,7 @@ class ApplicationRestControllerTest extends AbstractTest {
         criteria.setAppId(" ");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post()
@@ -62,6 +67,7 @@ class ApplicationRestControllerTest extends AbstractTest {
         criteria.setName("app1*");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post()
@@ -80,6 +86,7 @@ class ApplicationRestControllerTest extends AbstractTest {
     @Test
     void searchNoBodyTest() {
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .post()
                 .then()
