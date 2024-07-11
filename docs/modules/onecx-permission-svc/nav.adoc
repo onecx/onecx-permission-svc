@@ -1,1 +1,3 @@
 * xref:onecx-permission-svc:index.adoc[Permission Service]
+** External API(s)
+*** xref:onecx-permission-svc:openapi/onecx-permission-v1.adoc[Permission Management V1]
