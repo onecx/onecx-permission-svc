@@ -9,39 +9,49 @@ import io.smallrye.config.WithName;
 
 @StaticInitSafe
 @ConfigDocFilename("onecx-permission-svc.adoc")
-@ConfigMapping(prefix = "onecx.permission.token")
+@ConfigMapping(prefix = "onecx.permission")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
 public interface TokenConfig {
 
     /**
-     * Verified permission token
+     * Token configuration.
+     *
+     * @return token configuration.
      */
-    @WithName("verified")
-    boolean verified();
+    @WithName("token")
+    Config config();
 
-    /**
-     * Issuer public key location suffix.
-     */
-    @WithName("issuer.public-key-location.suffix")
-    @WithDefault("/protocol/openid-connect/certs")
-    String publicKeyLocationSuffix();
+    interface Config {
+        /**
+         * Verified permission token
+         */
+        @WithName("verified")
+        boolean verified();
 
-    /**
-     * Issuer public key location enabled
-     */
-    @WithName("issuer.public-key-location.enabled")
-    boolean publicKeyEnabled();
+        /**
+         * Issuer public key location suffix.
+         */
+        @WithName("issuer.public-key-location.suffix")
+        @WithDefault("/protocol/openid-connect/certs")
+        String publicKeyLocationSuffix();
 
-    /**
-     * Claim separator
-     */
-    @WithName("claim.separator")
-    Optional<String> claimSeparator();
+        /**
+         * Issuer public key location enabled
+         */
+        @WithName("issuer.public-key-location.enabled")
+        boolean publicKeyEnabled();
 
-    /**
-     * Claim path
-     */
-    @WithName("claim.path")
-    @WithDefault("realm_access/roles")
-    String claimPath();
+        /**
+         * Claim separator
+         */
+        @WithName("claim.separator")
+        Optional<String> claimSeparator();
+
+        /**
+         * Claim path
+         */
+        @WithName("claim.path")
+        @WithDefault("realm_access/roles")
+        String claimPath();
+    }
 }
