@@ -50,7 +50,7 @@ public class TemplateDataImportService implements DataImportService {
 
             var existingData = importProducts(data);
 
-            List<String> tenants = templateConfig.tenants();
+            List<String> tenants = templateConfig.config().tenants();
             importRoles(tenants, data.getRoles(), existingData);
 
         } catch (Exception ex) {
@@ -124,7 +124,7 @@ public class TemplateDataImportService implements DataImportService {
             for (var dr : dto.entrySet()) {
                 var role = data.getRole(dr.getKey());
                 if (role == null) {
-                    role = mapper.createRole(templateConfig.roleMapping().getOrDefault(dr.getKey(), dr.getKey()),
+                    role = mapper.createRole(templateConfig.config().roleMapping().getOrDefault(dr.getKey(), dr.getKey()),
                             dr.getValue().getDescription());
                     roles.add(role);
                 }
