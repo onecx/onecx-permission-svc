@@ -37,6 +37,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EximProblemDetailResponse'
+  /exim/v1/assignments/import:
+    post:
+      security:
+        - oauth2: [ ocx-pm:write ]
+      tags:
+        - permissionExportImport
+      description: Operator import assignments
+      operationId: importAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentSnapshot'
+      responses:
+        "200":
+          description: Import successful
+        "409":
+          description: The request could not be fully completed due to a conflict with the current state of the roles and permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EximProblemDetailResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EximProblemDetailResponse'
+  /exim/v1/assignments/export:
+    post:
+      security:
+        - oauth2: [ ocx-pm:read ]
+      tags:
+        - permissionExportImport
+      description: Operator import assignments
+      operationId: exportAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportAssignmentsRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentSnapshot'
+        "404":
+          description: No helps found
 components:
   securitySchemes:
     oauth2:
@@ -83,6 +135,14 @@ components:
         type: array
         items:
           type: string
+    ExportAssignmentsRequest:
+      type: object
+      properties:
+        productNames:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     EximProblemDetailResponse:
       type: object
       properties:
