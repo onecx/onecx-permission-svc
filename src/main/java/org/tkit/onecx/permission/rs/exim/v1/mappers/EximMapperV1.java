@@ -1,11 +1,13 @@
 package org.tkit.onecx.permission.rs.exim.v1.mappers;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.permission.domain.models.Assignment;
 import org.tkit.onecx.permission.domain.models.Permission;
+import org.tkit.onecx.permission.domain.models.PermissionAction;
 import org.tkit.onecx.permission.domain.models.Role;
 
 import gen.org.tkit.onecx.permission.rs.exim.v1.model.AssignmentSnapshotDTOV1;
@@ -124,5 +126,33 @@ public interface EximMapperV1 {
     }
 
     record RequestData(Map<String, List<String>> product, Set<String> roles) {
+    }
+
+    default AssignmentSnapshotDTOV1 createSnapshot(List<PermissionAction> items) {
+        AssignmentSnapshotDTOV1 assignmentSnapshotDTOV1 = new AssignmentSnapshotDTOV1();
+        assignmentSnapshotDTOV1.setId(UUID.randomUUID().toString());
+        assignmentSnapshotDTOV1.setCreated(OffsetDateTime.now());
+        assignmentSnapshotDTOV1.setAssignments(createSnapshotAssignments(items));
+        return assignmentSnapshotDTOV1;
+    }
+
+    default Map<String, Map<String, Map<String, Map<String, List<String>>>>> createSnapshotAssignments(
+            List<PermissionAction> items) {
+
+        if (items == null) {
+            return Map.of();
+        }
+        Map<String, Map<String, Map<String, Map<String, List<String>>>>> result = new HashMap<>();
+
+        for (PermissionAction permissionAction : items) {
+            result
+                    .computeIfAbsent(permissionAction.productName(), k -> new HashMap<>())
+                    .computeIfAbsent(permissionAction.applicationId(), k -> new HashMap<>())
+                    .computeIfAbsent(permissionAction.roleName(), k -> new HashMap<>())
+                    .computeIfAbsent(permissionAction.resource(), k -> new ArrayList<>())
+                    .add(permissionAction.action());
+        }
+
+        return result;
     }
 }

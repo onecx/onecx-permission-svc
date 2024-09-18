@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
 import org.tkit.onecx.permission.domain.models.Role;
@@ -22,6 +23,7 @@ import gen.org.tkit.onecx.permission.rs.exim.v1.PermissionExportImportApi;
 import gen.org.tkit.onecx.permission.rs.exim.v1.model.AssignmentSnapshotDTOV1;
 import gen.org.tkit.onecx.permission.rs.exim.v1.model.EximProblemDetailInvalidParamDTOV1;
 import gen.org.tkit.onecx.permission.rs.exim.v1.model.EximProblemDetailResponseDTOV1;
+import gen.org.tkit.onecx.permission.rs.exim.v1.model.ExportAssignmentsRequestDTOV1;
 
 @LogService
 @ApplicationScoped
@@ -41,6 +43,20 @@ public class PermissionExportImportV1 implements PermissionExportImportApi {
 
     @Inject
     AssignmentService service;
+
+    @Inject
+    AssignmentDAO assignmentDAO;
+
+    @Override
+    public Response exportAssignments(ExportAssignmentsRequestDTOV1 exportAssignmentsRequestDTOV1) {
+        var permissionActions = assignmentDAO.findPermissionActionForProducts(exportAssignmentsRequestDTOV1.getProductNames());
+        return Response.ok(mapper.createSnapshot(permissionActions)).build();
+    }
+
+    @Override
+    public Response importAssignments(AssignmentSnapshotDTOV1 assignmentSnapshotDTOV1) {
+        return operatorImportAssignments(assignmentSnapshotDTOV1);
+    }
 
     @Override
     public Response operatorImportAssignments(AssignmentSnapshotDTOV1 assignmentSnapshotDTO) {

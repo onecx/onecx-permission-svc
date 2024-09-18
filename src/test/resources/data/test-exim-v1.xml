@@ -28,4 +28,10 @@
     <ASSIGNMENT guid="a11" optlock="0" permission_id="p13" role_id="r13" tenant_id="default"/>
     <ASSIGNMENT guid="a12" optlock="0" permission_id="p13" role_id="r14" tenant_id="default"/>
 
+    <ASSIGNMENT guid="a13" optlock="0" permission_id="p14" role_id="r14" tenant_id="default"/>
+    <ASSIGNMENT guid="a14" optlock="0" permission_id="p14" role_id="r13" tenant_id="default"/>
+    <ASSIGNMENT guid="a15" optlock="0" permission_id="p22" role_id="r14" tenant_id="default"/>
+    <ASSIGNMENT guid="a16" optlock="0" permission_id="p15" role_id="r13" tenant_id="default"/>
+
+
 </dataset>
