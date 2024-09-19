@@ -48,6 +48,7 @@ public interface AssignmentMapper {
     Assignment create(Role role, Permission permission);
 
     @Mapping(target = "appId", source = "permission.appId")
+    @Mapping(target = "productName", source = "permission.productName")
     AssignmentDTO map(Assignment data);
 
     default List<Assignment> createList(Role role, List<Permission> permissions) {
