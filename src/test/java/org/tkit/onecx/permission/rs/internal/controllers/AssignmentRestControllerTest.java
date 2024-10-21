@@ -653,4 +653,22 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
     }
+
+    @Test
+    void searchAssignmentsByRolesTest() {
+
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(new AssignmentRolesSearchCriteriaDTO().roles(List.of("n3")).pageNumber(0).pageSize(10))
+                .post("/roles/search")
+                .then()
+                .log().all()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .body().as(UserAssignmentPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).hasSize(1);
+    }
 }
