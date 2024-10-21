@@ -82,6 +82,17 @@ public class AssignmentRestController implements AssignmentInternalApi {
     }
 
     @Override
+    public Response searchAssignmentsByRoles(AssignmentRolesSearchCriteriaDTO assignmentRolesSearchCriteriaDTO) {
+        var page = dao.findUserAssignments(assignmentRolesSearchCriteriaDTO.getRoles(),
+                assignmentRolesSearchCriteriaDTO.getPageNumber(),
+                assignmentRolesSearchCriteriaDTO.getPageSize());
+        var assignments = dao.loadAssignments(page.getStream().map(TraceableEntity::getId).toList());
+        PageResult<Assignment> pageResult = new PageResult<>(page.getTotalElements(), assignments.stream(),
+                page.getNumber(), page.getSize());
+        return Response.ok().entity(mapper.mapUserAssignments(pageResult)).build();
+    }
+
+    @Override
     public Response createAssignment(CreateAssignmentRequestDTO createAssignmentRequestDTO) {
         var role = roleDAO.findById(createAssignmentRequestDTO.getRoleId());
         if (role == null) {

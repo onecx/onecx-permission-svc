@@ -276,6 +276,32 @@ paths:
       responses:
         204:
           description: Assignment deleted
+  /internal/assignments/roles/search:
+    post:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:read ]
+      tags:
+        - assignmentInternal
+      operationId: searchAssignmentsByRoles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentRolesSearchCriteria'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAssignmentPageResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/assignments/me:
     post:
       security:
@@ -732,6 +758,24 @@ components:
         roleId:
           type: string
           description: The size of page
+    AssignmentRolesSearchCriteria:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          maximum: 1000
+          type: integer
     AssignmentPageResult:
       type: object
       properties:

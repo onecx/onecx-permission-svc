@@ -8,7 +8,7 @@ h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a| [[onecx-permission-svc_onecx-permission-token-verified]] [.property-path]##`onecx.permission.token.verified`##
+a| [[onecx-permission-svc_onecx-permission-token-verified]] [.property-path]##link:#onecx-permission-svc_onecx-permission-token-verified[`onecx.permission.token.verified`]##
 
 [.description]
 --
@@ -25,7 +25,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`false`
 
-a| [[onecx-permission-svc_onecx-permission-token-issuer-public-key-location-suffix]] [.property-path]##`onecx.permission.token.issuer.public-key-location.suffix`##
+a| [[onecx-permission-svc_onecx-permission-token-issuer-public-key-location-suffix]] [.property-path]##link:#onecx-permission-svc_onecx-permission-token-issuer-public-key-location-suffix[`onecx.permission.token.issuer.public-key-location.suffix`]##
 
 [.description]
 --
@@ -42,7 +42,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`/protocol/openid-connect/certs`
 
-a| [[onecx-permission-svc_onecx-permission-token-issuer-public-key-location-enabled]] [.property-path]##`onecx.permission.token.issuer.public-key-location.enabled`##
+a| [[onecx-permission-svc_onecx-permission-token-issuer-public-key-location-enabled]] [.property-path]##link:#onecx-permission-svc_onecx-permission-token-issuer-public-key-location-enabled[`onecx.permission.token.issuer.public-key-location.enabled`]##
 
 [.description]
 --
@@ -59,7 +59,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`false`
 
-a| [[onecx-permission-svc_onecx-permission-token-claim-separator]] [.property-path]##`onecx.permission.token.claim.separator`##
+a| [[onecx-permission-svc_onecx-permission-token-claim-separator]] [.property-path]##link:#onecx-permission-svc_onecx-permission-token-claim-separator[`onecx.permission.token.claim.separator`]##
 
 [.description]
 --
@@ -76,7 +76,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[onecx-permission-svc_onecx-permission-token-claim-path]] [.property-path]##`onecx.permission.token.claim.path`##
+a| [[onecx-permission-svc_onecx-permission-token-claim-path]] [.property-path]##link:#onecx-permission-svc_onecx-permission-token-claim-path[`onecx.permission.token.claim.path`]##
 
 [.description]
 --
@@ -93,7 +93,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`realm_access/roles`
 
-a| [[onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping]] [.property-path]##`onecx.permission.template.role-mapping."role-mapping"`##
+a| [[onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping]] [.property-path]##link:#onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping[`onecx.permission.template.role-mapping."role-mapping"`]##
 
 [.description]
 --
@@ -110,7 +110,7 @@ endif::add-copy-button-to-env-var[]
 |Map<String,String>
 |
 
-a| [[onecx-permission-svc_onecx-permission-template-tenants]] [.property-path]##`onecx.permission.template.tenants`##
+a| [[onecx-permission-svc_onecx-permission-template-tenants]] [.property-path]##link:#onecx-permission-svc_onecx-permission-template-tenants[`onecx.permission.template.tenants`]##
 
 [.description]
 --
