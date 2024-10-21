@@ -657,9 +657,6 @@ class AssignmentRestControllerTest extends AbstractTest {
     @Test
     void searchAssignmentsByRolesTest() {
 
-        // bearer prefix
-        var accessToken = createAccessTokenBearer(USER_ALICE);
-
         var dto = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
@@ -672,6 +669,6 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .body().as(UserAssignmentPageResultDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(1).isEqualTo(dto.getStream().size());
+        assertThat(dto.getStream().size()).isEqualTo(1);
     }
 }
