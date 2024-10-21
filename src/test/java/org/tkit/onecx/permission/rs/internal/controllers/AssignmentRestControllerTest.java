@@ -669,6 +669,6 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .body().as(UserAssignmentPageResultDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getStream().size()).isEqualTo(1);
+        assertThat(dto.getStream()).hasSize(1);
     }
 }
