@@ -179,7 +179,7 @@
                             </url>
                             <outputDirectory>target/tmp/openapi</outputDirectory>
                             <outputFileName>onecx-permission-v1.yaml</outputFileName>
-                            <skipCache>false</skipCache>
+                            <skipCache>true</skipCache>
                         </configuration>
                     </execution>
                 </executions>
