@@ -168,7 +168,7 @@
                 <artifactId>download-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>onecx-tenant-resolver-v1</id>
+                        <id>onecx-permission-v1</id>
                         <phase>initialize</phase>
                         <goals>
                             <goal>wget</goal>
