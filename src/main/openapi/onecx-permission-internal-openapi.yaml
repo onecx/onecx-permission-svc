@@ -673,6 +673,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/applications/{name}:
+    delete:
+      security:
+        - oauth2: [ ocx-pm:all, ocx-pm:delete ]
+      tags:
+        - applicationInternal
+      description: delete application by name
+      operationId: deleteByApplicationName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Application deleted
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   securitySchemes:
     oauth2:

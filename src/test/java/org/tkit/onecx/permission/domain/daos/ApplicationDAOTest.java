@@ -21,6 +21,8 @@ class ApplicationDAOTest extends AbstractDAOTest {
                 ApplicationDAO.ErrorKeys.ERROR_LOAD_BY_APP_ID);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 ApplicationDAO.ErrorKeys.ERROR_FIND_APPLICATIONS_BY_CRITERIA);
+        methodExceptionTests(() -> dao.loadByName(null),
+                ApplicationDAO.ErrorKeys.ERROR_LOAD_BY_APP_NAME);
     }
 
 }

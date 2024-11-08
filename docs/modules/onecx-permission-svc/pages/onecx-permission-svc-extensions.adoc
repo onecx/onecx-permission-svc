@@ -12,13 +12,13 @@ h| Version
 
 | https://onecx.github.io/docs/onecx-quarkus/current/onecx-quarkus/onecx-core.html[Link]
 | 
-| 0.33.0
+| 0.34.0
 
 | onecx-tenant
 
 | https://onecx.github.io/docs/onecx-quarkus/current/onecx-quarkus/onecx-tenant.html[Link]
-| https://github.com/onecx/onecx-quarkus/blob/0.33.0/docs/modules/onecx-quarkus/pages/includes/onecx-tenant.adoc[Link]
-| 0.33.0
+| https://github.com/onecx/onecx-quarkus/blob/0.34.0/docs/modules/onecx-quarkus/pages/includes/onecx-tenant.adoc[Link]
+| 0.34.0
 
 | tkit-quarkus-data-import
 
@@ -157,7 +157,7 @@ h| Version
 
 | 
 | 
-| 0.33.0
+| 0.34.0
 
 | quarkus-smallrye-context-propagation
 
