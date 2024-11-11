@@ -160,7 +160,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         try {
             var dq = this.deleteQuery();
             var root = dq.from(Assignment.class);
-            dq.where(root.get(Assignment_.PERMISSION).get(Permission_.ID).in(ids));
+            dq.where(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID).in(ids));
             this.getEntityManager().createQuery(dq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PERMISSION_IDS, ex);
