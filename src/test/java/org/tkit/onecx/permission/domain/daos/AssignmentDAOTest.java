@@ -37,7 +37,8 @@ class AssignmentDAOTest extends AbstractDAOTest {
                 AssignmentDAO.ErrorKeys.ERROR_FIND_USER_ASSIGNMENTS);
         methodExceptionTests(() -> dao.loadAssignments(null),
                 AssignmentDAO.ErrorKeys.ERROR_LOAD_ASSIGNMENTS);
-
+        methodExceptionTests(() -> dao.deleteByPermissionIds(null),
+                AssignmentDAO.ErrorKeys.ERROR_DELETE_BY_PERMISSION_IDS);
     }
 
 }

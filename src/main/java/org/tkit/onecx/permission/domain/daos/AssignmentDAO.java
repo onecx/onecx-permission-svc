@@ -155,6 +155,18 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         }
     }
 
+    @Transactional
+    public void deleteByPermissionIds(List<String> ids) {
+        try {
+            var dq = this.deleteQuery();
+            var root = dq.from(Assignment.class);
+            dq.where(root.get(Assignment_.PERMISSION).get(TraceableEntity_.ID).in(ids));
+            this.getEntityManager().createQuery(dq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_BY_PERMISSION_IDS, ex);
+        }
+    }
+
     public List<PermissionAction> findPermissionActionForProducts(Set<String> productNames) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
@@ -215,6 +227,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         ERROR_LOAD_ASSIGNMENTS,
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_FIND_ASSIGNMENT_BY_CRITERIA,
-        ERROR_SELECT_MANDATORY_BY_ROLE_ID;
+        ERROR_SELECT_MANDATORY_BY_ROLE_ID,
+        ERROR_DELETE_BY_PERMISSION_IDS;
     }
 }

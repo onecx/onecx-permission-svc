@@ -3,8 +3,7 @@ package org.tkit.onecx.permission.rs.internal.controllers;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
-import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
+import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ class ApplicationRestControllerTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post()
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -48,7 +47,7 @@ class ApplicationRestControllerTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post()
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -70,7 +69,7 @@ class ApplicationRestControllerTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post()
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -88,7 +87,7 @@ class ApplicationRestControllerTest extends AbstractTest {
         var exception = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
-                .post()
+                .post("/search")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -98,5 +97,27 @@ class ApplicationRestControllerTest extends AbstractTest {
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
         assertThat(exception.getDetail()).isEqualTo("searchApplications.applicationSearchCriteriaDTO: must not be null");
+    }
+
+    @Test
+    void deleteApplicationByName() {
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .pathParam("name", "app1")
+                .delete("/{name}")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+    }
+
+    @Test
+    void deleteApplicationByNotExistingName() {
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .pathParam("name", "notExisting")
+                .delete("/{name}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 }
