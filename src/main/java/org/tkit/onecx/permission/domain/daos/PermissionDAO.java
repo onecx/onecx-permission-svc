@@ -89,18 +89,6 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         }
     }
 
-    public List<Permission> findByAppId(String appId) {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(Permission.class);
-            var root = cq.from(Permission.class);
-            cq.where(cb.equal(root.get(Permission_.APP_ID), appId));
-            return this.getEntityManager().createQuery(cq).getResultList();
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_BY_APP_ID, ex);
-        }
-    }
-
     public List<Permission> findAllExcludingGivenIds(Collection<String> permissionGuids) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
@@ -161,7 +149,6 @@ public class PermissionDAO extends AbstractDAO<Permission> {
         ERROR_FIND_BY_PRODUCT_AND_APP_ID,
         ERROR_FIND_PERMISSION_BY_CRITERIA,
         ERROR_FIND_BY_PRODUCT_NAMES,
-        ERROR_FIND_NOT_BY_IDS,
-        ERROR_FIND_BY_APP_ID;
+        ERROR_FIND_NOT_BY_IDS;
     }
 }

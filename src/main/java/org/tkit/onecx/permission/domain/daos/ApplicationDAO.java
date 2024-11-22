@@ -44,21 +44,6 @@ public class ApplicationDAO extends AbstractDAO<Application> {
         }
     }
 
-    public Application loadByName(String appName) {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(Application.class);
-            var root = cq.from(Application.class);
-            cq.where(
-                    cb.equal(root.get(Application_.NAME), appName));
-            return this.getEntityManager().createQuery(cq).getSingleResult();
-        } catch (NoResultException ne) {
-            return null;
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_BY_APP_NAME, ex);
-        }
-    }
-
     public Application loadByAppId(String productName, String appId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
@@ -93,7 +78,6 @@ public class ApplicationDAO extends AbstractDAO<Application> {
         ERROR_FIND_APPLICATIONS_BY_PRODUCT_NAMES,
 
         ERROR_FIND_APPLICATIONS_BY_CRITERIA,
-        ERROR_LOAD_BY_APP_ID,
-        ERROR_LOAD_BY_APP_NAME;
+        ERROR_LOAD_BY_APP_ID;
     }
 }
