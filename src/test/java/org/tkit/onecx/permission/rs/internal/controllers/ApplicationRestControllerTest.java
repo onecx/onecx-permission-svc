@@ -30,7 +30,7 @@ class ApplicationRestControllerTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post("/search")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -47,7 +47,7 @@ class ApplicationRestControllerTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post("/search")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -69,7 +69,7 @@ class ApplicationRestControllerTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
-                .post("/search")
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -87,7 +87,7 @@ class ApplicationRestControllerTest extends AbstractTest {
         var exception = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
-                .post("/search")
+                .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -97,27 +97,5 @@ class ApplicationRestControllerTest extends AbstractTest {
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isEqualTo(ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS.name());
         assertThat(exception.getDetail()).isEqualTo("searchApplications.applicationSearchCriteriaDTO: must not be null");
-    }
-
-    @Test
-    void deleteApplicationByName() {
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .contentType(APPLICATION_JSON)
-                .pathParam("name", "app1")
-                .delete("/{name}")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-    }
-
-    @Test
-    void deleteApplicationByNotExistingName() {
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .contentType(APPLICATION_JSON)
-                .pathParam("name", "notExisting")
-                .delete("/{name}")
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
     }
 }
