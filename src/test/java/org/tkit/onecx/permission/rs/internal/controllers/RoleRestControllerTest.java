@@ -394,4 +394,24 @@ class RoleRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
     }
+
+    @Test
+    void getTokenRolesTest() {
+
+        // bearer prefix
+        var accessToken = createAccessTokenBearer(USER_ALICE);
+
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(accessToken)
+                .post("/token")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .body().as(String[].class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto).hasSize(1);
+    }
 }
