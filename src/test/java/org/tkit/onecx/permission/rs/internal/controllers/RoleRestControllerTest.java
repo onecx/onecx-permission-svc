@@ -411,7 +411,6 @@ class RoleRestControllerTest extends AbstractTest {
                 .extract()
                 .body().as(String[].class);
 
-        assertThat(dto).isNotNull();
-        assertThat(dto).hasSize(1);
+        assertThat(dto).isNotNull().hasSize(1);
     }
 }
