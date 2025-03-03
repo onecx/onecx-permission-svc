@@ -69,6 +69,12 @@ public class RoleRestController implements RoleInternalApi {
     }
 
     @Override
+    public Response getTokenRoles(@LogExclude String token) {
+        var roles = tokenService.getTokenRoles(token);
+        return Response.status(Response.Status.OK).entity(roles).build();
+    }
+
+    @Override
     public Response searchRoles(RoleSearchCriteriaDTO roleSearchCriteriaDTO) {
         var criteria = mapper.map(roleSearchCriteriaDTO);
         var result = dao.findByCriteria(criteria);
