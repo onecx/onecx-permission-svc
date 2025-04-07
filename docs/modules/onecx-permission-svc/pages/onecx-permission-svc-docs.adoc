@@ -70,6 +70,9 @@ app:
         spec:
           kcConfig:
             defaultClientScopes: [ ocx-tn:read ]
-
+    microservice:
+      spec:
+        description: OneCX Permission Backend Service
+        name: OneCX Permission SVC
 ----
 
