@@ -9,7 +9,6 @@ import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClient
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.permission.rs.exim.v1.mappers.EximExceptionMapperV1;
@@ -19,7 +18,6 @@ import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.permission.rs.exim.v1.model.AssignmentSnapshotDTOV1;
 import gen.org.tkit.onecx.permission.rs.exim.v1.model.EximProblemDetailResponseDTOV1;
-import gen.org.tkit.onecx.permission.rs.exim.v1.model.ExportAssignmentsRequestDTOV1;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -38,7 +36,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .post("/operator")
+                .post()
                 .then().log().all()
                 .statusCode(OK.getStatusCode());
     }
@@ -54,7 +52,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .post("/operator")
+                .post()
                 .then().log().all()
                 .statusCode(OK.getStatusCode());
     }
@@ -72,7 +70,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .post("/operator")
+                .post()
                 .then().log().all()
                 .statusCode(OK.getStatusCode());
     }
@@ -88,7 +86,7 @@ class PermissionExportImportV1Test extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .post("/operator")
+                .post()
                 .then().log().all()
                 .statusCode(CONFLICT.getStatusCode())
                 .extract()
@@ -107,7 +105,7 @@ class PermissionExportImportV1Test extends AbstractTest {
         var dto = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
-                .post("/operator")
+                .post()
                 .then().log().all()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract()
@@ -119,27 +117,4 @@ class PermissionExportImportV1Test extends AbstractTest {
                 "operatorImportAssignments.assignmentSnapshotDTOV1: must not be null");
     }
 
-    @Test
-    void exportImportTest() {
-        var exportRequest = new ExportAssignmentsRequestDTOV1().productNames(Set.of("test1"));
-        var dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .contentType(APPLICATION_JSON)
-                .body(exportRequest)
-                .post("/export")
-                .then().log().all()
-                .statusCode(OK.getStatusCode())
-                .extract()
-                .body().as(AssignmentSnapshotDTOV1.class);
-        assertThat(dto).isNotNull();
-
-        //snapshot should be importable
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .contentType(APPLICATION_JSON)
-                .body(dto)
-                .post("/import")
-                .then().log().all()
-                .statusCode(OK.getStatusCode());
-    }
 }

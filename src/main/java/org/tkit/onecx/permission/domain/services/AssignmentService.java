@@ -44,6 +44,5 @@ public class AssignmentService {
         productNames.forEach((productName, apps) -> dao.deleteByProductNameAppIds(productName, apps));
         roleDAO.create(createRoles);
         dao.create(assignments);
-
     }
 }

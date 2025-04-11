@@ -1,5 +1,7 @@
 package org.tkit.onecx.permission.rs.internal.mappers;
 
+import static org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper.ErrorKeys.INVALID_IMPORT_REQUEST;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,9 +75,17 @@ public interface ExceptionMapper {
         return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
 
+    default Response importError(List<ProblemDetailInvalidParamDTO> invalidParamDTOs) {
+        var dto = exception(INVALID_IMPORT_REQUEST.name(),
+                "The request could not be fully completed due to a conflict with the current state of the roles and permissions");
+        dto.setInvalidParams(invalidParamDTOs);
+        return Response.status(Response.Status.CONFLICT).entity(dto).build();
+    }
+
     public enum ErrorKeys {
 
         OPTIMISTIC_LOCK,
+        INVALID_IMPORT_REQUEST,
         CONSTRAINT_VIOLATIONS;
     }
 }

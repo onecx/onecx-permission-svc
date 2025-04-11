@@ -302,6 +302,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/exim/assignments/import:
+    post:
+      security:
+        - oauth2: [ ocx-pm:write ]
+      tags:
+        - eximInternal
+      description: import assignments
+      operationId: importAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentSnapshot'
+      responses:
+        "200":
+          description: Import successful
+        "409":
+          description: The request could not be fully completed due to a conflict with the current state of the roles and permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/exim/assignments/export:
+    post:
+      security:
+        - oauth2: [ ocx-pm:read ]
+      tags:
+        - eximInternal
+      description: export assignments
+      operationId: exportAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportAssignmentsRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentSnapshot'
+        "404":
+          description: No helps found
   /internal/assignments/me:
     post:
       security:
@@ -1187,6 +1239,49 @@ components:
           type: string
         description:
           type: string
+    AssignmentSnapshot:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        created:
+          $ref: '#/components/schemas/OffsetDateTime'
+        assignments:
+          type: object
+          nullable: false
+          description: product name
+          additionalProperties:
+            $ref: '#/components/schemas/EximProductAssignment'
+    EximProductAssignment:
+      type: object
+      nullable: false
+      description: application ID
+      additionalProperties:
+        $ref: '#/components/schemas/EximAppAssignment'
+    EximAppAssignment:
+      type: object
+      nullable: false
+      description: role name
+      additionalProperties:
+        $ref: '#/components/schemas/EximRoleAssignment'
+    EximRoleAssignment:
+      type: object
+      nullable: false
+      description: resource name
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    ExportAssignmentsRequest:
+      type: object
+      properties:
+        productNames:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     OffsetDateTime:
       format: date-time
       type: string
