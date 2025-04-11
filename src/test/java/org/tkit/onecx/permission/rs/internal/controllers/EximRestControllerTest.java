@@ -27,7 +27,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @TestHTTPEndpoint(EximRestController.class)
 @WithDBData(value = "data/test-exim-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read", "ocx-pm:write" })
-public class EximRestControllerTest extends AbstractTest {
+class EximRestControllerTest extends AbstractTest {
 
     @Test
     void exportImportTest() {
