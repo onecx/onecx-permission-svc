@@ -1,6 +1,7 @@
-package org.tkit.onecx.permission.rs.exim.v1.controllers;
+package org.tkit.onecx.permission.rs.internal.controllers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,22 +11,26 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.permission.domain.daos.AssignmentDAO;
 import org.tkit.onecx.permission.domain.daos.PermissionDAO;
 import org.tkit.onecx.permission.domain.daos.RoleDAO;
 import org.tkit.onecx.permission.domain.models.Role;
 import org.tkit.onecx.permission.domain.services.AssignmentService;
-import org.tkit.onecx.permission.rs.exim.v1.mappers.EximExceptionMapperV1;
 import org.tkit.onecx.permission.rs.exim.v1.mappers.EximMapperV1;
-import org.tkit.quarkus.log.cdi.LogService;
+import org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper;
+import org.tkit.onecx.permission.rs.internal.mappers.EximMapper;
 
-import gen.org.tkit.onecx.permission.rs.exim.v1.PermissionExportImportApi;
-import gen.org.tkit.onecx.permission.rs.exim.v1.model.AssignmentSnapshotDTOV1;
-import gen.org.tkit.onecx.permission.rs.exim.v1.model.EximProblemDetailInvalidParamDTOV1;
-import gen.org.tkit.onecx.permission.rs.exim.v1.model.EximProblemDetailResponseDTOV1;
+import gen.org.tkit.onecx.permission.rs.internal.EximInternalApi;
+import gen.org.tkit.onecx.permission.rs.internal.model.AssignmentSnapshotDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.ExportAssignmentsRequestDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.ProblemDetailInvalidParamDTO;
+import gen.org.tkit.onecx.permission.rs.internal.model.ProblemDetailResponseDTO;
 
-@LogService
 @ApplicationScoped
-public class PermissionExportImportV1 implements PermissionExportImportApi {
+public class EximRestController implements EximInternalApi {
+
+    @Inject
+    AssignmentDAO assignmentDAO;
 
     @Inject
     RoleDAO roleDAO;
@@ -34,16 +39,22 @@ public class PermissionExportImportV1 implements PermissionExportImportApi {
     PermissionDAO permissionDAO;
 
     @Inject
-    EximMapperV1 mapper;
+    EximMapper mapper;
 
     @Inject
-    EximExceptionMapperV1 exceptionMapper;
+    ExceptionMapper exceptionMapper;
 
     @Inject
     AssignmentService service;
 
     @Override
-    public Response operatorImportAssignments(AssignmentSnapshotDTOV1 assignmentSnapshotDTO) {
+    public Response exportAssignments(ExportAssignmentsRequestDTO exportAssignmentsRequestDTO) {
+        var permissionActions = assignmentDAO.findPermissionActionForProducts(exportAssignmentsRequestDTO.getProductNames());
+        return Response.ok(mapper.createSnapshot(permissionActions)).build();
+    }
+
+    @Override
+    public Response importAssignments(AssignmentSnapshotDTO assignmentSnapshotDTO) {
 
         var request = mapper.createRequestData(assignmentSnapshotDTO);
 
@@ -56,7 +67,7 @@ public class PermissionExportImportV1 implements PermissionExportImportApi {
         var permissionMap = permissions.stream().collect(Collectors.toMap(EximMapperV1::permId, x -> x));
 
         // create assignments
-        List<EximProblemDetailInvalidParamDTOV1> problems = new ArrayList<>();
+        List<ProblemDetailInvalidParamDTO> problems = new ArrayList<>();
         List<Role> createRoles = new ArrayList<>();
         var assignments = mapper.createAssignments(problems, assignmentSnapshotDTO, roleMap, permissionMap, createRoles);
 
@@ -72,7 +83,7 @@ public class PermissionExportImportV1 implements PermissionExportImportApi {
     }
 
     @ServerExceptionMapper
-    public RestResponse<EximProblemDetailResponseDTOV1> constraint(ConstraintViolationException ex) {
+    public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
     }
 }
