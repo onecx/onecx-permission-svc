@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 import static org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS;
 import static org.tkit.onecx.permission.rs.internal.mappers.ExceptionMapper.ErrorKeys.INVALID_IMPORT_REQUEST;
-import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.List;
 import java.util.Map;

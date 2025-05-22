@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
-import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.List;
 
