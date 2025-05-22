@@ -47,6 +47,10 @@ public class AbstractTest {
                         }));
     }
 
+    protected String getKeycloakClientToken(String clientId) {
+        return keycloakClient.getClientAccessToken(clientId);
+    }
+
     protected static String createToken(String organizationId) {
         return createToken(organizationId, null);
     }
