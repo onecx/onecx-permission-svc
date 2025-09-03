@@ -2,11 +2,13 @@
 openapi: 3.0.3
 info:
   title: onecx-permission operator service
+  description: This API provides endpoints to manage Permissions by the onecx-permission-operator
   version: 1.0.0
 servers:
   - url: "http://onecx-permission-svc:8080"
 tags:
   - name: permissionOperator
+    description: Manage Permissions
 paths:
   /operator/v1/{productName}/{appId}:
     put:
@@ -14,7 +16,7 @@ paths:
         - oauth2: [ ocx-pm:write ]
       tags:
         - permissionOperator
-      description: Creates or updates permission for application.
+      description: Creates or updates permission for application by product name and appId.
       operationId: createOrUpdatePermission
       parameters:
         - name: productName
@@ -37,7 +39,7 @@ paths:
               $ref: '#/components/schemas/PermissionRequest'
       responses:
         200:
-          description: Permission updated
+          description: Permission updated successfully
         400:
           description: Bad request
           content:

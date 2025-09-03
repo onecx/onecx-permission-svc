@@ -1,12 +1,14 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-permission export and import v1
+  title: onecx-permission export and import service v1
+  description: This API provides endpoints to export and import Assignments.
   version: 1.0.0
 servers:
   - url: "http://onecx-permission-svc:8080"
 tags:
   - name: permissionExportImport
+    description: Importing and Exporting Assignments
 paths:
   /exim/v1/assignments/operator:
     post:
@@ -14,7 +16,7 @@ paths:
         - oauth2: [ ocx-pm:write ]
       tags:
         - permissionExportImport
-      description: Operator import assignments
+      description: Import assignments by the the onecx-permission-operator
       operationId: operatorImportAssignments
       requestBody:
         required: true
@@ -24,7 +26,7 @@ paths:
               $ref: '#/components/schemas/AssignmentSnapshot'
       responses:
         "200":
-          description: Import successful
+          description: Assignments imported successfully
         "409":
           description: The request could not be fully completed due to a conflict with the current state of the roles and permissions
           content:
