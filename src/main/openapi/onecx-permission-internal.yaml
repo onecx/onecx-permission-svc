@@ -2,14 +2,19 @@
 openapi: 3.0.3
 info:
   title: onecx-permission internal service
+  description: This API provides endpoints to manage Permissions, Roles, Applications and Assignments
   version: 1.0.0
 servers:
   - url: "http://onecx-permission-svc:8080"
 tags:
   - name: permissionInternal
+    description: Manage Permissions
   - name: applicationInternal
+    description: Manage Applications
   - name: roleInternal
+    description: Manage Roles
   - name: assignmentInternal
+    description: Manage Assignments
 paths:
   /internal/assignments/search:
     post:
@@ -17,7 +22,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - assignmentInternal
-      description: Search for assignments
+      description: Search for assignments by search criteria
       operationId: searchAssignments
       requestBody:
         required: true
@@ -27,7 +32,7 @@ paths:
               $ref: '#/components/schemas/AssignmentSearchCriteria'
       responses:
         200:
-          description: OK
+          description: Assignment search results retrieved successfully
           content:
             application/json:
               schema:
@@ -46,7 +51,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
-      description: Create new assignment
+      description: Create a new assignment
       operationId: createAssignment
       requestBody:
         required: true
@@ -56,7 +61,7 @@ paths:
               $ref: '#/components/schemas/CreateAssignmentRequest'
       responses:
         201:
-          description: New assignment created
+          description: Assignment created successfully
           headers:
             Location:
               required: true
@@ -68,7 +73,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Assignment'
         404:
-          description: Data not found
+          description: Role or Permission not found
         400:
           description: Bad request
           content:
@@ -81,7 +86,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
-      description: Create new assignments for role
+      description: Create assignments for all permissions by role id
       operationId: grantRoleAssignments
       parameters:
         - name: roleId
@@ -91,16 +96,16 @@ paths:
             type: string
       responses:
         201:
-          description: New assignment created
+          description: Assignments created successfully
         404:
-          description: Data not found
+          description: Role not found
   /internal/assignments/grant/{roleId}/product:
     post:
       security:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
-      description: Create new assignments for role and product
+      description: Create new assignments for all permissions of the given application by role id
       operationId: grantRoleApplicationAssignments
       parameters:
         - name: roleId
@@ -116,9 +121,9 @@ paths:
               $ref: '#/components/schemas/CreateRoleProductAssignmentRequest'
       responses:
         201:
-          description: New assignment created
+          description: Assignments created successfully
         404:
-          description: Data not found
+          description: Role not found
         400:
           description: Bad request
           content:
@@ -131,7 +136,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
-      description: Create new assignments for role and products
+      description: Create assignments for all permissions of the given products by role id
       operationId: grantRoleProductsAssignments
       parameters:
         - name: roleId
@@ -147,9 +152,9 @@ paths:
               $ref: '#/components/schemas/CreateRoleProductsAssignmentRequest'
       responses:
         201:
-          description: New assignment created
+          description: Assignments created successfully
         404:
-          description: Data not found
+          description: Role not found
         400:
           description: Bad request
           content:
@@ -162,7 +167,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
-      description: Revoke assignments by roleId
+      description: Revoke all assignments by roleId
       operationId: revokeRoleAssignments
       parameters:
         - name: roleId
@@ -172,16 +177,16 @@ paths:
             type: string
       responses:
         204:
-          description: assignment revoked
+          description: Assignments revoked successfully
         404:
-          description: Data not found
+          description: Role not found
   /internal/assignments/revoke/{roleId}/product:
     post:
       security:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
-      description: Revoke assignments for role and product
+      description: Revoke all assignments for the given products permissions and role id
       operationId: revokeRoleApplicationAssignments
       parameters:
         - name: roleId
@@ -197,9 +202,9 @@ paths:
               $ref: '#/components/schemas/RevokeRoleProductAssignmentRequest'
       responses:
         204:
-          description: assignment revoked
+          description: Assignments revoked successfully
         404:
-          description: Data not found
+          description: Role not found
         400:
           description: Bad request
           content:
@@ -212,7 +217,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - assignmentInternal
-      description: Revoke assignments for role and products
+      description: Revoke all assignments of the given products permissions for the given role id
       operationId: revokeRoleProductsAssignments
       parameters:
         - name: roleId
@@ -228,9 +233,9 @@ paths:
               $ref: '#/components/schemas/RevokeRoleProductsAssignmentRequest'
       responses:
         204:
-          description: Assignment revoked
+          description: Assignments revoked successfully
         404:
-          description: Data not found
+          description: Role not found
         400:
           description: Bad request
           content:
@@ -243,7 +248,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - assignmentInternal
-      description: Get assignment
+      description: Get an assignment by its id
       operationId: getAssignment
       parameters:
         - name: id
@@ -253,7 +258,7 @@ paths:
             type: string
       responses:
         200:
-          description: Get assignment
+          description: Assignment retrieved successfully
           content:
             application/json:
               schema:
@@ -265,7 +270,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:delete ]
       tags:
         - assignmentInternal
-      description: Delete assignment
+      description: Delete an assignment by its id
       operationId: deleteAssignment
       parameters:
         - name: id
@@ -275,13 +280,14 @@ paths:
             type: string
       responses:
         204:
-          description: Assignment deleted
+          description: Assignment deleted successfully
   /internal/assignments/roles/search:
     post:
       security:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - assignmentInternal
+      description: Search for assignments by roles
       operationId: searchAssignmentsByRoles
       requestBody:
         required: true
@@ -291,7 +297,7 @@ paths:
               $ref: '#/components/schemas/AssignmentRolesSearchCriteria'
       responses:
         200:
-          description: OK
+          description: Assignment search results retrieved successfully
           content:
             application/json:
               schema:
@@ -308,7 +314,7 @@ paths:
         - oauth2: [ ocx-pm:write ]
       tags:
         - eximInternal
-      description: import assignments
+      description: Import assignments
       operationId: importAssignments
       requestBody:
         required: true
@@ -318,7 +324,7 @@ paths:
               $ref: '#/components/schemas/AssignmentSnapshot'
       responses:
         "200":
-          description: Import successful
+          description: Assignments imported successfully
         "409":
           description: The request could not be fully completed due to a conflict with the current state of the roles and permissions
           content:
@@ -337,7 +343,7 @@ paths:
         - oauth2: [ ocx-pm:read ]
       tags:
         - eximInternal
-      description: export assignments
+      description: Export assignments
       operationId: exportAssignments
       requestBody:
         required: true
@@ -347,19 +353,20 @@ paths:
               $ref: '#/components/schemas/ExportAssignmentsRequest'
       responses:
         "200":
-          description: OK
+          description: Assignments exported successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AssignmentSnapshot'
         "404":
-          description: No helps found
+          description: No assignments found
   /internal/assignments/me:
     post:
       security:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - assignmentInternal
+      description: Get all assignments of the requesting user
       operationId: getUserAssignments
       requestBody:
         required: true
@@ -369,7 +376,7 @@ paths:
               $ref: '#/components/schemas/AssignmentRequest'
       responses:
         200:
-          description: OK
+          description: Assignments retrieved successfully
           content:
             application/json:
               schema:
@@ -386,7 +393,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - roleInternal
-      description: Create new role
+      description: Create a new role
       operationId: createRole
       requestBody:
         required: true
@@ -396,7 +403,7 @@ paths:
               $ref: '#/components/schemas/CreateRoleRequest'
       responses:
         201:
-          description: New role created
+          description: Role created successfully
           headers:
             Location:
               required: true
@@ -419,7 +426,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - roleInternal
-      description: Return role by ID
+      description: Get a role by its id
       operationId: getRoleById
       parameters:
         - name: id
@@ -429,7 +436,7 @@ paths:
             type: string
       responses:
         200:
-          description: OK
+          description: Role retrieved successfully
           content:
             application/json:
               schema:
@@ -441,7 +448,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - roleInternal
-      description: Update role by ID
+      description: Update a role by its id
       operationId: updateRole
       parameters:
         - name: id
@@ -457,7 +464,7 @@ paths:
               $ref: '#/components/schemas/UpdateRoleRequest'
       responses:
         200:
-          description: Role updated
+          description: Role updated successfully
           content:
             application/json:
               schema:
@@ -475,7 +482,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:delete ]
       tags:
         - roleInternal
-      description: Delete role by ID
+      description: Delete a role by its id
       operationId: deleteRole
       parameters:
         - name: id
@@ -485,14 +492,14 @@ paths:
             type: string
       responses:
         204:
-          description: Role deleted
+          description: Role deleted successfully
   /internal/roles/search:
     post:
       security:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - roleInternal
-      description: Search for roles
+      description: Search for roles by search criteria
       operationId: searchRoles
       requestBody:
         required: true
@@ -502,7 +509,7 @@ paths:
               $ref: '#/components/schemas/RoleSearchCriteria'
       responses:
         200:
-          description: OK
+          description: Role search results retrieved successfully
           content:
             application/json:
               schema:
@@ -519,6 +526,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - roleInternal
+      description: Get all roles for the requesting user
       operationId: getUserRoles
       requestBody:
         required: true
@@ -528,7 +536,7 @@ paths:
               $ref: '#/components/schemas/RoleRequest'
       responses:
         200:
-          description: OK
+          description: Roles retrieved successfully
           content:
             application/json:
               schema:
@@ -545,6 +553,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - roleInternal
+      description: Get all roles of the given token
       operationId: getTokenRoles
       requestBody:
         required: true
@@ -554,7 +563,7 @@ paths:
               type: string
       responses:
         200:
-          description: OK
+          description: Roles retrieved successfully
           content:
             application/json:
               schema:
@@ -573,7 +582,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - permissionInternal
-      description: Create permission
+      description: Create a permission
       operationId: createPermission
       requestBody:
         required: true
@@ -583,7 +592,7 @@ paths:
               $ref: '#/components/schemas/CreatePermissionRequest'
       responses:
         201:
-          description: New permission created
+          description: Permission created successfully
           headers:
             Location:
               required: true
@@ -606,7 +615,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - permissionInternal
-      description: Get permission
+      description: Get a permission by its id
       operationId: getPermission
       parameters:
         - name: id
@@ -616,7 +625,7 @@ paths:
             type: string
       responses:
         200:
-          description: Get permission
+          description: Permission retrieved successfully
           content:
             application/json:
               schema:
@@ -628,7 +637,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:delete ]
       tags:
         - permissionInternal
-      description: Delete permission
+      description: Delete a permission by its id
       operationId: deletePermission
       parameters:
         - name: id
@@ -638,13 +647,13 @@ paths:
             type: string
       responses:
         204:
-          description: Permission deleted
+          description: Permission deleted successfully
     put:
       security:
         - oauth2: [ ocx-pm:all, ocx-pm:write ]
       tags:
         - permissionInternal
-      description: Update permission by ID
+      description: Update a permission by its id
       operationId: updatePermission
       parameters:
         - name: id
@@ -660,7 +669,7 @@ paths:
               $ref: '#/components/schemas/UpdatePermissionRequest'
       responses:
         200:
-          description: Permission updated
+          description: Permission updated successfully
           content:
             application/json:
               schema:
@@ -679,7 +688,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - permissionInternal
-      description: Search for permissions
+      description: Search for permissions by search criteria
       operationId: searchPermissions
       requestBody:
         required: true
@@ -689,7 +698,7 @@ paths:
               $ref: '#/components/schemas/PermissionSearchCriteria'
       responses:
         200:
-          description: OK
+          description: Permission search results retrieved successfully
           content:
             application/json:
               schema:
@@ -706,6 +715,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - permissionInternal
+      description: Get all Permissions of the requesting user
       operationId: getUsersPermissions
       requestBody:
         required: true
@@ -715,7 +725,7 @@ paths:
               $ref: '#/components/schemas/PermissionRequest'
       responses:
         200:
-          description: OK
+          description: Permissions retrieved successfully
           content:
             application/json:
               schema:
@@ -732,7 +742,7 @@ paths:
         - oauth2: [ ocx-pm:all, ocx-pm:read ]
       tags:
         - applicationInternal
-      description: Search for applications
+      description: Search for applications by search criteria
       operationId: searchApplications
       requestBody:
         required: true
@@ -742,7 +752,7 @@ paths:
               $ref: '#/components/schemas/ApplicationSearchCriteria'
       responses:
         200:
-          description: OK
+          description: Applications retrieved successfully
           content:
             application/json:
               schema:
