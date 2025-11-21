@@ -48,7 +48,7 @@ class TemplateImportTest extends AbstractTest {
 
         assertThatThrownBy(() -> service.importData(config)).isInstanceOf(TemplateDataImportService.TemplateException.class);
 
-        List<Permission> data = permissionDAO.findAll().toList();
+        List<Permission> data = permissionDAO.findAllAsList();
         assertThat(data).isNotNull().hasSize(8);
 
     }
@@ -74,7 +74,7 @@ class TemplateImportTest extends AbstractTest {
 
         service.importData(config);
 
-        List<Permission> data = permissionDAO.findAll().toList();
+        List<Permission> data = permissionDAO.findAllAsList();
         assertThat(data).isNotNull().hasSize(8);
 
     }
@@ -107,7 +107,7 @@ class TemplateImportTest extends AbstractTest {
 
         service.importData(config);
 
-        List<Permission> data = permissionDAO.findAll().toList();
+        List<Permission> data = permissionDAO.findAllAsList();
         assertThat(data).isNotNull().hasSize(8);
 
     }
@@ -142,7 +142,7 @@ class TemplateImportTest extends AbstractTest {
 
         service.importData(config);
 
-        List<Permission> data = permissionDAO.findAll().toList();
+        List<Permission> data = permissionDAO.findAllAsList();
         assertThat(data).isNotNull().hasSize(10);
 
     }

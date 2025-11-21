@@ -43,18 +43,18 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
 
             ApplicationContext.start(ctx);
 
-            var applications = applicationDAO.findAll().toList();
+            var applications = applicationDAO.findAllAsList();
             assertThat(applications).hasSize(2);
 
-            var permissions = permissionDAO.findAll().toList();
+            var permissions = permissionDAO.findAllAsList();
             assertThat(permissions).hasSize(28);
 
-            var roles = roleDAO.findAll().toList();
+            var roles = roleDAO.findAllAsList();
             assertThat(roles).hasSize(1);
             var roleNames = roles.stream().map(Role::getName).collect(Collectors.toSet());
             assertThat(roleNames).containsOnly("onecx-test");
 
-            var assignments = assignmentDAO.findAll();
+            var assignments = assignmentDAO.findAllAsList();
             assertThat(assignments).hasSize(28);
 
         } finally {
@@ -69,18 +69,18 @@ class AfterStartPermissionDataImportTest extends AbstractTest {
 
             ApplicationContext.start(ctx);
 
-            var applications = applicationDAO.findAll().toList();
+            var applications = applicationDAO.findAllAsList();
             assertThat(applications).hasSize(2);
 
-            var permissions = permissionDAO.findAll().toList();
+            var permissions = permissionDAO.findAllAsList();
             assertThat(permissions).hasSize(28);
 
-            var roles = roleDAO.findAll().toList();
+            var roles = roleDAO.findAllAsList();
             assertThat(roles).hasSize(1);
             var roleNames = roles.stream().map(Role::getName).collect(Collectors.toSet());
             assertThat(roleNames).containsOnly("onecx-test");
 
-            var assignments = assignmentDAO.findAll();
+            var assignments = assignmentDAO.findAllAsList();
             assertThat(assignments).hasSize(28);
 
         } finally {
