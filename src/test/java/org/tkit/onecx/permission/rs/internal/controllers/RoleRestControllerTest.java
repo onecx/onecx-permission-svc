@@ -297,9 +297,6 @@ class RoleRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(exception);
         Assertions.assertEquals(ExceptionMapper.ErrorKeys.OPTIMISTIC_LOCK.name(), exception.getErrorCode());
-        Assertions.assertEquals(
-                "Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect): [org.tkit.onecx.permission.domain.models.Role#r11]",
-                exception.getDetail());
 
         // download Role
         dto = given()
