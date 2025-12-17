@@ -77,7 +77,7 @@ app:
         name: OneCX Permission SVC
 ----
 
-      description: OneCX Permission Backend Service
+        description: OneCX Permission Backend Service
         name: OneCX Permission SVC
 ----
 

@@ -7,7 +7,6 @@ import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
-@StaticInitSafe
 @ConfigDocFilename("onecx-permission-svc.adoc")
 @ConfigMapping(prefix = "onecx.permission")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
