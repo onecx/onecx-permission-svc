@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>onecx-permission-svc</artifactId>
+    <name>OneCX Permission Backend Service</name>
     <version>999-SNAPSHOT</version>
 
     <dependencies>

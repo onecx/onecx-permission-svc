@@ -1,10 +1,9 @@
 include::onecx-permission-svc-attributes.adoc[opts=optional]
 
-== onecx-permission-svc
+= OneCX Permission Backend Service
 
-include::docs.adoc[opts=optional]
 
-=== Configuration
+== Configuration
 include::onecx-permission-svc.adoc[opts=optional]
 
 include::onecx-permission-svc-docs.adoc[opts=optional]
