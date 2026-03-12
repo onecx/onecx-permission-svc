@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 
+import java.util.List;
+
 import jakarta.ws.rs.core.HttpHeaders;
 
 import org.junit.jupiter.api.Assertions;
@@ -407,6 +409,7 @@ class RoleRestControllerTest extends AbstractTest {
                 .extract()
                 .body().as(String[].class);
 
-        assertThat(dto).isNotNull().hasSize(1);
+        assertThat(dto).isNotNull().hasSize(3);
+        assertThat(dto).containsAll(List.of("onecx-default-role", "onecx-default-role2"));
     }
 }

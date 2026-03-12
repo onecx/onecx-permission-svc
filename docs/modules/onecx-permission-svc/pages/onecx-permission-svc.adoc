@@ -112,6 +112,27 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++realm_access/roles+++`
 
+a| [[onecx-permission-svc_onecx-permission-default-roles]] [.property-path]##link:#onecx-permission-svc_onecx-permission-default-roles[`onecx.permission.default-roles`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.permission.default-roles+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Add default roles to the user token
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_PERMISSION_DEFAULT_ROLES+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_PERMISSION_DEFAULT_ROLES+++`
+endif::add-copy-button-to-env-var[]
+--
+|list of string
+|
+
 a| [[onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping]] [.property-path]##link:#onecx-permission-svc_onecx-permission-template-role-mapping-role-mapping[`onecx.permission.template.role-mapping."role-mapping"`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.permission.template.role-mapping."role-mapping"+++[]
