@@ -409,7 +409,6 @@ class RoleRestControllerTest extends AbstractTest {
                 .extract()
                 .body().as(String[].class);
 
-        assertThat(dto).isNotNull().hasSize(3);
-        assertThat(dto).containsAll(List.of("onecx-default-role", "onecx-default-role2"));
+        assertThat(dto).isNotNull().hasSize(3).containsAll(List.of("onecx-default-role", "onecx-default-role2"));
     }
 }

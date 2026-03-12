@@ -18,7 +18,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.config.SmallRyeConfig;
 
 @QuarkusTest
-public class TokenServiceTest extends AbstractTest {
+class TokenServiceTest extends AbstractTest {
 
     @Inject
     TokenService tokenService;

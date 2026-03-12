@@ -47,9 +47,7 @@ public class TokenService {
                     config.config().claimSeparator().orElse(" "));
 
             // add default roles
-            if (config.defaultRoles().isPresent()) {
-                roles.addAll(config.defaultRoles().get());
-            }
+            config.defaultRoles().ifPresent(roles::addAll);
             return roles;
         } catch (Exception ex) {
             throw new TokenException("Error parsing permission token", ex);
