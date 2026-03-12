@@ -43,8 +43,12 @@ public class TokenService {
 
             var permissionToken = tokenParserService.parseToken(request);
             var path = claimService.getClaimPath();
-            return TokenClaimUtility.findClaimStringList(permissionToken, path, config.config().claimSeparator().orElse(" "));
+            var roles = TokenClaimUtility.findClaimStringList(permissionToken, path,
+                    config.config().claimSeparator().orElse(" "));
 
+            // add default roles
+            config.defaultRoles().ifPresent(roles::addAll);
+            return roles;
         } catch (Exception ex) {
             throw new TokenException("Error parsing permission token", ex);
         }

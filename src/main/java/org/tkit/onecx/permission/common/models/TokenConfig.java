@@ -1,5 +1,6 @@
 package org.tkit.onecx.permission.common.models;
 
+import java.util.List;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.*;
@@ -20,6 +21,15 @@ public interface TokenConfig {
     @WithName("token")
     Config config();
 
+    /**
+     * Add default roles to the user token
+     */
+    @WithName("default-roles")
+    Optional<List<String>> defaultRoles();
+
+    /**
+     * Token configuration.
+     */
     interface Config {
         /**
          * Verified permission token
