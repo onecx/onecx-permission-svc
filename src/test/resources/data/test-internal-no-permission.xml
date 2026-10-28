@@ -14,4 +14,6 @@
     <ROLE guid="r23" optlock="0" name="n3" description="d1" tenant_id="100"/>
     <ROLE guid="r24" optlock="0" name="n4" description="d1" tenant_id="100"/>
 
+    <PERMISSION />
+    <ASSIGNMENT />
 </dataset>

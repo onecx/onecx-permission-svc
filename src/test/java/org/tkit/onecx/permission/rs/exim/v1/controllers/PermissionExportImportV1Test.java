@@ -22,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(PermissionExportImportV1.class)
-@WithDBData(value = "data/test-exim-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/test-exim-v1.xml", deleteBeforeInsert = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read", "ocx-pm:write" })
 class PermissionExportImportV1Test extends AbstractTest {
 

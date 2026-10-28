@@ -14,7 +14,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(AssignmentRestController.class)
-@WithDBData(value = "data/test-internal-no-permission.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/test-internal-no-permission.xml", deleteBeforeInsert = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:read", "ocx-pm:write", "ocx-pm:delete", "ocx-pm:all" })
 class AssignmentRestControllerExtendTest extends AbstractTest {
 

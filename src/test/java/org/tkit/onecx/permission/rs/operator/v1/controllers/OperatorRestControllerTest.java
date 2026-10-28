@@ -22,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(OperatorRestController.class)
-@WithDBData(value = "data/test-operator-v1.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/test-operator-v1.xml", deleteBeforeInsert = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-pm:write" })
 class OperatorRestControllerTest extends AbstractTest {
 

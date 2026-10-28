@@ -24,7 +24,7 @@ import gen.org.tkit.onecx.permission.domain.template.model.TemplateRoleValueDTO;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@WithDBData(value = "data/test-template.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/test-template.xml", deleteBeforeInsert = true, rinseAndRepeat = true)
 class TemplateImportTest extends AbstractTest {
 
     @Inject
